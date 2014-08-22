@@ -1,7 +1,7 @@
 package com.mylikenews.nextoneandroid;
 
 
-import Net.Connect;
+import Game.NetGame;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -9,52 +9,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-	Connect connect;
-	EditText edittext;
-	TextView text;
+	LinearLayout container;
+	TextView status;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_game);
 
-		Button buttonConnect = (Button) findViewById(R.id.button2);
-		buttonConnect.setOnClickListener(buttonConnectOnClickListener);
-
-		Button buttonSend = (Button) findViewById(R.id.button1);
-		buttonSend.setOnClickListener(buttonSendOnClickListener);
-
-		edittext = (EditText) findViewById(R.id.editText1);
-		text = (TextView) findViewById(R.id.textView1);
-		showMessage("으엥?");
-
+		container = (LinearLayout) findViewById(R.id.container);
+		Button connect = new Button(this);
+		connect.setText("Game Start!");
+		connect.setOnClickListener(doconnect);
+		container.addView(connect);
+		status = new TextView(this);
+		status.setText("참여자를 기다립니다.");
+		
 	}
 
-	OnClickListener buttonSendOnClickListener = new OnClickListener() {
+	OnClickListener doconnect = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-
-			connect.sendMessage(edittext.getText().toString());
-			text.setText(edittext.getText().toString());
-
-		}
-	};
-
-	OnClickListener buttonConnectOnClickListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-
-			connect = new Connect(text);
-			connect.execute();
-			text.setText("서버에 연결");
-
+			alert("게임을 시작합니다.");
+			NetGame ngame = new NetGame(MainActivity.this, container);
+			ngame.execute();
+			container.removeView(v);
+			container.addView(status);
 		}
 	};
 
@@ -77,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void showMessage(String message) {
+	public void alert(String message) {
 		Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
 		toast.show();
 	}
