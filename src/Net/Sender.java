@@ -1,4 +1,4 @@
-package com.mylikenews.nextoneandroid;
+package Net;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,7 +11,7 @@ public class Sender {
 	OutputStream out;
 	DataOutputStream dataout;
 	
-	Sender(Socket socket){
+	public Sender(Socket socket){
 		this.socket = socket;
 		try {
 			out = socket.getOutputStream();

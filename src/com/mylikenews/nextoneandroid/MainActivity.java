@@ -1,12 +1,7 @@
 package com.mylikenews.nextoneandroid;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
-import android.os.AsyncTask;
+import Net.Connect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -20,7 +15,7 @@ import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
-	Sender sender;
+	Connect connect;
 	EditText edittext;
 	TextView text;
 
@@ -44,13 +39,10 @@ public class MainActivity extends ActionBarActivity {
 	OnClickListener buttonSendOnClickListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			try {
-				sender.sendMessage(edittext.getText().toString());
-				text.setText(edittext.getText().toString());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
+			connect.sendMessage(edittext.getText().toString());
+			text.setText(edittext.getText().toString());
+
 		}
 	};
 
@@ -59,56 +51,19 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public void onClick(View v) {
 
-			Connect connect = new Connect();
+			connect = new Connect(text);
 			connect.execute();
 			text.setText("서버에 연결");
 
 		}
 	};
 
-	public class Connect extends AsyncTask<Void, Integer, Void> {
-
-		String response;
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			try {
-				Socket socket = new Socket("192.168.0.17", 13333);
-				sender = new Sender(socket);
-				InputStream in = socket.getInputStream();
-				DataInputStream datain = new DataInputStream(in);
-				
-				response = "";
-				while (!response.equals("end")) {
-					publishProgress(1);
-					response = datain.readUTF();
-				}
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		protected void onProgressUpdate(Integer... values) {
-			if (values[0] == 1)
-				text.setText(response);
-
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			text.setText("끝남");
-		}
-	}
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
-	} 
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
