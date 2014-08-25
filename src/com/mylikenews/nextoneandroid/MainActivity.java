@@ -16,7 +16,7 @@ import android.widget.Toast;
 public class MainActivity extends ActionBarActivity {
 
 	LinearLayout container;
-	TextView status;
+	TextView status; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

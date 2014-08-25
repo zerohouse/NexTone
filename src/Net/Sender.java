@@ -21,9 +21,13 @@ public class Sender {
 		}
 	}
 	
-	public void sendMessage(String send) throws IOException{
-		dataout.writeUTF(send);
+	public void S(String send){
+		try {
+			dataout.writeUTF(send);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	
 }

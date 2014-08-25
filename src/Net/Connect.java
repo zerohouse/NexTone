@@ -22,8 +22,8 @@ public class Connect extends AsyncTask<Void, Integer, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		try {
-			Socket socket = new Socket("192.168.0.11", 13333);
-			sender = new Sender(socket);
+			Socket socket = new Socket("192.168.0.17",13333);
+			sender = new Sender(socket); 
 			InputStream in = socket.getInputStream();
 			DataInputStream datain = new DataInputStream(in);
 			
@@ -51,12 +51,5 @@ public class Connect extends AsyncTask<Void, Integer, Void> {
 		output.setText("끝남");
 	}
 
-	public void sendMessage(String string) {
-		try {
-			sender.sendMessage(string);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+
 }
