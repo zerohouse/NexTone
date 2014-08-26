@@ -1,62 +1,95 @@
 package Game;
 
-import android.content.Context;
-import android.graphics.Color;
-import android.view.View;
+import com.mylikenews.nextoneandroid.R;
 
-public class Hero extends ViewWrap implements Target {
+import Net.Sender;
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
+public class Hero extends RelativeLayout implements Target {
 
 	Player player;
+	Effect effect;
 	int emptyDummy;
-	ViewBinder vital, defense, damage, mana, maxmana, dummysize;
+	ViewBinder vital, defense, damage, dummysize;
+	ManaStone mana;
 	String name;
 	Context context;
 	int attackable;
+	RelativeLayout.LayoutParams params;
 
 	Hero(Context context, Player player) {
 		super(context);
+
+		params = new RelativeLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		params.height = Method.dpToPx(100);
+		setBackgroundResource(R.drawable.hero);
+		setLayoutParams(params);
+
 		this.context = context;
 		this.player = player;
 		emptyDummy = 0;
-		maxmana = new ViewBinder(context, 0, this);
+
 		defense = new ViewBinder(context, 0, this);
+		RelativeLayout.LayoutParams defenseparam = defense.getParams();
+		defenseparam.leftMargin = Method.dpToPx(50);
+
 		damage = new ViewBinder(context, 0, this);
-		mana = new ViewBinder(context, 0, this);
+		RelativeLayout.LayoutParams damageparam = damage.getParams();
+		damageparam.leftMargin = Method.dpToPx(20);
+
+		mana = new ManaStone(context, this);
+		mana.setMana(0);
+		RelativeLayout.LayoutParams manaparam = mana.getParams();
+		manaparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		manaparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		mana.setMaxmana(0);
+
 		vital = new ViewBinder(context, 30, this);
+		RelativeLayout.LayoutParams vitalparam = vital.getParams();
+		vitalparam.leftMargin = Method.dpToPx(100);
+
 		dummysize = new ViewBinder(context, player.dummy.size(), this);
+		RelativeLayout.LayoutParams dummyparam = dummysize.getParams();
+		dummyparam.leftMargin = Method.dpToPx(100);
+		dummyparam.topMargin = Method.dpToPx(30);
+
 		attackable = 0;
 	}
 
 	public void newTurn() {
-		if (maxmana.Int < 10)
-			maxmana.add(1);
-		mana.setInt(maxmana.Int());
+		if (mana.maxmana() < 10)
+			mana.maxmanaAdd(1);
+		mana.setMana(mana.maxmana());
 		dummysize.setInt(player.dummy.size());
 		setOnAttackClickListener();
 	}
-	
+
 	private void setOnAttackClickListener() {
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				alert("공격할 대상을 선택해 주세요.");
+				Method.alert("공격할 대상을 선택해 주세요.");
 				player.field.attacker = (Target) v;
 				player.field.player.enemy.field.targetSelect();
 			}
 		};
 
-		setBackgroundColor(Color.YELLOW);
 		setOnClickListener(attakable);
 	}
-	
+
 	public void endTurn() {
 		setOnClickListener(null);
 	}
 
 	public void setByString(String set) {
 		String[] setsplit = set.split(",");
-		mana.setInt(Integer.parseInt(setsplit[0]));
-		maxmana.setInt(Integer.parseInt(setsplit[1]));
+		mana.setMana(Integer.parseInt(setsplit[0]));
+		mana.setMaxmana(Integer.parseInt(setsplit[1]));
 		defense.setInt(Integer.parseInt(setsplit[2]));
 		damage.setInt(Integer.parseInt(setsplit[3]));
 		vital.setInt(Integer.parseInt(setsplit[4]));
@@ -65,7 +98,7 @@ public class Hero extends ViewWrap implements Target {
 
 	public String getString() {
 		String heroState;
-		heroState = mana.Int() + "," + maxmana.Int() + "," + defense.Int()
+		heroState = mana.mana() + "," + mana.maxmana() + "," + defense.Int()
 				+ "," + damage.Int() + "," + vital.Int() + ","
 				+ dummysize.Int();
 		return heroState;
@@ -80,21 +113,20 @@ public class Hero extends ViewWrap implements Target {
 	@Override
 	public void attack(Target target) {
 		if (damage.Int() == 0) {
-			alert("공격할 수 없습니다.");
+			Method.alert("공격할 수 없습니다.");
 			return;
 		}
 		if (attackable == 0) {
-			alert("공격할 수 없습니다.");
+			Method.alert("공격할 수 없습니다.");
 			return;
 		}
 		attackable--;
-		setBackgroundColor(Color.GRAY);
 		target.attacked(damage.Int());
 		this.attacked(target.damage());
 		int playerindex = 0;
 		// 상대입장에서 봐야 되니까 뒤집어짐.
 		int enemyindex = target.index();
-		player.sender.S("9 " + enemyindex + "," + playerindex);
+		Sender.S("9 " + enemyindex + "," + playerindex);
 	}
 
 	private void defeatCheck() {
@@ -117,7 +149,7 @@ public class Hero extends ViewWrap implements Target {
 	public int index() {
 		return -1;
 	}
-	
+
 	public void attackOrder(Target another) {
 		another.attacked(damage.Int());
 		this.attacked(another.damage());

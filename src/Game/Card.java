@@ -3,34 +3,56 @@ package Game;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
+import android.widget.RelativeLayout;
 
-public class Card extends ViewWrap {
+public class Card extends CardLayout {
 
 	Effect effect;
 	boolean hasmonster;
 	boolean haseffect;
 	Context context;
 
-	ViewBinder cost, attack, vital, name, description, index;
+	ViewBinder cost, attack, vital;
+	String resource, name, description;
+	int index;
 
 	boolean selected;
 
 	public Card(Context context, String name, String description, int cost,
-			int attack, int vital, int index) {
+			int attack, int vital, String resource, int index) {
 		super(context);
 		this.context = context;
+		
+		
 		selected = false;
-		
-		
-		
-		
+
 		hasmonster = true;
-		this.attack = new ViewBinder(context, attack, this);
-		this.cost = new ViewBinder(context, cost, this);
-		this.vital = new ViewBinder(context, vital, this);
-		this.name = new ViewBinder(context, name, this);
-		this.description = new ViewBinder(context, description, this);
-		this.index = new ViewBinder(context, index, this);
+		this.resource = resource;
+
+		setBackgroundResource(Method.resId(resource + "c"));
+
+
+
+		RelativeLayout.LayoutParams attackparam = getParam();
+		attackparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		attackparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		this.attack = new ViewBinder(context, attack, this, attackparam);
+		this.attack.setBackgroundColor(Color.WHITE);
+
+		RelativeLayout.LayoutParams costparam = getParam();
+		costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		this.cost = new ViewBinder(context, cost, this, costparam);
+		this.cost.setBackgroundColor(Color.WHITE);
+
+		RelativeLayout.LayoutParams vitalparam = getParam();
+		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		this.vital = new ViewBinder(context, vital, this, vitalparam);
+		this.vital.setBackgroundColor(Color.WHITE);
+
+		this.name = name;
+		this.description = description;
+		this.index = index;
 
 		setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -41,35 +63,36 @@ public class Card extends ViewWrap {
 	}
 
 
+	private RelativeLayout.LayoutParams getParam() {
+		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		return param;
+	}
 
 	private void toggleSelect() {
 		if (selected == false) {
-			this.setBackgroundColor(Color.DKGRAY);
+			this.setBackgroundResource(Method.resId(resource + "clicked"));
 			selected = true;
-
-			alert("선택");
 		} else {
-			this.setBackgroundColor(Color.WHITE);
+			this.setBackgroundResource(Method.resId(resource + "c"));
 			selected = false;
-
-			alert("선택안함");
 		}
 	}
 
-
-	public boolean selected(){
+	public boolean selected() {
 		return selected;
 	}
 
-
-
 	public int index() {
-		return index.Int();		
+		return index;
 	}
-
-
 
 	public int cost() {
 		return cost.Int();
+	}
+
+	public String resource() {
+		return resource;
 	}
 }

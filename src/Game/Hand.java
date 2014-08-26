@@ -1,26 +1,49 @@
 package Game;
 
 import java.util.ArrayList;
-import android.content.Context;
 
-public class Hand extends ViewWrap {
+import android.content.Context;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
+
+public class Hand extends LinearLayout {
 	ArrayList<Card> items; // 통일성을 위해 아이템스로.
 	Context context;
+	HorizontalScrollView scroll;
+	LinearLayout.LayoutParams params;
 
 	public Hand(Context context) {
 		super(context);
 		this.context = context;
-		this.setOrientation(VERTICAL);
+		params = new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.MATCH_PARENT);
+		setLayoutParams(params);
+		setOrientation(HORIZONTAL);
+		setGravity(Gravity.CENTER);
 		items = new ArrayList<Card>();
 
+		scroll = new HorizontalScrollView(context);
+		params = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,0f);
+		
+		scroll.setLayoutParams(params);
+		scroll.addView(this);
+		
+
 	}
+	
+
 
 	public void add(Card card) {
 		items.add(card);
 		addView(card);
 	}
-	
-	public void remove(Card card){
+
+	public void remove(Card card) {
 		items.remove(card);
 		removeView(card);
 	}
@@ -48,13 +71,16 @@ public class Hand extends ViewWrap {
 
 	public ArrayList<Card> selectedCards() {
 		ArrayList<Card> selected = new ArrayList<Card>();
-		for (Card card : items){
-			if(card.selected() == true){
+		for (Card card : items) {
+			if (card.selected() == true) {
 				selected.add(card);
 			}
 		}
 		return selected;
 	}
 
+	public View ScrollView() {
+		return scroll;
+	}
 
 }

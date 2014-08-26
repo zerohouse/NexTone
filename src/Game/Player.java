@@ -5,10 +5,10 @@ import java.util.Random;
 
 import Net.Sender;
 import android.content.Context;
-import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import com.mylikenews.nextoneandroid.R;
 
@@ -23,20 +23,19 @@ public class Player {
 	Field field;
 	boolean first, done;
 	int me;
-	Sender sender;
-	Button usecard, endturn, change;
+	Button usecard, endturn, change, heroabillity;
 	Hero hero;
 	Player enemy;
+	NetGame game;
 
-	public Player(Context context, String dekstring, int me) {
+	public Player(Context context, String dekstring, int me, NetGame game) {
 		this.me = me;
 		this.context = context;
 		this.dekstring = dekstring;
+		this.game = game;
 		init();
 
-		alert("시작세팅! 완료");
 		makeDek();
-		alert("덱세팅! 완료");
 
 	}
 
@@ -47,47 +46,61 @@ public class Player {
 
 		dummy = new Dummy();
 		dek = new ArrayList<Card>();
+		done = false;
+ 
+		hero = new Hero(context, this);
+
 		usecard = new Button(context);
 		usecard.setText("useCard");
-		done = false;
-
-		hero = new Hero(context, this);
-		field.add(hero);
 		usecard.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				useCard(v);
 			}
-
 		});
+		
+		RelativeLayout.LayoutParams cardparams = new RelativeLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		usecard.setLayoutParams(cardparams);
+		
 		endturn = new Button(context);
 		endturn.setText("EndTurn");
 		endturn.setOnClickListener(new View.OnClickListener() {
- 
 			@Override
 			public void onClick(View v) {
 				endTurn();
 			}
-
 		});
+		
+		RelativeLayout.LayoutParams endparams = new RelativeLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		usecard.setId(1);
+		endturn.setLayoutParams(endparams);
+		cardparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		endparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		endparams.addRule(RelativeLayout.BELOW,usecard.getId());
+	}
+
+	public void addHero() {
+		field.add(hero, me);
 	}
 
 	private void useCard(View v) {
 		addSelectedMonster();
-		
 
 	}
 
 	private void addSelectedMonster() {
 		ArrayList<Card> selected = hand.selectedCards();
 		int manacost = costSum(selected);
-		if (manacost > hero.mana.Int()) {
-			alert("마나가 부족합니다.");
+		if (manacost > hero.mana.mana()) {
+			Method.alert("마나가 부족합니다.");
 			return;
 		}
 
-		hero.mana.add(-manacost);
+		hero.mana.manaAdd(-manacost);
 
 		String monsterinfo;
 		for (Card card : selected) {
@@ -95,7 +108,7 @@ public class Player {
 			field.add(monster);
 			hand.remove(card);
 			monsterinfo = monster.toString();
-			sender.S("8 "+me+"@"+monsterinfo);
+			Sender.S("8 " + me + "@" + monsterinfo);
 		}
 	}
 
@@ -108,10 +121,10 @@ public class Player {
 	}
 
 	private void endTurn() {
-		hand.removeView(usecard);
-		hand.removeView(endturn);
+		hero.removeView(usecard);
+		hero.removeView(endturn);
 		field.endTurn();
-		sender.S(CONS.YOURTURN.get() + " ");
+		Sender.S(4 + " "); // 4 = 턴넘기기
 		hero.endTurn();
 	}
 
@@ -124,6 +137,7 @@ public class Player {
 		String eachcard;
 		Card card;
 		int attack, defense, cost;
+		String resource;
 		String name, description;
 		int howmany;
 		for (String each : deksplit) {
@@ -138,8 +152,10 @@ public class Player {
 				cost = Integer.parseInt(cardinfo[2]);
 				attack = Integer.parseInt(cardinfo[3]);
 				defense = Integer.parseInt(cardinfo[4]);
+				resource = cardinfo[5];
+
 				card = new Card(context, name, description, cost, attack,
-						defense, i);
+						defense, resource, i);
 				dek.add(card);
 			}
 		}
@@ -175,7 +191,7 @@ public class Player {
 		int rannum;
 		Card rancard;
 		int added = 0;
-		alert("카드 넘기는중");
+		Method.alert("카드 넘기는중");
 		while (added < size) {
 			rannum = random.nextInt(dek.size() - 1);
 
@@ -192,42 +208,26 @@ public class Player {
 		int removed = hand.removeAndReturnToDek(dek);
 		dekToHand(removed);
 		hand.removeView(v);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		dekToDummy();
-		sender.S(CONS.DEKSTRING.get() + " " + dekstring);
+		Sender.S(3 + " " + dekstring);
 		done = true;
-		if (!first)
-			sender.S(CONS.YOURTURN.get() + " "); // START!
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		if (!first)
+			Sender.S(5 + " "); // IAMDONE (second)
 	}
 
 	public void defeat() {
 
 	}
 
-	public void alert(String message) {
-		Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-	}
-
-	public void alert(int message) {
-		Toast toast = Toast.makeText(context, message + "", Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
-	}
-
 	public String dekToDummy() {
 		String ranorder = dummy.shffleAdd(dek, random);
-		alert(dummy.size());
 		return ranorder;
 	}
 
@@ -240,7 +240,7 @@ public class Player {
 	}
 
 	public View hand() {
-		return hand;
+		return hand.ScrollView();
 	}
 
 	public View field() {
@@ -251,26 +251,22 @@ public class Player {
 		this.enemy = enemy;
 	}
 
-	public void setSender(Sender sender) {
-		this.sender = sender;
-		field.setSender(sender);
-	}
-
-
 	public void newTurn() {
-		hand.addView(usecard);
-		hand.addView(endturn);
 
 		newCard();
-		hero.newTurn();
+
+		hero.newTurn(); // 히어로 뉴턴에서 에러
+		hero.addView(usecard);
+		hero.addView(endturn);
 		field.newTurn();
-		sender.S("7 1@" + hero.getString());
+		Sender.S("7 1@" + hero.getString());
+
 	}
 
 	private void newCard() {
 		if (dummy.isEmpty()) {
 			hero.emptyDummy();
-			alert("덱에 카드가 없습니다");
+			Method.alert("덱에 카드가 없습니다");
 			return;
 		}
 		Card newcard = dummy.pop();
@@ -278,7 +274,7 @@ public class Player {
 			hand.add(newcard);
 			return;
 		}
-		alert(hand.size() + "카드가 너무 많습니다.");
+		Method.alert(hand.size() + "카드가 너무 많습니다.");
 	}
 
 	public boolean done() {

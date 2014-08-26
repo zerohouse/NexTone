@@ -9,7 +9,7 @@ public class Sender {
 
 	Socket socket;
 	OutputStream out;
-	DataOutputStream dataout;
+	static DataOutputStream dataout;
 	
 	public Sender(Socket socket){
 		this.socket = socket;
@@ -21,7 +21,7 @@ public class Sender {
 		}
 	}
 	
-	public void S(String send){
+	public static void S(String send){
 		try {
 			dataout.writeUTF(send);
 		} catch (IOException e) {

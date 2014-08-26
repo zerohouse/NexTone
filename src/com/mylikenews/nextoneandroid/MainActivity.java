@@ -1,6 +1,7 @@
 package com.mylikenews.nextoneandroid;
 
 
+import Game.Method;
 import Game.NetGame;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -11,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -23,6 +23,7 @@ public class MainActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 
+		Method.context = this;
 		container = (LinearLayout) findViewById(R.id.container);
 		Button connect = new Button(this);
 		connect.setText("Game Start!");
@@ -36,7 +37,6 @@ public class MainActivity extends ActionBarActivity {
 	OnClickListener doconnect = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			alert("게임을 시작합니다.");
 			NetGame ngame = new NetGame(MainActivity.this, container);
 			ngame.execute();
 			container.removeView(v);
@@ -61,11 +61,6 @@ public class MainActivity extends ActionBarActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	public void alert(String message) {
-		Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-		toast.show();
 	}
 
 }
