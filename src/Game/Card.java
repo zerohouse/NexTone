@@ -1,11 +1,12 @@
-package Game;
+package game;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-public class Card extends CardLayout {
+public class Card extends RelativeLayout {
 
 	Effect effect;
 	boolean hasmonster;
@@ -15,6 +16,7 @@ public class Card extends CardLayout {
 	ViewBinder cost, attack, vital;
 	String resource, name, description;
 	int index;
+	RelativeLayout.LayoutParams params;
 
 	boolean selected;
 
@@ -22,12 +24,18 @@ public class Card extends CardLayout {
 			int attack, int vital, String resource, int index) {
 		super(context);
 		this.context = context;
-		
+		 
+		params = new RelativeLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		params.width = Method.dpToPx(70);
+		params.height = Method.dpToPx(100);
+		setLayoutParams(params);
 		
 		selected = false;
 
 		hasmonster = true;
-		this.resource = resource;
+		this.resource = resource; 
 
 		setBackgroundResource(Method.resId(resource + "c"));
 
@@ -94,5 +102,15 @@ public class Card extends CardLayout {
 
 	public String resource() {
 		return resource;
+	}
+
+
+	public int attack() {
+		return attack.Int();
+	}
+
+
+	public int vital() {
+		return vital.Int();
 	}
 }

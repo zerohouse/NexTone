@@ -1,4 +1,4 @@
-package Game;
+package game;
 
 import java.util.ArrayList;
 
@@ -29,11 +29,11 @@ public class Hand extends LinearLayout {
 		scroll = new HorizontalScrollView(context);
 		params = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,0f);
-		
+		 
 		scroll.setLayoutParams(params);
 		scroll.addView(this);
-		
-
+		scroll.setSmoothScrollingEnabled(true);
+ 
 	}
 	
 

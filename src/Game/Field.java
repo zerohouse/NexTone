@@ -1,14 +1,16 @@
-package Game;
+package game;
 
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 public class Field extends LinearLayout {
 
+	HorizontalScrollView scroll;
 	ArrayList<Monster> items;
 	Context context;
 	Player player;
@@ -20,13 +22,21 @@ public class Field extends LinearLayout {
 		super(context);
 		params = new LinearLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT,1f);
+				ViewGroup.LayoutParams.MATCH_PARENT);
 		setLayoutParams(params);
-		params.height=Method.dpToPx(20);
+		
 		this.context = context;
 		this.player = player;
 		items = new ArrayList<Monster>();
 
+		
+		scroll = new HorizontalScrollView(context);
+		params = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,1f);
+		
+		scroll.setLayoutParams(params);
+		scroll.addView(this);
+		scroll.setSmoothScrollingEnabled(true);
 	}
 
 	public void remove(Monster monster) {
@@ -86,6 +96,10 @@ public class Field extends LinearLayout {
 
 	public int size() {
 		return items.size();
+	}
+
+	public int scrollHeight() {
+		return scroll.getHeight();
 	}
 
 }

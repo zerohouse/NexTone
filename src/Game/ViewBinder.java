@@ -1,4 +1,4 @@
-package Game;
+package game;
 
 import android.content.Context;
 import android.view.ViewGroup;
@@ -23,7 +23,7 @@ public class ViewBinder extends TextView  {
 		initTextView(params, value);
 	}
 
-	ViewBinder(Context context, int val, ViewGroup parent) {
+	public ViewBinder(Context context, int val, ViewGroup parent) {
 		super(context);
 		this.context = context;
 		this.parent = parent;

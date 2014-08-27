@@ -1,4 +1,4 @@
-package Game;
+package game;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import Net.Sender;
+import net.Sender;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.LinearLayout;
@@ -18,8 +18,12 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	LinearLayout container;
 	String player1dek, player2dek, player2hero;
 	boolean first;
+	String ip;
+	int port;
 
-	public NetGame(Context context, LinearLayout container) {
+	public NetGame(Context context, LinearLayout container, String ip, int port) {
+		this.ip = ip;
+		this.port = port;
 		this.context = context;
 		this.container = container;
 		player1dek = "1x2,2x2,3x26";
@@ -76,7 +80,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		try {
-			Socket socket = new Socket("192.168.0.17", 13333);
+			Socket socket = new Socket(ip, port);
 			sender = new Sender(socket);
 			InputStream in = socket.getInputStream();
 			DataInputStream datain = new DataInputStream(in);

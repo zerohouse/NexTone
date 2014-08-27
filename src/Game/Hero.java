@@ -1,8 +1,9 @@
-package Game;
+package game;
+
+import net.Sender;
 
 import com.mylikenews.nextoneandroid.R;
 
-import Net.Sender;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class Hero extends RelativeLayout implements Target {
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.height = Method.dpToPx(100);
+		params.height = Method.dpToPx(110);
 		setBackgroundResource(R.drawable.hero);
 		setLayoutParams(params);
 

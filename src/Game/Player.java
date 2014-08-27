@@ -1,9 +1,9 @@
-package Game;
+package game;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import Net.Sender;
+import net.Sender;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +20,12 @@ public class Player {
 	Hand hand;
 	Random random;
 	Dummy dummy;
-	Field field;
+	public Field field;
 	boolean first, done;
 	int me;
 	Button usecard, endturn, change, heroabillity;
 	Hero hero;
-	Player enemy;
+	public Player enemy;
 	NetGame game;
 
 	public Player(Context context, String dekstring, int me, NetGame game) {
@@ -89,7 +89,6 @@ public class Player {
 
 	private void useCard(View v) {
 		addSelectedMonster();
-
 	}
 
 	private void addSelectedMonster() {
@@ -244,7 +243,7 @@ public class Player {
 	}
 
 	public View field() {
-		return field;
+		return field.scroll;
 	}
 
 	public void setEnemy(Player enemy) {

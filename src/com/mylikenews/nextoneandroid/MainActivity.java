@@ -1,19 +1,19 @@
 package com.mylikenews.nextoneandroid;
 
 
-import Game.Method;
-import Game.NetGame;
+import game.Method;
+import game.NetGame;
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
 	LinearLayout container;
 	TextView status; 
@@ -21,6 +21,10 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		setContentView(R.layout.activity_game);
 
 		Method.context = this;
@@ -37,30 +41,12 @@ public class MainActivity extends ActionBarActivity {
 	OnClickListener doconnect = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			NetGame ngame = new NetGame(MainActivity.this, container);
+			NetGame ngame = new NetGame(MainActivity.this, container, "10.73.43.102", 13333);
 			ngame.execute();
 			container.removeView(v);
 			container.addView(status);
 		}
 	};
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 
 }

@@ -1,6 +1,6 @@
-package Game;
+package game;
 
-import Net.Sender;
+import net.Sender;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,35 +24,49 @@ public class Monster extends RelativeLayout implements Target {
 
 	public Monster(Context context, Card card, Field field, int index) {
 		super(context);
-		params = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		setLayoutParams(params);
 		deFault(context, field, index);
-		this.damage = new ViewBinder(context, card.attack.Int(), this);
-		this.vital = new ViewBinder(context, card.vital.Int(), this);
+		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundResource(Method.resId(resource));
-		params.width = Method.dpToPx(100);
-		params.height = field.getHeight();
+
+	}
+
+	private void setDamageVital(int attack, int vital) {
+		this.damage = new ViewBinder(context, attack, this);
+		RelativeLayout.LayoutParams damageparams = damage.getParams();
+		damageparams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		damageparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		
+		this.vital = new ViewBinder(context, vital, this);
+		RelativeLayout.LayoutParams vitalparams = this.vital.getParams();
+		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	}
 
 	public Monster(Context context, String info, Field field, int index) {
 		super(context);
 		deFault(context, field, index);
-		params = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
-		setLayoutParams(params);
 		String[] cardinfo = info.split(",");
-		this.damage = new ViewBinder(context, Integer.parseInt(cardinfo[0]),
-				this);
-		this.vital = new ViewBinder(context, Integer.parseInt(cardinfo[1]),
-				this);
+		setDamageVital(Integer.parseInt(cardinfo[0]),
+				Integer.parseInt(cardinfo[1]));
 		this.resource = cardinfo[2];
 		setBackgroundResource(Method.resId(resource));
-		params.width = Method.dpToPx(100);
-		params.height = field.getHeight();
+	}
+
+	public void attackCheck() {
+		if (attackable > 0 && damage.Int() > 0) {
+			attackAble();
+			return;
+		}
+		attackdisAble();
+	}
+
+	public void attackAble() {
+		setBackgroundResource(Method.resId(resource + "attackable"));
+	}
+
+	public void attackdisAble() {
+		setBackgroundResource(Method.resId(resource));
 	}
 
 	private void deFault(Context context, Field field, int index) {
@@ -61,6 +75,13 @@ public class Monster extends RelativeLayout implements Target {
 		this.index = index;
 		attackable = 0;
 		maxattackable = 1; // 기본 공격 가능 횟수 = 1
+
+		params = new LinearLayout.LayoutParams(
+				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.WRAP_CONTENT);
+		params.width = Method.dpToPx(100);
+		params.height = field.scrollHeight();
+		setLayoutParams(params);
 
 		setOnFirstClickListener();
 	}
@@ -107,6 +128,7 @@ public class Monster extends RelativeLayout implements Target {
 	public void newTurn() {
 		this.attackable = maxattackable;
 		setOnAttackClickListener();
+		attackCheck();
 	}
 
 	@Override
@@ -120,6 +142,9 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 		}
 		attackable--;
+		if (attackable == 0) {
+			attackdisAble();
+		}
 
 		target.attacked(damage.Int());
 		this.attacked(target.damage());
@@ -140,6 +165,7 @@ public class Monster extends RelativeLayout implements Target {
 
 	public void endTurn() {
 		setOnClickListener(null);
+		attackdisAble();
 	}
 
 	public void attackOrder(Target another) {
