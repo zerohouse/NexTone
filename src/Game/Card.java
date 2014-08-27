@@ -27,7 +27,8 @@ public class Card extends RelativeLayout {
 		params.width = Method.dpToPx(70);
 		params.height = Method.dpToPx(100);
 		setLayoutParams(params);
-		
+		params.setMargins(Method.dpToPx(4), Method.dpToPx(1), Method.dpToPx(4),Method.dpToPx(1));
+
 		selected = false;
 
 		hasmonster = true;
@@ -41,17 +42,20 @@ public class Card extends RelativeLayout {
 		RelativeLayout.LayoutParams attackparam = this.attack.getParams();
 		attackparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		attackparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		attackparam.setMargins(Method.dpToPx(6), 0, 0, Method.dpToPx(1));
 		
 
 		this.cost = new ViewBinder(context, cost, this);
 		RelativeLayout.LayoutParams costparam = this.cost.getParams();
 		costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
+		costparam.setMargins(0, Method.dpToPx(1), Method.dpToPx(6), 0);
+ 
 		
 		this.vital = new ViewBinder(context, vital, this);
 		RelativeLayout.LayoutParams vitalparam = this.vital.getParams();
 		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		vitalparam.setMargins(0, 0, Method.dpToPx(6), Method.dpToPx(1));
 
 		this.name = name;
 		this.description = description;

@@ -1,11 +1,11 @@
 package game;
 
-import com.mylikenews.nextoneandroid.R;
-
 import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.mylikenews.nextoneandroid.R;
 
 public class ViewBinder extends TextView {
 	String string;

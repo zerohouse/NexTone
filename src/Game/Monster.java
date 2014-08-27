@@ -2,10 +2,12 @@ package game;
 
 import net.Sender;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import com.mylikenews.nextoneandroid.R;
 
 public class Monster extends RelativeLayout implements Target {
 
@@ -20,7 +22,7 @@ public class Monster extends RelativeLayout implements Target {
 	Context context;
 	ViewBinder damage, vital;
 	String resource;
-	LinearLayout.LayoutParams params;
+	RelativeLayout.LayoutParams params;
 
 	public Monster(Context context, Card card, Field field, int index) {
 		super(context);
@@ -32,15 +34,26 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	private void setDamageVital(int attack, int vital) {
-		this.damage = new ViewBinder(context, attack, this);
+		damage = new ViewBinder(context, attack, this);
+		damage.setBackgroundResource(R.drawable.attack);
 		RelativeLayout.LayoutParams damageparams = damage.getParams();
-		damageparams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+		damageparams.addRule(RelativeLayout.ALIGN_BOTTOM);
 		damageparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		
+		damageparams.width = Method.dpToPx(30);
+		damageparams.height = Method.dpToPx(42);
+		damageparams.setMargins(Method.dpToPx(7), 0, 0, 0);
+		this.damage.setGravity(Gravity.CENTER);
+
 		this.vital = new ViewBinder(context, vital, this);
 		RelativeLayout.LayoutParams vitalparams = this.vital.getParams();
 		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		this.vital.setBackgroundResource(R.drawable.vital);
+		vitalparams.width = Method.dpToPx(30);
+		vitalparams.height = Method.dpToPx(42);
+		
+		vitalparams.setMargins(0, 0, Method.dpToPx(7), 0);
+		this.vital.setGravity(Gravity.CENTER);
 	}
 
 	public Monster(Context context, String info, Field field, int index) {
@@ -76,7 +89,7 @@ public class Monster extends RelativeLayout implements Target {
 		attackable = 0;
 		maxattackable = 1; // 기본 공격 가능 횟수 = 1
 
-		params = new LinearLayout.LayoutParams(
+		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		params.width = Method.dpToPx(100);
