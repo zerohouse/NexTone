@@ -4,11 +4,19 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class Method {
 
 	public static Context context;
+	
+	public static RelativeLayout.LayoutParams getParams() {
+		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
+		return param;
+	}
 
 	public static void alert(String message) {
 		Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);

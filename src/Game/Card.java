@@ -1,9 +1,7 @@
 package game;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 public class Card extends RelativeLayout {
@@ -25,9 +23,7 @@ public class Card extends RelativeLayout {
 		super(context);
 		this.context = context;
 		 
-		params = new RelativeLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
-				ViewGroup.LayoutParams.WRAP_CONTENT);
+		params = Method.getParams();
 		params.width = Method.dpToPx(70);
 		params.height = Method.dpToPx(100);
 		setLayoutParams(params);
@@ -41,22 +37,21 @@ public class Card extends RelativeLayout {
 
 
 
-		RelativeLayout.LayoutParams attackparam = getParam();
+		this.attack = new ViewBinder(context, attack, this);
+		RelativeLayout.LayoutParams attackparam = this.attack.getParams();
 		attackparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		attackparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		this.attack = new ViewBinder(context, attack, this, attackparam);
-		this.attack.setBackgroundColor(Color.WHITE);
+		
 
-		RelativeLayout.LayoutParams costparam = getParam();
+		this.cost = new ViewBinder(context, cost, this);
+		RelativeLayout.LayoutParams costparam = this.cost.getParams();
 		costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		this.cost = new ViewBinder(context, cost, this, costparam);
-		this.cost.setBackgroundColor(Color.WHITE);
 
-		RelativeLayout.LayoutParams vitalparam = getParam();
+		
+		this.vital = new ViewBinder(context, vital, this);
+		RelativeLayout.LayoutParams vitalparam = this.vital.getParams();
 		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		this.vital = new ViewBinder(context, vital, this, vitalparam);
-		this.vital.setBackgroundColor(Color.WHITE);
 
 		this.name = name;
 		this.description = description;
@@ -71,12 +66,7 @@ public class Card extends RelativeLayout {
 	}
 
 
-	private RelativeLayout.LayoutParams getParam() {
-		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
-				RelativeLayout.LayoutParams.WRAP_CONTENT,
-				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		return param;
-	}
+
 
 	private void toggleSelect() {
 		if (selected == false) {

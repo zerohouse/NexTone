@@ -17,4 +17,13 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="myText">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">20</item>
+        <item name="android:shadowDy">20</item>
+        <item name="android:shadowRadius">20</item>
+    </style>
+
 </resources>

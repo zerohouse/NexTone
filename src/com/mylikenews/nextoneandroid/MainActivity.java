@@ -41,7 +41,7 @@ public class MainActivity extends Activity {
 	OnClickListener doconnect = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			NetGame ngame = new NetGame(MainActivity.this, container, "10.73.43.102", 13333);
+			NetGame ngame = new NetGame(MainActivity.this, container, "192.168.0.17", 13333);
 			ngame.execute();
 			container.removeView(v);
 			container.addView(status);
