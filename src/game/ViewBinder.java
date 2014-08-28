@@ -8,19 +8,11 @@ import android.widget.TextView;
 import com.mylikenews.nextoneandroid.R;
 
 public class ViewBinder extends TextView {
-	String string;
 	int Int;
 	RelativeLayout.LayoutParams params;
 	Context context;
 	ViewGroup parent;
 
-	ViewBinder(Context context, String value, ViewGroup parent) {
-		super(context);
-		this.context = context;
-		this.parent = parent;
-		this.string = value;
-		initTextView(value);
-	}
 
 	public ViewBinder(Context context, int val, ViewGroup parent) {
 		super(context);
@@ -30,6 +22,18 @@ public class ViewBinder extends TextView {
 		this.Int = val;
 		initTextView(val + "");
 
+	}
+
+	public ViewBinder(Context context, int val, ViewGroup parent, boolean set) {
+		super(context);
+		this.context = context;
+		this.parent = parent;
+		this.Int = val;
+		if (set==true){
+			setTextAppearance(context, R.style.myText);
+			
+		}
+		initTextView("");
 	}
 
 	public void initTextView(String value) {

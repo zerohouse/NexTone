@@ -1,13 +1,13 @@
 package game;
 
 import net.Sender;
-
-import com.mylikenews.nextoneandroid.R;
-
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
+import com.mylikenews.nextoneandroid.R;
 
 public class Hero extends RelativeLayout implements Target {
 
@@ -15,6 +15,7 @@ public class Hero extends RelativeLayout implements Target {
 	Effect effect;
 	int emptyDummy;
 	ViewBinder vital, defense, damage, dummysize;
+	RelativeLayout hero;
 	ManaStone mana;
 	String name;
 	Context context;
@@ -35,29 +36,56 @@ public class Hero extends RelativeLayout implements Target {
 		this.player = player;
 		emptyDummy = 0;
 
-		defense = new ViewBinder(context, 0, this);
-		RelativeLayout.LayoutParams defenseparam = defense.getParams();
-		defenseparam.leftMargin = Method.dpToPx(50);
-
-		damage = new ViewBinder(context, 0, this);
-		RelativeLayout.LayoutParams damageparam = damage.getParams();
-		damageparam.leftMargin = Method.dpToPx(20);
-
 		mana = new ManaStone(context, this);
 		mana.setMana(0);
 		RelativeLayout.LayoutParams manaparam = mana.getParams();
-		manaparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
 		manaparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		manaparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		mana.setMaxmana(0);
 
-		vital = new ViewBinder(context, 30, this);
-		RelativeLayout.LayoutParams vitalparam = vital.getParams();
-		vitalparam.leftMargin = Method.dpToPx(100);
+		hero = new RelativeLayout(context);
+		RelativeLayout.LayoutParams heroparams = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.MATCH_PARENT);
+		heroparams.width = Method.dpToPx(140);
+		heroparams.setMargins(Method.dpToPx(20), 0, 0, 0);
+		hero.setLayoutParams(heroparams);
+		hero.setBackgroundResource(R.drawable.hero1);
+		addView(hero);
 
-		dummysize = new ViewBinder(context, player.dummy.size(), this);
+		damage = new ViewBinder(context, 0, hero);
+		damage.setBackgroundResource(R.drawable.attack);
+		damage.setGravity(Gravity.CENTER);
+
+		defense = new ViewBinder(context, 0, hero, false);
+		defense.setTextSize(22);
+		RelativeLayout.LayoutParams defenseparam = defense.getParams();
+		defenseparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		defenseparam.rightMargin = Method.dpToPx(17);
+		defenseparam.topMargin = Method.dpToPx(30);
+
+		RelativeLayout.LayoutParams damageparams = damage.getParams();
+		damageparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+		damageparams.width = Method.dpToPx(40);
+		damageparams.height = Method.dpToPx(55);
+
+		vital = new ViewBinder(context, 30, hero);
+		vital.setBackgroundResource(R.drawable.vital);
+		vital.setGravity(Gravity.CENTER);
+
+		RelativeLayout.LayoutParams vitalparams = this.vital.getParams();
+		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+		vitalparams.width = Method.dpToPx(45);
+		vitalparams.height = Method.dpToPx(58);
+
+		dummysize = new ViewBinder(context, player.dummy.size(), this, true);
 		RelativeLayout.LayoutParams dummyparam = dummysize.getParams();
-		dummyparam.leftMargin = Method.dpToPx(100);
-		dummyparam.topMargin = Method.dpToPx(30);
+		dummyparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		dummysize.setTextSize(15);
 
 		attackable = 0;
 	}
@@ -67,6 +95,7 @@ public class Hero extends RelativeLayout implements Target {
 			mana.maxmanaAdd(1);
 		mana.setMana(mana.maxmana());
 		dummysize.setInt(player.dummy.size());
+		dummysize.setText("남은 카드: " + player.dummy.size() + "장");
 		setOnAttackClickListener();
 	}
 
@@ -91,10 +120,15 @@ public class Hero extends RelativeLayout implements Target {
 		String[] setsplit = set.split(",");
 		mana.setMana(Integer.parseInt(setsplit[0]));
 		mana.setMaxmana(Integer.parseInt(setsplit[1]));
-		defense.setInt(Integer.parseInt(setsplit[2]));
 		damage.setInt(Integer.parseInt(setsplit[3]));
 		vital.setInt(Integer.parseInt(setsplit[4]));
-		dummysize.setInt(Integer.parseInt(setsplit[5]));
+		dummysize.setText("남은 카드: " + Integer.parseInt(setsplit[5]) + "장");
+		
+		if(Integer.parseInt(setsplit[2])!=0){
+			defense.setInt(Integer.parseInt(setsplit[2]));
+			return;
+		}
+		defense.setText("");
 	}
 
 	public String getString() {

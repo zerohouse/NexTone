@@ -3,24 +3,41 @@ package game;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.mylikenews.nextoneandroid.R;
 
 public class ManaStone extends LinearLayout {
 
+	
 	int mana;
 	int maxmana;
 	Hero hero;
 	ArrayList<ImageView> manaimage;
-
+	LinearLayout wrap;
+	TextView textMana;
+	String text;
+	
 	public ManaStone(Context context, Hero hero) {
 		super(context);
 		this.hero = hero;
-		hero.addView(this);
-
+		
+		wrap = new LinearLayout(context);
+		wrap.setOrientation(LinearLayout.VERTICAL);
+		
+		text = "";
+		textMana = new TextView(context);
+		textMana.setGravity(Gravity.RIGHT);
+		//textMana.setText("(0/0)");
+		textMana.setTextAppearance(context, R.style.myText);
+		hero.addView(wrap);
+		wrap.addView(textMana);
+		wrap.addView(this);
+		setGravity(Gravity.RIGHT);
 		manaimage = new ArrayList<ImageView>();
 
 		for (int i = 0; i < 20; i++) { // 0~20은 마나이미지
@@ -33,6 +50,10 @@ public class ManaStone extends LinearLayout {
 			mana.setBackgroundResource(R.drawable.mana2);
 			manaimage.add(mana);
 		}
+	}
+	
+	private void textUpdate(){
+		textMana.setText("Mana("+mana+"/"+maxmana+")");
 	}
 
 	public void setMana(int mana) {
@@ -65,6 +86,7 @@ public class ManaStone extends LinearLayout {
 
 	private void drawMana() {
 		removeAllViews();
+		textUpdate();
 		if (mana >= maxmana) {
 			for (int i = 0; i < mana; i++) {
 				addView(manaimage.get(i));
@@ -80,13 +102,14 @@ public class ManaStone extends LinearLayout {
 		for (int i = 0; i < mana; i++) {
 			addView(manaimage.get(i), 0);
 		}
+		
 	}
 
 	public RelativeLayout.LayoutParams getParams() {
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
-		setLayoutParams(params);
+		wrap.setLayoutParams(params);
 		return params;
 	}
 

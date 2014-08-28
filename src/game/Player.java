@@ -20,7 +20,7 @@ public class Player {
 	Hand hand;
 	Random random;
 	Dummy dummy;
-	public Field field;
+	Field field;
 	boolean first, done;
 	int me;
 	Button usecard, endturn, change, heroabillity;
@@ -47,7 +47,7 @@ public class Player {
 		dummy = new Dummy();
 		dek = new ArrayList<Card>();
 		done = false;
- 
+
 		hero = new Hero(context, this);
 
 		usecard = new Button(context);
@@ -58,12 +58,12 @@ public class Player {
 				useCard(v);
 			}
 		});
-		
+
 		RelativeLayout.LayoutParams cardparams = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		usecard.setLayoutParams(cardparams);
-		
+
 		endturn = new Button(context);
 		endturn.setText("EndTurn");
 		endturn.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +72,7 @@ public class Player {
 				endTurn();
 			}
 		});
-		
+
 		RelativeLayout.LayoutParams endparams = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -80,7 +80,7 @@ public class Player {
 		endturn.setLayoutParams(endparams);
 		cardparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		endparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		endparams.addRule(RelativeLayout.BELOW,usecard.getId());
+		endparams.addRule(RelativeLayout.BELOW, usecard.getId());
 	}
 
 	public void addHero() {
@@ -273,7 +273,7 @@ public class Player {
 			hand.add(newcard);
 			return;
 		}
-		Method.alert(hand.size() + "카드가 너무 많습니다.");
+		Method.alert("카드가 너무 많습니다.\n 1장 사라집니다.");
 	}
 
 	public boolean done() {

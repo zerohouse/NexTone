@@ -9,7 +9,13 @@ import java.net.UnknownHostException;
 import net.Sender;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+
+import com.mylikenews.nextoneandroid.R;
 
 public class NetGame extends AsyncTask<Void, Integer, Void> {
 
@@ -63,8 +69,28 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 		player1.setEnemy(player2);
 		player2.setEnemy(player1);
 
-		container.addView(player1.field(), 0);
-		container.addView(player2.field(), 0);
+		FrameLayout fieldarea = new FrameLayout(context);
+		LinearLayout.LayoutParams fieldparam = new LinearLayout.LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+		fieldarea.setLayoutParams(fieldparam);
+		
+		ImageView fieldback = new ImageView(context);
+		fieldback.setLayoutParams(fieldparam);
+		fieldback.setScaleType(ScaleType.FIT_XY);
+		fieldback.setBackgroundResource(R.drawable.field);
+				
+		LinearLayout innerfieldarea = new LinearLayout(context);
+		fieldarea.setLayoutParams(fieldparam);
+		innerfieldarea.setOrientation(LinearLayout.VERTICAL);
+				
+		container.addView(fieldarea, 0);
+		
+		fieldarea.addView(fieldback);
+		fieldarea.addView(innerfieldarea);
+		
+		innerfieldarea.addView(player2.field());
+		innerfieldarea.addView(player1.field());
+		
 		player2.addHero();
 		player1.addHero();
 	}
@@ -157,17 +183,19 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				player1.field.add(mon[1]);
 
 				break;
- 
+
 			case 9: // 9번은 공격정보를 가져온다.
 					// 인덱스의 몬스터들끼리 공격을 주고 받는다.
 				String[] attack = response[1].split(",");
 				Target one,
 				another;
-				if (Integer.parseInt(attack[0]) != -1) {
-					one = player1.field.get(Integer.parseInt(attack[0]));
-				} else {
+				if (Integer.parseInt(attack[0]) == -1) {
 					one = player1.field.hero;
+					another = player2.field.get(Integer.parseInt(attack[1]));
+					another.attackOrder(one);
+					return;
 				}
+				one = player1.field.get(Integer.parseInt(attack[0]));
 				another = player2.field.get(Integer.parseInt(attack[1]));
 				one.attackOrder(another);
 				break;

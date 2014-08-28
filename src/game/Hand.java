@@ -29,7 +29,7 @@ public class Hand extends LinearLayout {
 		scroll = new HorizontalScrollView(context);
 		params = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,0f);
-		 
+		params.height = Method.dpToPx(100);
 		scroll.setLayoutParams(params);
 		scroll.addView(this);
 		scroll.setSmoothScrollingEnabled(true);

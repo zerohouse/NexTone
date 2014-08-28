@@ -12,16 +12,16 @@ public class Field extends LinearLayout {
 
 	HorizontalScrollView scroll;
 	ArrayList<Monster> items;
-	Context context;
+	Context context; 
 	Player player;
 	Target attacker;
 	Hero hero;
-	LinearLayout.LayoutParams params;
+	LinearLayout.LayoutParams params; 
 
 	public Field(Context context, Player player) {
 		super(context);
 		params = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
+				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 		setLayoutParams(params);
 		
@@ -32,12 +32,14 @@ public class Field extends LinearLayout {
 		
 		scroll = new HorizontalScrollView(context);
 		params = new LinearLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,1f);
+				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
+		
 		
 		scroll.setLayoutParams(params);
 		scroll.addView(this);
 		scroll.setSmoothScrollingEnabled(true);
-	}
+	} 
+	
 
 	public void remove(Monster monster) {
 		items.remove(monster);
@@ -47,7 +49,7 @@ public class Field extends LinearLayout {
 	public void add(Hero hero, int me) {
 		this.hero = hero;
 		if (me == 1) {
-			player.game.container.addView(hero);
+			player.game.container.addView(hero, player.game.container.getChildCount()-1);
 			return;
 		}
 		player.game.container.addView(hero, 0);
