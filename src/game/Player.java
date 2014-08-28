@@ -93,6 +93,10 @@ public class Player {
 
 	private void addSelectedMonster() {
 		ArrayList<Card> selected = hand.selectedCards();
+		if (field.size() + monsterSum(selected) > 7) {
+			Method.alert("하수인은 7명까지 소환 가능합니다.");
+			return;
+		}
 		int manacost = costSum(selected);
 		if (manacost > hero.mana.mana()) {
 			Method.alert("마나가 부족합니다.");
@@ -117,6 +121,14 @@ public class Player {
 			cost += card.cost();
 		}
 		return cost;
+	}
+
+	private int monsterSum(ArrayList<Card> selected) {
+		int monster = 0;
+		for (Card card : selected) {
+			monster += card.monster();
+		}
+		return monster;
 	}
 
 	private void endTurn() {
@@ -174,6 +186,7 @@ public class Player {
 			}
 		});
 		hand.addView(change);
+		Method.alert("바꿀카드를 선택해 주세요.");
 	}
 
 	public void ChangeToStartTurn() {
@@ -181,7 +194,9 @@ public class Player {
 			@Override
 			public void onClick(View v) {
 				changeSelectedCard(v);
+				game.initView();
 				newTurn();
+				Sender.S("6 ");
 			}
 		});
 	}
@@ -190,7 +205,6 @@ public class Player {
 		int rannum;
 		Card rancard;
 		int added = 0;
-		Method.alert("카드 넘기는중");
 		while (added < size) {
 			rannum = random.nextInt(dek.size() - 1);
 
@@ -251,7 +265,8 @@ public class Player {
 	}
 
 	public void newTurn() {
-
+		Method.alert("나의 턴입니다.");
+		Sender.S("10 ");
 		newCard();
 
 		hero.newTurn(); // 히어로 뉴턴에서 에러

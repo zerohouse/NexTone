@@ -64,17 +64,23 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			player2.second();
 		} else {
 			player2.first();
-		}
+		} 
 
 		player1.setEnemy(player2);
 		player2.setEnemy(player1);
 
+	} 
+
+	void initView() { 
+		if(container.getChildCount()>3){
+			return;
+		}
 		FrameLayout fieldarea = new FrameLayout(context);
 		LinearLayout.LayoutParams fieldparam = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
 		fieldarea.setLayoutParams(fieldparam);
 		
-		ImageView fieldback = new ImageView(context);
+		ImageView fieldback = new ImageView(context); 
 		fieldback.setLayoutParams(fieldparam);
 		fieldback.setScaleType(ScaleType.FIT_XY);
 		fieldback.setBackgroundResource(R.drawable.field);
@@ -152,16 +158,22 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			case 4: // 4번이 넘어오면 턴을 넘긴다.
 				player1.newTurn();
 				break;
-
+ 
 			case 5: // 맨처음 시작할때. 선공 플레이어가 세팅을 마쳤으면,
 					// 게임을 시작하고, 아니면 카드 바꾸기 아이템에
 					// 게임 시작 이벤트도 걸어준다.
 				if (player1.done()) {
+					initView();
 					player1.newTurn();
+					Sender.S("6 ");
 					return;
-				}
+				} 
+				
 				player1.ChangeToStartTurn();
 				break;
+			
+			case 6: // 처음 화면에 필드와 히어로를 추가한다.
+				initView(); 
 
 			case 7: // 7번은 영웅정보를 가지고 온다.
 					// (이미 생성된) 영웅 인스턴스의 정보를 바꾼다.
@@ -200,6 +212,10 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				one.attackOrder(another);
 				break;
 
+			case 10:
+				Method.alert("상대방의 턴입니다.");
+				break;
+				
 			}
 		} catch (Exception e) {
 		}

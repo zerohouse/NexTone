@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import animation.hideAndSHow;
 
 public class Hand extends LinearLayout {
 	ArrayList<Card> items; // 통일성을 위해 아이템스로.
@@ -23,24 +24,27 @@ public class Hand extends LinearLayout {
 				ViewGroup.LayoutParams.MATCH_PARENT);
 		setLayoutParams(params);
 		setOrientation(HORIZONTAL);
-		setGravity(Gravity.CENTER);
+		setGravity(Gravity.BOTTOM);
 		items = new ArrayList<Card>();
 
 		scroll = new HorizontalScrollView(context);
-		params = new LinearLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,0f);
+		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT, 0f);
 		params.height = Method.dpToPx(100);
 		scroll.setLayoutParams(params);
 		scroll.addView(this);
 		scroll.setSmoothScrollingEnabled(true);
- 
-	}
-	
 
+		// 애니메이션 세팅
+		hideAndSHow hideshow = new hideAndSHow(this);
+		hideshow.animate();
+
+	}
 
 	public void add(Card card) {
 		items.add(card);
 		addView(card);
+
 	}
 
 	public void remove(Card card) {
@@ -52,6 +56,7 @@ public class Hand extends LinearLayout {
 		int removes = 0;
 		for (int i = items.size() - 1; i > -1; i--) {
 			if (items.get(i).selected()) {
+				items.get(i).toggleSelect();
 				removeView(items.get(i));
 				clonedek.add(items.get(i));
 				items.remove(i);

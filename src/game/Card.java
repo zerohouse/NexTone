@@ -2,19 +2,20 @@ package game;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class Card extends RelativeLayout {
 
 	Effect effect;
-	boolean hasmonster;
+	int monster;
 	boolean haseffect;
 	Context context;
 
 	ViewBinder cost, attack, vital;
 	String resource, name, description;
 	int index;
-	RelativeLayout.LayoutParams params;
+	LinearLayout.LayoutParams params;
 
 	boolean selected;
 
@@ -23,15 +24,19 @@ public class Card extends RelativeLayout {
 		super(context);
 		this.context = context;
 		 
-		params = Method.getParams();
+		params = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
 		params.width = Method.dpToPx(70);
-		params.height = Method.dpToPx(100);
+		params.height = Method.dpToPx(90);
+		params.leftMargin = 5;
+		params.rightMargin = 5;
 		setLayoutParams(params);
 		params.setMargins(Method.dpToPx(4), Method.dpToPx(1), Method.dpToPx(4),Method.dpToPx(1));
 
 		selected = false;
 
-		hasmonster = true;
+		monster = 1;
 		this.resource = resource; 
 
 		setBackgroundResource(Method.resId(resource + "c"));
@@ -72,13 +77,17 @@ public class Card extends RelativeLayout {
 
 
 
-	private void toggleSelect() {
+	public void toggleSelect() {
 		if (selected == false) {
 			this.setBackgroundResource(Method.resId(resource + "clicked"));
+			params.bottomMargin = Method.dpToPx(10);
+			setLayoutParams(params);
 			selected = true;
 		} else {
 			this.setBackgroundResource(Method.resId(resource + "c"));
 			selected = false;
+			params.bottomMargin = 0;
+			setLayoutParams(params);
 		}
 	}
 
@@ -107,4 +116,13 @@ public class Card extends RelativeLayout {
 	public int vital() {
 		return vital.Int();
 	}
+
+
+
+
+	public int monster() {
+		return monster;
+	}
+	
+	
 }

@@ -5,6 +5,7 @@ import game.Method;
 import game.NetGame;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import animation.hideAndSHow;
 
 public class MainActivity extends Activity {
 
@@ -24,16 +26,23 @@ public class MainActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+ 
 		setContentView(R.layout.activity_game);
 
 		Method.context = this;
 		container = (LinearLayout) findViewById(R.id.container);
+		
+
+		hideAndSHow hideshow = new hideAndSHow(container);
+		hideshow.animate();
+		
+		
 		Button connect = new Button(this);
 		connect.setText("Game Start!");
 		connect.setOnClickListener(doconnect);
 		container.addView(connect);
 		status = new TextView(this);
+		status.setGravity(Gravity.CENTER);
 		status.setText("참여자를 기다립니다.");
 		
 	}

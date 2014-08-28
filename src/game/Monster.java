@@ -51,7 +51,7 @@ public class Monster extends RelativeLayout implements Target {
 		this.vital.setBackgroundResource(R.drawable.vital);
 		vitalparams.width = Method.dpToPx(30);
 		vitalparams.height = Method.dpToPx(42);
-		
+
 		vitalparams.setMargins(0, 0, Method.dpToPx(7), 0);
 		this.vital.setGravity(Gravity.CENTER);
 	}
@@ -79,6 +79,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public void attackdisAble() {
+		attackable = 0;
 		setBackgroundResource(Method.resId(resource));
 	}
 
@@ -103,7 +104,7 @@ public class Monster extends RelativeLayout implements Target {
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Method.alert("이번턴에 낸 하수인은 공격할 수 없습니다.");
+				attackLisenter(v);
 			}
 		};
 
@@ -114,13 +115,20 @@ public class Monster extends RelativeLayout implements Target {
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Method.alert("공격할 대상을 선택해 주세요.");
-				field.attacker = (Target) v;
-				field.player.enemy.field.targetSelect();
+				attackLisenter(v);
 			}
+
 		};
 
 		setOnClickListener(attakable);
+	}
+
+	private void attackLisenter(View v) {
+		if (damage.Int() == 0 || attackable == 0)
+			return;
+		Method.alert("공격할 대상을 선택해 주세요.");
+		field.attacker = (Target) v;
+		field.player.enemy.field.targetSelect();
 	}
 
 	@Override

@@ -21,6 +21,7 @@ public class Hero extends RelativeLayout implements Target {
 	Context context;
 	int attackable;
 	RelativeLayout.LayoutParams params;
+	boolean getWeapon;
 
 	Hero(Context context, Player player) {
 		super(context);
@@ -36,6 +37,8 @@ public class Hero extends RelativeLayout implements Target {
 		this.player = player;
 		emptyDummy = 0;
 
+		getWeapon=false;
+		
 		mana = new ManaStone(context, this);
 		mana.setMana(0);
 		RelativeLayout.LayoutParams manaparam = mana.getParams();
@@ -103,6 +106,8 @@ public class Hero extends RelativeLayout implements Target {
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(attackable<=0||damage.Int()==0)
+					return;
 				Method.alert("공격할 대상을 선택해 주세요.");
 				player.field.attacker = (Target) v;
 				player.field.player.enemy.field.targetSelect();

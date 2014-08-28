@@ -2,11 +2,13 @@ package game;
 
 import java.util.ArrayList;
 
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import animation.hideAndSHow;
 
 public class Field extends LinearLayout {
 
@@ -17,6 +19,8 @@ public class Field extends LinearLayout {
 	Target attacker;
 	Hero hero;
 	LinearLayout.LayoutParams params; 
+	AnimatorSet animate;
+	Monster selected;
 
 	public Field(Context context, Player player) {
 		super(context);
@@ -38,7 +42,11 @@ public class Field extends LinearLayout {
 		scroll.setLayoutParams(params);
 		scroll.addView(this);
 		scroll.setSmoothScrollingEnabled(true);
+		
+		hideAndSHow hideshow = new hideAndSHow(this);
+		hideshow.animate();
 	} 
+	
 	
 
 	public void remove(Monster monster) {
@@ -103,5 +111,8 @@ public class Field extends LinearLayout {
 	public int scrollHeight() {
 		return scroll.getHeight();
 	}
+
+
+
 
 }

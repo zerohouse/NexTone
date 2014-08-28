@@ -10,7 +10,7 @@ import android.widget.Toast;
 public class Method {
 
 	public static Context context;
-	
+
 	public static RelativeLayout.LayoutParams getParams() {
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -36,11 +36,12 @@ public class Method {
 				r.getDisplayMetrics());
 		return (int) px;
 	}
-	
 
 	public static int resId(String filename) {
 		int resId = context.getResources().getIdentifier(filename, "drawable",
 				context.getPackageName());
 		return resId;
 	}
+	
+
 }
