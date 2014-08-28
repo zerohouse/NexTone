@@ -1,12 +1,13 @@
 package game;
 
 import net.Sender;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import com.mylikenews.nextoneandroid.R;
 
 public class Monster extends RelativeLayout implements Target {
@@ -16,13 +17,14 @@ public class Monster extends RelativeLayout implements Target {
 	int defaulvital;
 	int attackable, maxattackable;
 	int maxvital, defaulmaxvital;
-	int index;
+	int id;
 	Effect whendeath;
 	Effect whenturn;
 	Context context;
 	ViewBinder damage, vital;
 	String resource;
 	RelativeLayout.LayoutParams params;
+	boolean uped = false;
 
 	public Monster(Context context, Card card, Field field, int index) {
 		super(context);
@@ -34,6 +36,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	private void setDamageVital(int attack, int vital) {
+		defauldamage = attack;
 		damage = new ViewBinder(context, attack, this);
 		damage.setBackgroundResource(R.drawable.attack);
 		RelativeLayout.LayoutParams damageparams = damage.getParams();
@@ -44,6 +47,7 @@ public class Monster extends RelativeLayout implements Target {
 		damageparams.setMargins(Method.dpToPx(7), 0, 0, 0);
 		this.damage.setGravity(Gravity.CENTER);
 
+		maxvital = vital;
 		this.vital = new ViewBinder(context, vital, this);
 		RelativeLayout.LayoutParams vitalparams = this.vital.getParams();
 		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -60,9 +64,10 @@ public class Monster extends RelativeLayout implements Target {
 		super(context);
 		deFault(context, field, index);
 		String[] cardinfo = info.split(",");
-		setDamageVital(Integer.parseInt(cardinfo[0]),
-				Integer.parseInt(cardinfo[1]));
-		this.resource = cardinfo[2];
+		id = Integer.parseInt(cardinfo[0]);
+		setDamageVital(Integer.parseInt(cardinfo[1]),
+				Integer.parseInt(cardinfo[2]));
+		this.resource = cardinfo[3];
 		setBackgroundResource(Method.resId(resource));
 	}
 
@@ -83,32 +88,27 @@ public class Monster extends RelativeLayout implements Target {
 		setBackgroundResource(Method.resId(resource));
 	}
 
+	@SuppressLint("NewApi")
 	private void deFault(Context context, Field field, int index) {
+
+		setY(-10);
+		setY(10);
+
 		this.context = context;
 		this.field = field;
-		this.index = index;
+		this.id = index;
 		attackable = 0;
 		maxattackable = 1; // 기본 공격 가능 횟수 = 1
 
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.width = Method.dpToPx(100);
+		params.width = Method.dpToPx(90);
+		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		params.height = field.scrollHeight();
 		setLayoutParams(params);
 
-		setOnFirstClickListener();
-	}
-
-	private void setOnFirstClickListener() {
-		OnClickListener attakable = new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				attackLisenter(v);
-			}
-		};
-
-		setOnClickListener(attakable);
+		setOnAttackClickListener();
 	}
 
 	private void setOnAttackClickListener() {
@@ -123,10 +123,15 @@ public class Monster extends RelativeLayout implements Target {
 		setOnClickListener(attakable);
 	}
 
+	@SuppressLint("NewApi")
 	private void attackLisenter(View v) {
 		if (damage.Int() == 0 || attackable == 0)
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
+		field.othersDown();
+		v.setY(-10);
+		this.uped = true;
+
 		field.attacker = (Target) v;
 		field.player.enemy.field.targetSelect();
 	}
@@ -134,7 +139,7 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public String toString() {
 		String info;
-		info = damage.Int() + "," + vital.Int() + "," + resource;
+		info = id + "," + damage.Int() + "," + vital.Int() + "," + resource;
 		return info;
 	}
 
@@ -144,6 +149,11 @@ public class Monster extends RelativeLayout implements Target {
 		if (vital.Int() < 1) {
 			field.remove(this);
 		}
+		if (vital.Int() < maxvital) {
+			vital.setTextColor(Color.RED);
+			return;
+		}
+		vital.setTextColor(Color.WHITE);
 	}
 
 	public void newTurn() {
@@ -169,14 +179,14 @@ public class Monster extends RelativeLayout implements Target {
 
 		target.attacked(damage.Int());
 		this.attacked(target.damage());
-		int playerindex = index;
+		int playerindex = index();
 		// 상대입장에서 봐야 되니까 뒤집어짐.
 		int enemyindex = target.index();
 		Sender.S("9 " + enemyindex + "," + playerindex);
 	}
 
 	public int index() {
-		return index;
+		return id;
 	}
 
 	@Override

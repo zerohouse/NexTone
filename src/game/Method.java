@@ -10,6 +10,7 @@ import android.widget.Toast;
 public class Method {
 
 	public static Context context;
+	static Toast toast;
 
 	public static RelativeLayout.LayoutParams getParams() {
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
@@ -19,13 +20,13 @@ public class Method {
 	}
 
 	public static void alert(String message) {
-		Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+		toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
 	}
 
 	public static void alert(int message) {
-		Toast toast = Toast.makeText(context, message + "", Toast.LENGTH_SHORT);
+		toast = Toast.makeText(context, message + "", Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
 	}

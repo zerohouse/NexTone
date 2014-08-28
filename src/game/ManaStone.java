@@ -34,6 +34,7 @@ public class ManaStone extends LinearLayout {
 		textMana.setGravity(Gravity.RIGHT);
 		//textMana.setText("(0/0)");
 		textMana.setTextAppearance(context, R.style.myText);
+		textMana.setTextSize(15);
 		hero.addView(wrap);
 		wrap.addView(textMana);
 		wrap.addView(this);

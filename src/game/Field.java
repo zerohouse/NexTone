@@ -1,8 +1,8 @@
 package game;
 
 import java.util.ArrayList;
-
 import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +14,11 @@ public class Field extends LinearLayout {
 
 	HorizontalScrollView scroll;
 	ArrayList<Monster> items;
-	Context context; 
+	Context context;
 	Player player;
 	Target attacker;
 	Hero hero;
-	LinearLayout.LayoutParams params; 
+	LinearLayout.LayoutParams params;
 	AnimatorSet animate;
 	Monster selected;
 
@@ -28,26 +28,22 @@ public class Field extends LinearLayout {
 				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 		setLayoutParams(params);
-		
+
 		this.context = context;
 		this.player = player;
 		items = new ArrayList<Monster>();
 
-		
 		scroll = new HorizontalScrollView(context);
-		params = new LinearLayout.LayoutParams(
-				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
-		
-		
+		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT, 1f);
+
 		scroll.setLayoutParams(params);
 		scroll.addView(this);
 		scroll.setSmoothScrollingEnabled(true);
-		
+
 		hideAndSHow hideshow = new hideAndSHow(this);
 		hideshow.animate();
-	} 
-	
-	
+	}
 
 	public void remove(Monster monster) {
 		items.remove(monster);
@@ -57,7 +53,8 @@ public class Field extends LinearLayout {
 	public void add(Hero hero, int me) {
 		this.hero = hero;
 		if (me == 1) {
-			player.game.container.addView(hero, player.game.container.getChildCount()-1);
+			player.game.container.addView(hero,
+					player.game.container.getChildCount() - 1);
 			return;
 		}
 		player.game.container.addView(hero, 0);
@@ -75,6 +72,7 @@ public class Field extends LinearLayout {
 	}
 
 	public void newTurn() {
+		
 		for (Monster monster : items) {
 			monster.newTurn();
 		}
@@ -95,6 +93,7 @@ public class Field extends LinearLayout {
 	}
 
 	public void endTurn() {
+		othersDown();
 		for (Monster monster : items) {
 			monster.endTurn();
 		}
@@ -112,7 +111,24 @@ public class Field extends LinearLayout {
 		return scroll.getHeight();
 	}
 
+	@SuppressLint("NewApi")
+	public void othersDown() {
+		for (Monster monster : items) {
+			if (monster.uped == true) {
+				monster.setY(10);
+				monster.uped = false;
+			}
 
+		}
+	}
 
+	public Target getByIndex(int id) {
+		for (Target target : items){
+			if (target.index() == id){
+				return target;
+			}
+		}
+		return null;
+	}
 
 }

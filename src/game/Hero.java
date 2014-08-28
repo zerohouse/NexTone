@@ -2,6 +2,7 @@ package game;
 
 import net.Sender;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class Hero extends RelativeLayout implements Target {
 	int attackable;
 	RelativeLayout.LayoutParams params;
 	boolean getWeapon;
+	int maxvital;
 
 	Hero(Context context, Player player) {
 		super(context);
@@ -54,7 +56,7 @@ public class Hero extends RelativeLayout implements Target {
 		heroparams.width = Method.dpToPx(140);
 		heroparams.setMargins(Method.dpToPx(20), 0, 0, 0);
 		hero.setLayoutParams(heroparams);
-		hero.setBackgroundResource(R.drawable.hero1);
+		hero.setBackgroundResource(R.drawable.hero1); // 히어로 선택 부분 수정해야함.
 		addView(hero);
 
 		damage = new ViewBinder(context, 0, hero);
@@ -74,6 +76,7 @@ public class Hero extends RelativeLayout implements Target {
 		damageparams.width = Method.dpToPx(40);
 		damageparams.height = Method.dpToPx(55);
 
+		maxvital = 30;
 		vital = new ViewBinder(context, 30, hero);
 		vital.setBackgroundResource(R.drawable.vital);
 		vital.setGravity(Gravity.CENTER);
@@ -148,6 +151,12 @@ public class Hero extends RelativeLayout implements Target {
 	public void attacked(int damage) {
 		vital.add(-damage);
 		defeatCheck();
+		if (vital.Int()<maxvital){
+			vital.setTextColor(Color.RED);
+			return;
+		}
+		vital.setTextColor(Color.WHITE);
+		
 	}
 
 	@Override

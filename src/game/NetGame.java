@@ -196,6 +196,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 				break;
 
+				
 			case 9: // 9번은 공격정보를 가져온다.
 					// 인덱스의 몬스터들끼리 공격을 주고 받는다.
 				String[] attack = response[1].split(",");
@@ -203,12 +204,12 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				another;
 				if (Integer.parseInt(attack[0]) == -1) {
 					one = player1.field.hero;
-					another = player2.field.get(Integer.parseInt(attack[1]));
+					another = player2.field.getByIndex(Integer.parseInt(attack[1]));
 					another.attackOrder(one);
 					return;
 				}
-				one = player1.field.get(Integer.parseInt(attack[0]));
-				another = player2.field.get(Integer.parseInt(attack[1]));
+				one = player1.field.getByIndex(Integer.parseInt(attack[0]));
+				another = player2.field.getByIndex(Integer.parseInt(attack[1]));
 				one.attackOrder(another);
 				break;
 

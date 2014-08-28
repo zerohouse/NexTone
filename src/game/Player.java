@@ -178,14 +178,18 @@ public class Player {
 		dekToHand(size);
 
 		change = new Button(context);
-		change.setText("바꾸기");
+		change.setText("선택한 카드 바꾸기");
+		RelativeLayout.LayoutParams changeparams = Method.getParams();
+		change.setLayoutParams(changeparams);
+
 		change.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				changeSelectedCard(v);
+				game.container.removeView(v);
 			}
 		});
-		hand.addView(change);
+		game.container.addView(change);
 		Method.alert("바꿀카드를 선택해 주세요.");
 	}
 
@@ -194,6 +198,7 @@ public class Player {
 			@Override
 			public void onClick(View v) {
 				changeSelectedCard(v);
+				game.container.removeView(v);
 				game.initView();
 				newTurn();
 				Sender.S("6 ");
@@ -220,7 +225,6 @@ public class Player {
 	private void changeSelectedCard(View v) {
 		int removed = hand.removeAndReturnToDek(dek);
 		dekToHand(removed);
-		hand.removeView(v);
 		dekToDummy();
 		Sender.S(3 + " " + dekstring);
 		done = true;
