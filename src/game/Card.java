@@ -15,7 +15,7 @@ public class Card extends RelativeLayout {
 	ViewBinder cost, attack, vital;
 	String resource, name, description;
 	int index;
-	LinearLayout.LayoutParams params;
+	LinearLayout.LayoutParams params; 
 
 	boolean selected;
 

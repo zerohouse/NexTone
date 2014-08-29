@@ -1,6 +1,5 @@
 package com.mylikenews.nextoneandroid;
 
-
 import game.Method;
 import game.NetGame;
 import android.app.Activity;
@@ -12,31 +11,32 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import animation.hideAndSHow;
 
 public class MainActivity extends Activity {
 
 	LinearLayout container;
-	TextView status; 
+	TextView status;
+	RelativeLayout animate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN);
- 
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		setContentView(R.layout.activity_game);
 
 		Method.context = this;
 		container = (LinearLayout) findViewById(R.id.container);
-		
+		animate = (RelativeLayout) findViewById(R.id.animate);
 
 		hideAndSHow hideshow = new hideAndSHow(container);
 		hideshow.animate();
-		
-		
+
 		Button connect = new Button(this);
 		connect.setText("Game Start!");
 		connect.setOnClickListener(doconnect);
@@ -44,18 +44,18 @@ public class MainActivity extends Activity {
 		status = new TextView(this);
 		status.setGravity(Gravity.CENTER);
 		status.setText("참여자를 기다립니다.");
-		
+
 	}
 
 	OnClickListener doconnect = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			NetGame ngame = new NetGame(MainActivity.this, container, "192.168.0.17", 13333);
+			NetGame ngame = new NetGame(MainActivity.this, container, animate,
+					"192.168.0.17", 13333);
 			ngame.execute();
 			container.removeView(v);
 			container.addView(status);
 		}
 	};
-
 
 }

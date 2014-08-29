@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.RelativeLayout;
+import animation.Attack;
 
 import com.mylikenews.nextoneandroid.R;
 
@@ -26,16 +28,21 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	boolean first;
 	String ip;
 	int port;
+	RelativeLayout animate;
 
-	public NetGame(Context context, LinearLayout container, String ip, int port) {
+	public NetGame(Context context, LinearLayout container,
+			RelativeLayout animate, String ip, int port) {
 		this.ip = ip;
 		this.port = port;
 		this.context = context;
 		this.container = container;
+		this.animate = animate;
 		player1dek = "1x2,2x2,3x26";
 	}
 
 	public void Start(boolean first) {
+
+		Attack.set(animate);
 
 		container.removeAllViews();
 		player1 = new Player(context, player1dek, 1, this);
@@ -54,7 +61,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Sender.S("7 1@" + player1.hero.getString());
+		Sender.S("7 1@" + player1.hero.toString());
 	}
 
 	public void initSetting() {
@@ -64,39 +71,39 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			player2.second();
 		} else {
 			player2.first();
-		} 
+		}
 
 		player1.setEnemy(player2);
 		player2.setEnemy(player1);
 
-	} 
+	}
 
-	void initView() { 
-		if(container.getChildCount()>3){
+	void initView() {
+		if (container.getChildCount() > 3) {
 			return;
 		}
 		FrameLayout fieldarea = new FrameLayout(context);
 		LinearLayout.LayoutParams fieldparam = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1f);
 		fieldarea.setLayoutParams(fieldparam);
-		
-		ImageView fieldback = new ImageView(context); 
+
+		ImageView fieldback = new ImageView(context);
 		fieldback.setLayoutParams(fieldparam);
 		fieldback.setScaleType(ScaleType.FIT_XY);
 		fieldback.setBackgroundResource(R.drawable.field);
-				
+
 		LinearLayout innerfieldarea = new LinearLayout(context);
 		fieldarea.setLayoutParams(fieldparam);
 		innerfieldarea.setOrientation(LinearLayout.VERTICAL);
-				
+
 		container.addView(fieldarea, 0);
-		
+
 		fieldarea.addView(fieldback);
 		fieldarea.addView(innerfieldarea);
-		
+
 		innerfieldarea.addView(player2.field());
 		innerfieldarea.addView(player1.field());
-		
+
 		player2.addHero();
 		player1.addHero();
 	}
@@ -205,18 +212,33 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				if (Integer.parseInt(attack[0]) == -1) {
 					one = player1.field.hero;
 					another = player2.field.getByIndex(Integer.parseInt(attack[1]));
-					another.attackOrder(one);
+					another.attack(one, true);
 					return;
 				}
 				one = player1.field.getByIndex(Integer.parseInt(attack[0]));
 				another = player2.field.getByIndex(Integer.parseInt(attack[1]));
-				one.attackOrder(another);
+				another.attack(one, true);
 				break;
 
 			case 10:
-				Method.alert("상대방의 턴입니다.");
+				Method.alert("상대방의 턴입니다."); // 턴알림
 				break;
 				
+			case 11:
+				Target attacker;
+				int resint = Integer.parseInt(response[1]);
+				
+				player2.hero.deSelect();
+				player2.field.othersNotAttack(); // 상대방의 필드에서 선택되면 attack이미지로 변경
+				
+				if(resint==-1)
+					attacker = player2.hero;
+				else
+					attacker = player2.field.getByIndex(resint);
+				
+				attacker.setAttackBackground();
+				
+				break;
 			}
 		} catch (Exception e) {
 		}

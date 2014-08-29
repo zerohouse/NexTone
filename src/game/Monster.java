@@ -8,6 +8,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import animation.Attack;
+
 import com.mylikenews.nextoneandroid.R;
 
 public class Monster extends RelativeLayout implements Target {
@@ -31,8 +33,12 @@ public class Monster extends RelativeLayout implements Target {
 		deFault(context, field, index);
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
-		setBackgroundResource(Method.resId(resource));
+		setBackgroundDefault();
 
+	}
+
+	public void setBackgroundDefault() {
+		setBackgroundResource(Method.resId(resource));
 	}
 
 	private void setDamageVital(int attack, int vital) {
@@ -68,7 +74,7 @@ public class Monster extends RelativeLayout implements Target {
 		setDamageVital(Integer.parseInt(cardinfo[1]),
 				Integer.parseInt(cardinfo[2]));
 		this.resource = cardinfo[3];
-		setBackgroundResource(Method.resId(resource));
+		setBackgroundDefault();
 	}
 
 	public void attackCheck() {
@@ -85,7 +91,7 @@ public class Monster extends RelativeLayout implements Target {
 
 	public void attackdisAble() {
 		attackable = 0;
-		setBackgroundResource(Method.resId(resource));
+		setBackgroundDefault();
 	}
 
 	@SuppressLint("NewApi")
@@ -129,11 +135,18 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
 		field.othersDown();
+		Sender.S("11 " +id); // 선택한 것 알려주기
+		setAttackBackground();
 		v.setY(-10);
 		this.uped = true;
 
 		field.attacker = (Target) v;
 		field.player.enemy.field.targetSelect();
+	}
+
+	@Override
+	public void setAttackBackground() {
+		this.setBackgroundResource(Method.resId(resource+"attack"));
 	}
 
 	@Override
@@ -145,15 +158,20 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public void attacked(int damage) {
+
 		vital.add(-damage);
 		if (vital.Int() < 1) {
 			field.remove(this);
 		}
-		if (vital.Int() < maxvital) {
+		if (isAttacked()) {
 			vital.setTextColor(Color.RED);
 			return;
 		}
 		vital.setTextColor(Color.WHITE);
+	}
+
+	private boolean isAttacked() {
+		return vital.Int() < maxvital;
 	}
 
 	public void newTurn() {
@@ -162,20 +180,27 @@ public class Monster extends RelativeLayout implements Target {
 		attackCheck();
 	}
 
+	@SuppressLint("NewApi")
 	@Override
-	public void attack(Target target) {
-		if (damage.Int() == 0) {
-			Method.alert("공격력이 0인 하수인은 공격할 수 없습니다.");
-			return;
+	public void attack(Target target, boolean isChecked) {
+		if (!isChecked) {
+			if (damage.Int() == 0) {
+				Method.alert("공격력이 0인 하수인은 공격할 수 없습니다.");
+				return;
+			}
+			if (attackable == 0) {
+				Method.alert("선택한 대상은 이미 공격했습니다.");
+				return;
+			}
+			attackable--;
+			if (attackable == 0) {
+				attackdisAble();
+				setY(10);
+			}
+		}else{
+			setBackgroundDefault();
 		}
-		if (attackable == 0) {
-			Method.alert("선택한 대상은 이미 공격했습니다.");
-			return;
-		}
-		attackable--;
-		if (attackable == 0) {
-			attackdisAble();
-		}
+		Attack.AttackEffect(this, target, isChecked);
 
 		target.attacked(damage.Int());
 		this.attacked(target.damage());
@@ -199,8 +224,42 @@ public class Monster extends RelativeLayout implements Target {
 		attackdisAble();
 	}
 
-	public void attackOrder(Target another) {
-		another.attacked(damage.Int());
-		this.attacked(another.damage());
+	@Override
+	public RelativeLayout.LayoutParams getParams() {
+		return params;
 	}
+
+	public Monster cloneForAnimate() {
+		Monster monster = new Monster(context, this.toString(), field, id);
+		if (isAttacked()) {
+			monster.vital.setTextColor(Color.RED);
+		}
+		return monster;
+	}
+
+	@Override
+	public boolean isHero() {
+		return false;
+	}
+
+	@Override
+	public int getMarginY() { // 블럭들의 마진을 계산해서 넘겨줌.. 지저분하지만...
+		if (field.player.me == 1) {
+			return field.player.hand.getHeight()
+					+ field.player.hero.getHeight();
+		} else {
+			return field.player.hand.getHeight()
+					+ field.player.hero.getHeight() * 2;
+		}
+	}
+
+	@Override
+	public int getTopY() {
+		if (field.player.me == 1) {
+			return field.getHeight() + field.player.hero.getHeight();
+		} else {
+			return field.getHeight();
+		}
+	}
+
 }

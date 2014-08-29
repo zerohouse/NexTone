@@ -48,7 +48,7 @@ public class Player {
 		dek = new ArrayList<Card>();
 		done = false;
 
-		hero = new Hero(context, this);
+		hero = new Hero(context, this, "heroblue");
 
 		usecard = new Button(context);
 		usecard.setText("useCard");
@@ -102,16 +102,21 @@ public class Player {
 			Method.alert("마나가 부족합니다.");
 			return;
 		}
-
+ 
 		hero.mana.manaAdd(-manacost);
 
 		String monsterinfo;
 		for (Card card : selected) {
-			Monster monster = new Monster(context, card, field, field.size());
+			Monster monster = new Monster(context, card, field, card.index());
 			field.add(monster);
 			hand.remove(card);
 			monsterinfo = monster.toString();
 			Sender.S("8 " + me + "@" + monsterinfo);
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -277,7 +282,8 @@ public class Player {
 		hero.addView(usecard);
 		hero.addView(endturn);
 		field.newTurn();
-		Sender.S("7 1@" + hero.getString());
+		enemy.field.endTurn();
+		Sender.S("7 1@" + hero.toString());
 
 	}
 

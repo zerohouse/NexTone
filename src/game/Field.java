@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -82,7 +83,7 @@ public class Field extends LinearLayout {
 		OnClickListener attacked = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				player.enemy.field.attacker.attack((Target) v);
+				player.enemy.field.attacker.attack((Target) v, false);
 			}
 		};
 
@@ -93,6 +94,7 @@ public class Field extends LinearLayout {
 	}
 
 	public void endTurn() {
+		attacker = null;
 		othersDown();
 		for (Monster monster : items) {
 			monster.endTurn();
@@ -103,7 +105,7 @@ public class Field extends LinearLayout {
 		return items.get(i);
 	}
 
-	public int size() {
+	public int size() { 
 		return items.size();
 	}
 
@@ -117,8 +119,15 @@ public class Field extends LinearLayout {
 			if (monster.uped == true) {
 				monster.setY(10);
 				monster.uped = false;
+				monster.attackCheck();
 			}
 
+		}
+	}
+	
+	public void othersNotAttack() {
+		for (Monster monster : items) {
+			monster.setBackgroundDefault();
 		}
 	}
 

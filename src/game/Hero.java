@@ -24,23 +24,24 @@ public class Hero extends RelativeLayout implements Target {
 	RelativeLayout.LayoutParams params;
 	boolean getWeapon;
 	int maxvital;
+	String resource;
 
-	Hero(Context context, Player player) {
+	Hero(Context context, Player player, String res) {
 		super(context);
-
+		resource = res;
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		params.height = Method.dpToPx(110);
-		setBackgroundResource(R.drawable.hero);
+		setBackgroundResource(Method.resId(resource+"back"));
 		setLayoutParams(params);
 
 		this.context = context;
 		this.player = player;
 		emptyDummy = 0;
 
-		getWeapon=false;
-		
+		getWeapon = false;
+
 		mana = new ManaStone(context, this);
 		mana.setMana(0);
 		RelativeLayout.LayoutParams manaparam = mana.getParams();
@@ -56,7 +57,7 @@ public class Hero extends RelativeLayout implements Target {
 		heroparams.width = Method.dpToPx(140);
 		heroparams.setMargins(Method.dpToPx(20), 0, 0, 0);
 		hero.setLayoutParams(heroparams);
-		hero.setBackgroundResource(R.drawable.hero1); // 히어로 선택 부분 수정해야함.
+		hero.setBackgroundResource(Method.resId(resource)); // 히어로 선택 부분 수정해야함.
 		addView(hero);
 
 		damage = new ViewBinder(context, 0, hero);
@@ -109,7 +110,7 @@ public class Hero extends RelativeLayout implements Target {
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(attackable<=0||damage.Int()==0)
+				if (attackable <= 0 || damage.Int() == 0)
 					return;
 				Method.alert("공격할 대상을 선택해 주세요.");
 				player.field.attacker = (Target) v;
@@ -131,15 +132,16 @@ public class Hero extends RelativeLayout implements Target {
 		damage.setInt(Integer.parseInt(setsplit[3]));
 		vital.setInt(Integer.parseInt(setsplit[4]));
 		dummysize.setText("남은 카드: " + Integer.parseInt(setsplit[5]) + "장");
-		
-		if(Integer.parseInt(setsplit[2])!=0){
+
+		if (Integer.parseInt(setsplit[2]) != 0) {
 			defense.setInt(Integer.parseInt(setsplit[2]));
 			return;
 		}
 		defense.setText("");
 	}
 
-	public String getString() {
+	@Override
+	public String toString() {
 		String heroState;
 		heroState = mana.mana() + "," + mana.maxmana() + "," + defense.Int()
 				+ "," + damage.Int() + "," + vital.Int() + ","
@@ -151,23 +153,25 @@ public class Hero extends RelativeLayout implements Target {
 	public void attacked(int damage) {
 		vital.add(-damage);
 		defeatCheck();
-		if (vital.Int()<maxvital){
+		if (vital.Int() < maxvital) {
 			vital.setTextColor(Color.RED);
 			return;
 		}
 		vital.setTextColor(Color.WHITE);
-		
+
 	}
 
 	@Override
-	public void attack(Target target) {
-		if (damage.Int() == 0) {
-			Method.alert("공격할 수 없습니다.");
-			return;
-		}
-		if (attackable == 0) {
-			Method.alert("공격할 수 없습니다.");
-			return;
+	public void attack(Target target, boolean isChecked) {
+		if (!isChecked) {
+			if (damage.Int() == 0) {
+				Method.alert("공격할 수 없습니다.");
+				return;
+			}
+			if (attackable == 0) {
+				Method.alert("공격할 수 없습니다.");
+				return;
+			}
 		}
 		attackable--;
 		target.attacked(damage.Int());
@@ -199,9 +203,49 @@ public class Hero extends RelativeLayout implements Target {
 		return -1;
 	}
 
-	public void attackOrder(Target another) {
-		another.attacked(damage.Int());
-		this.attacked(another.damage());
+	@Override
+	public RelativeLayout.LayoutParams getParams() {
+		return params;
+	}
+
+	@Override
+	public Target cloneForAnimate() {
+		Hero hero = new Hero(context, player, resource);
+		hero.setByString(this.toString());
+		return hero;
+	}
+
+	@Override
+	public boolean isHero() {
+		return true;
+	}
+
+	@Override
+	public int getMarginY() {
+		if (player.me == 1)
+			return player.hand.getHeight();
+		else {
+			return player.field.getHeight() * 2 + this.getHeight()
+					+ player.hand.getHeight();
+		}
+	}
+
+	@Override
+	public int getTopY() {
+		if (player.me == 1)
+			return player.field.getHeight() * 2 + this.getHeight();
+		else {
+			return 0;
+		}
+	}
+
+	public void deSelect() {
+		hero.setBackgroundResource(Method.resId(resource));
+	}
+	
+	@Override
+	public void setAttackBackground() {
+		this.setBackgroundResource(Method.resId(resource+"attack"));
 	}
 
 }
