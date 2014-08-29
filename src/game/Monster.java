@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import animation.Attack;
 
 import com.mylikenews.nextoneandroid.R;
+import components.ViewBinder;
 
 public class Monster extends RelativeLayout implements Target {
 
@@ -193,13 +194,12 @@ public class Monster extends RelativeLayout implements Target {
 				return;
 			}
 			attackable--;
-			if (attackable == 0) {
-				attackdisAble();
-				setY(10);
-			}
 		}else{
 			setBackgroundDefault();
 		}
+		field.attacker = null;
+		setY(10);
+		attackCheck();
 		Attack.AttackEffect(this, target, isChecked);
 
 		target.attacked(damage.Int());

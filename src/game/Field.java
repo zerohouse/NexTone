@@ -73,7 +73,7 @@ public class Field extends LinearLayout {
 	}
 
 	public void newTurn() {
-		
+
 		for (Monster monster : items) {
 			monster.newTurn();
 		}
@@ -83,7 +83,8 @@ public class Field extends LinearLayout {
 		OnClickListener attacked = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				player.enemy.field.attacker.attack((Target) v, false);
+				if (player.enemy.field.attacker != null)
+					player.enemy.field.attacker.attack((Target) v, false);
 			}
 		};
 
@@ -100,12 +101,13 @@ public class Field extends LinearLayout {
 			monster.endTurn();
 		}
 	}
+	
 
 	public Monster get(int i) {
 		return items.get(i);
 	}
 
-	public int size() { 
+	public int size() {
 		return items.size();
 	}
 
@@ -124,7 +126,7 @@ public class Field extends LinearLayout {
 
 		}
 	}
-	
+
 	public void othersNotAttack() {
 		for (Monster monster : items) {
 			monster.setBackgroundDefault();
@@ -132,8 +134,8 @@ public class Field extends LinearLayout {
 	}
 
 	public Target getByIndex(int id) {
-		for (Target target : items){
-			if (target.index() == id){
+		for (Target target : items) {
+			if (target.index() == id) {
 				return target;
 			}
 		}

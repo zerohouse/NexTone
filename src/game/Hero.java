@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.mylikenews.nextoneandroid.R;
+import components.ViewBinder;
 
 public class Hero extends RelativeLayout implements Target {
 
@@ -25,6 +26,8 @@ public class Hero extends RelativeLayout implements Target {
 	boolean getWeapon;
 	int maxvital;
 	String resource;
+	
+	RelativeLayout.LayoutParams dummyparam;
 
 	Hero(Context context, Player player, String res) {
 		super(context);
@@ -55,7 +58,7 @@ public class Hero extends RelativeLayout implements Target {
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		heroparams.width = Method.dpToPx(140);
-		heroparams.setMargins(Method.dpToPx(20), 0, 0, 0);
+		heroparams.setMargins(Method.dpToPx(70), 0, 0, 0);
 		hero.setLayoutParams(heroparams);
 		hero.setBackgroundResource(Method.resId(resource)); // 히어로 선택 부분 수정해야함.
 		addView(hero);
@@ -90,8 +93,7 @@ public class Hero extends RelativeLayout implements Target {
 		vitalparams.height = Method.dpToPx(58);
 
 		dummysize = new ViewBinder(context, player.dummy.size(), this, true);
-		RelativeLayout.LayoutParams dummyparam = dummysize.getParams();
-		dummyparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		dummyparam = dummysize.getParams();
 		dummysize.setTextSize(15);
 
 		attackable = 0;
@@ -102,7 +104,7 @@ public class Hero extends RelativeLayout implements Target {
 			mana.maxmanaAdd(1);
 		mana.setMana(mana.maxmana());
 		dummysize.setInt(player.dummy.size());
-		dummysize.setText("남은 카드: " + player.dummy.size() + "장");
+		dummysize.setText(" Cards: " + player.dummy.size());
 		setOnAttackClickListener();
 	}
 
@@ -121,7 +123,9 @@ public class Hero extends RelativeLayout implements Target {
 		setOnClickListener(attakable);
 	}
 
+	
 	public void endTurn() {
+		System.out.println();
 		setOnClickListener(null);
 	}
 
@@ -131,9 +135,9 @@ public class Hero extends RelativeLayout implements Target {
 		mana.setMaxmana(Integer.parseInt(setsplit[1]));
 		damage.setInt(Integer.parseInt(setsplit[3]));
 		vital.setInt(Integer.parseInt(setsplit[4]));
-		dummysize.setText("남은 카드: " + Integer.parseInt(setsplit[5]) + "장");
+		dummysize.setText(" Cards: " + Integer.parseInt(setsplit[5]));
 
-		if (Integer.parseInt(setsplit[2]) != 0) {
+		if (Integer.parseInt(setsplit[2]) != 0) { 
 			defense.setInt(Integer.parseInt(setsplit[2]));
 			return;
 		}
@@ -247,5 +251,11 @@ public class Hero extends RelativeLayout implements Target {
 	public void setAttackBackground() {
 		this.setBackgroundResource(Method.resId(resource+"attack"));
 	}
+	
+	@Override
+	public float getX(){
+		return hero.getX()+Method.dpToPx(30);
+	}
 
+	
 }

@@ -1,4 +1,4 @@
-package game;
+package components;
 
 import android.content.Context;
 import android.view.ViewGroup;
