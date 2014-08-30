@@ -1,6 +1,7 @@
 package game;
 
 import net.Sender;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
@@ -9,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.mylikenews.nextoneandroid.R;
+
 import components.ViewBinder;
+import effects.Effect;
 
 public class Hero extends RelativeLayout implements Target {
 
@@ -31,11 +34,15 @@ public class Hero extends RelativeLayout implements Target {
 
 	Hero(Context context, Player player, String res) {
 		super(context);
-		resource = res;
+		
+		String[] tmp = res.split(",");
+		resource = tmp[0];
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		params.height = Method.dpToPx(110);
+		
+		
 		setBackgroundResource(Method.resId(resource+"back"));
 		setLayoutParams(params);
 
@@ -108,19 +115,45 @@ public class Hero extends RelativeLayout implements Target {
 		setOnAttackClickListener();
 	}
 
-	private void setOnAttackClickListener() {
+	private void setOnAttackClickListener() { // 어택리스너에서 어택리스너를 올리고
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (attackable <= 0 || damage.Int() == 0)
-					return;
-				Method.alert("공격할 대상을 선택해 주세요.");
-				player.field.attacker = (Target) v;
-				player.field.player.enemy.field.targetSelect();
+				attackLisenter(v);
 			}
+
 		};
 
 		setOnClickListener(attakable);
+	}
+
+	// 어택 리스너 통합 해야함.
+
+	@SuppressLint("NewApi")
+	public void attackLisenter(View v) { // 
+		if (damage.Int() == 0 || attackable == 0)
+			return;
+		Method.alert("공격할 대상을 선택해 주세요.");
+		
+		player.field.attackCheckUpedMonster();
+		Sender.S("11 -1"); // 선택한 것 알려주기
+		setAttackBackground();
+		v.setY(-10);
+
+		Static.attacker = (Target) v;
+
+		Listeners.setAttack();
+		player.enemy.field.setListener();
+		player.enemy.hero.setListener();
+		
+		player.endturn.setText("    취소");
+		player.endturn.setOnClickListener(	new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Static.Cancel(player, true);
+			}
+
+		});
 	}
 
 	
@@ -256,6 +289,31 @@ public class Hero extends RelativeLayout implements Target {
 	public float getX(){
 		return hero.getX()+Method.dpToPx(30);
 	}
+
+	public void listenerNull() {
+		hero.setOnClickListener(null);
+	}
+
+	public void setListener() {
+		hero.setOnClickListener(Listeners.listener);
+	}
+
+	public void attackCheck() {
+		if (attackable > 0 && damage.Int() > 0) {
+			attackAble();
+			return;
+		}
+		attackdisAble();
+	}
+
+	private void attackdisAble() {
+		hero.setBackgroundResource(Method.resId(resource));
+	}
+
+	private void attackAble() {
+		hero.setBackgroundResource(Method.resId(resource+"attackable"));
+	}
+
 
 	
 }

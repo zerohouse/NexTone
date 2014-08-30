@@ -22,9 +22,9 @@ public class ManaStone extends LinearLayout {
 	TextView textMana;
 	String text;
 	
-	public ManaStone(Context context, Hero hero) {
+	public ManaStone(Context context, Hero herocontainer) {
 		super(context);
-		this.hero = hero;
+		this.hero = herocontainer;
 		
 		wrap = new LinearLayout(context);
 		wrap.setOrientation(LinearLayout.VERTICAL);
@@ -32,10 +32,9 @@ public class ManaStone extends LinearLayout {
 		text = "";
 		textMana = new TextView(context);
 		textMana.setGravity(Gravity.RIGHT);
-		//textMana.setText("(0/0)");
 		textMana.setTextAppearance(context, R.style.myText);
 		textMana.setTextSize(15);
-		hero.addView(wrap);
+		herocontainer.addView(wrap);
 		wrap.addView(textMana);
 		wrap.addView(this);
 		setGravity(Gravity.RIGHT);

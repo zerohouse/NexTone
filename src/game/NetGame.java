@@ -61,7 +61,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		Sender.S("7 1@" + player1.hero.toString());
+		Sender.S("7 1@" + player1.heroString());
 	}
 
 	public void initSetting() {
@@ -239,6 +239,13 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				attacker.setAttackBackground();
 				
 				break;
+			
+			case 12:
+				Static.Cancel(player2, false);
+				
+				break;
+				
+				
 			}
 		} catch (Exception e) {
 		}

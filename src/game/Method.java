@@ -18,6 +18,8 @@ public class Method {
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		return param;
 	}
+	
+	
 
 	public static void alert(String message) {
 		toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);

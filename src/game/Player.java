@@ -2,13 +2,17 @@ package game;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+
 import com.mylikenews.nextoneandroid.R;
+
 import components.ImageButton;
 
 public class Player {
@@ -25,14 +29,18 @@ public class Player {
 	Button change;
 	ImageButton usecard, endturn, heroabillity;
 	Hero hero;
+
 	public Player enemy;
 	NetGame game;
+
+	OnClickListener attacked;
 
 	public Player(Context context, String dekstring, int me, NetGame game) {
 		this.me = me;
 		this.context = context;
 		this.dekstring = dekstring;
 		this.game = game;
+
 		init();
 
 		makeDek();
@@ -40,6 +48,7 @@ public class Player {
 	}
 
 	private void init() {
+
 		// 초기화
 		random = new Random();
 		hand = new Hand(context);
@@ -49,31 +58,29 @@ public class Player {
 		dek = new ArrayList<Card>();
 		done = false;
 
-		
-		
 		// 영웅 설정
-		String herostring = "heroblue";
+		String herostring = "heroblue,1";
 		hero = new Hero(context, this, herostring);
-		
-		
 
-		// 버튼 선언부  
-		usecard = new ImageButton(context, Method.resId("card"),Method.resId("cardpressed"),"     카드내기");
+		// 버튼 선언부
+		usecard = new ImageButton(context, Method.resId("card"),
+				Method.resId("cardpressed"), "     카드내기");
 		usecard.getParams().addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		usecard.setId(1);
-		
+
 		usecard.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				useCard(v); 
-				
+				useCard(v);
+
 			}
 		});
-		
-		endturn = new ImageButton(context, Method.resId("done"),Method.resId("donepressed"),"     턴넘기기");
+
+		endturn = new ImageButton(context, Method.resId("done"),
+				Method.resId("donepressed"), "     턴넘기기");
 		endturn.getParams().addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		endturn.getParams().addRule(RelativeLayout.BELOW,usecard.getId());
-		
+		endturn.getParams().addRule(RelativeLayout.BELOW, usecard.getId());
+
 		endturn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -83,15 +90,21 @@ public class Player {
 
 	}
 
+	public void endTurnReset() {
+		endturn.setText("     턴넘기기");
+		endturn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				endTurn();
+			}
+		});
+	}
+
 	public void addHero() {
 		field.add(hero, me);
 	}
 
 	private void useCard(View v) {
-		addSelectedMonster();
-	}
-
-	private void addSelectedMonster() {
 		ArrayList<Card> selected = hand.selectedCards();
 		if (field.size() + monsterSum(selected) > 7) {
 			Method.alert("하수인은 7명까지 소환 가능합니다.");
@@ -103,20 +116,8 @@ public class Player {
 			return;
 		}
 
-		hero.mana.manaAdd(-manacost);
-
-		String monsterinfo;
 		for (Card card : selected) {
-			Monster monster = new Monster(context, card, field, card.index());
-			field.add(monster);
-			hand.remove(card);
-			monsterinfo = monster.toString();
-			Sender.S("8 " + me + "@" + monsterinfo);
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			card.use(this);
 		}
 	}
 
@@ -140,7 +141,7 @@ public class Player {
 	private void endTurn() {
 		hero.removeView(usecard);
 		hero.removeView(endturn);
-		
+
 		field.endTurn();
 		Sender.S(4 + " "); // 4 = 턴넘기기
 		hero.endTurn();
@@ -284,7 +285,7 @@ public class Player {
 		hero.newTurn(); // 히어로 뉴턴에서 에러
 		hero.addView(usecard);
 		hero.addView(endturn);
-		
+
 		field.newTurn();
 		enemy.field.endTurn();
 		Sender.S("7 1@" + hero.toString());
@@ -312,4 +313,19 @@ public class Player {
 	public void setDekString(String dekstring) {
 		this.dekstring = dekstring;
 	}
+
+	public void listenerNull() {
+		field.listenerNull();
+		hero.listenerNull();
+	}
+
+	public void attackCheck() {
+		field.attackCheck();
+		hero.attackCheck();
+	}
+
+	public String heroString() {
+		return hero.toString();
+	}
+
 }

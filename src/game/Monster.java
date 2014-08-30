@@ -11,7 +11,9 @@ import android.widget.RelativeLayout;
 import animation.Attack;
 
 import com.mylikenews.nextoneandroid.R;
+
 import components.ViewBinder;
+import effects.Effect;
 
 public class Monster extends RelativeLayout implements Target {
 
@@ -118,7 +120,7 @@ public class Monster extends RelativeLayout implements Target {
 		setOnAttackClickListener();
 	}
 
-	private void setOnAttackClickListener() {
+	private void setOnAttackClickListener() { // 어택리스너에서 어택리스너를 올리고
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -130,24 +132,38 @@ public class Monster extends RelativeLayout implements Target {
 		setOnClickListener(attakable);
 	}
 
+	// 어택 리스너 통합 해야함.
+
 	@SuppressLint("NewApi")
-	private void attackLisenter(View v) {
+	public void attackLisenter(View v) { // 
 		if (damage.Int() == 0 || attackable == 0)
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
-		field.othersDown();
-		Sender.S("11 " +id); // 선택한 것 알려주기
+		field.attackCheckUpedMonster();
+		Sender.S("11 " + id); // 선택한 것 알려주기
 		setAttackBackground();
 		v.setY(-10);
 		this.uped = true;
 
-		field.attacker = (Target) v;
-		field.player.enemy.field.targetSelect();
+		Static.attacker = (Target) v;
+
+		Listeners.setAttack();
+		field.player.enemy.field.setListener();
+		field.player.enemy.hero.setListener();
+		
+		field.player.endturn.setText("    취소");
+		field.player.endturn.setOnClickListener(	new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Static.Cancel(field.player, true);
+			}
+
+		});
 	}
 
 	@Override
 	public void setAttackBackground() {
-		this.setBackgroundResource(Method.resId(resource+"attack"));
+		this.setBackgroundResource(Method.resId(resource + "attack"));
 	}
 
 	@Override
@@ -194,10 +210,12 @@ public class Monster extends RelativeLayout implements Target {
 				return;
 			}
 			attackable--;
-		}else{
+		} else {
 			setBackgroundDefault();
 		}
-		field.attacker = null;
+
+		Static.attacker = null;
+
 		setY(10);
 		attackCheck();
 		Attack.AttackEffect(this, target, isChecked);
@@ -207,10 +225,13 @@ public class Monster extends RelativeLayout implements Target {
 		int playerindex = index();
 		// 상대입장에서 봐야 되니까 뒤집어짐.
 		int enemyindex = target.index();
-		Sender.S("9 " + enemyindex + "," + playerindex);
-	}
+		
+		Static.Cancel(field.player, false);
+		if (!isChecked)
+			Sender.S("9 " + enemyindex + "," + playerindex);
+	} 
 
-	public int index() {
+	public int index() { 
 		return id;
 	}
 

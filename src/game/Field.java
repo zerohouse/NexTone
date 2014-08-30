@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -17,7 +16,6 @@ public class Field extends LinearLayout {
 	ArrayList<Monster> items;
 	Context context;
 	Player player;
-	Target attacker;
 	Hero hero;
 	LinearLayout.LayoutParams params;
 	AnimatorSet animate;
@@ -51,16 +49,6 @@ public class Field extends LinearLayout {
 		removeView(monster);
 	}
 
-	public void add(Hero hero, int me) {
-		this.hero = hero;
-		if (me == 1) {
-			player.game.container.addView(hero,
-					player.game.container.getChildCount() - 1);
-			return;
-		}
-		player.game.container.addView(hero, 0);
-	}
-
 	public void add(Monster monster) {
 		items.add(monster);
 		addView(monster);
@@ -79,29 +67,29 @@ public class Field extends LinearLayout {
 		}
 	}
 
-	protected void targetSelect() {
-		OnClickListener attacked = new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (player.enemy.field.attacker != null)
-					player.enemy.field.attacker.attack((Target) v, false);
-			}
-		};
-
+	protected void setListener() {
 		for (Monster monster : items) {
-			monster.setOnClickListener(attacked);
+			monster.setOnClickListener(Listeners.listener);
+		} 
+	}
+	
+	public void add(Hero hero, int me) {
+		this.hero = hero;
+		if (me == 1) {
+			player.game.container.addView(hero,
+					player.game.container.getChildCount() - 1);
+			return;
 		}
-		hero.setOnClickListener(attacked);
+		player.game.container.addView(hero, 0);
 	}
 
 	public void endTurn() {
-		attacker = null;
-		othersDown();
+		Static.attacker = null;
+		attackCheckUpedMonster();
 		for (Monster monster : items) {
 			monster.endTurn();
 		}
 	}
-	
 
 	public Monster get(int i) {
 		return items.get(i);
@@ -116,7 +104,7 @@ public class Field extends LinearLayout {
 	}
 
 	@SuppressLint("NewApi")
-	public void othersDown() {
+	public void attackCheckUpedMonster() {
 		for (Monster monster : items) {
 			if (monster.uped == true) {
 				monster.setY(10);
@@ -140,6 +128,26 @@ public class Field extends LinearLayout {
 			}
 		}
 		return null;
+	}
+
+	public void listenerNull() {
+		for (Monster monster: items){
+			monster.setOnClickListener(null);
+		}
+	}
+
+	@SuppressLint("NewApi")
+	public void attackCheck() {
+		for (Monster monster : items) {
+			if (monster.uped == true) {
+				monster.setY(10);
+				monster.uped = false;
+				monster.attackCheck();
+			}
+			else{
+				monster.attackCheck();
+			}
+		}
 	}
 
 }
