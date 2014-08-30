@@ -210,7 +210,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				Target one,
 				another;
 				if (Integer.parseInt(attack[0]) == -1) {
-					one = player1.field.hero;
+					one = player1.field.hero.hero;
 					another = player2.field.getByIndex(Integer.parseInt(attack[1]));
 					another.attack(one, true);
 					return;
@@ -232,7 +232,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				player2.field.othersNotAttack(); // 상대방의 필드에서 선택되면 attack이미지로 변경
 				
 				if(resint==-1)
-					attacker = player2.hero;
+					attacker = player2.hero.hero;
 				else
 					attacker = player2.field.getByIndex(resint);
 				
