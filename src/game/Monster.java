@@ -117,14 +117,14 @@ public class Monster extends RelativeLayout implements Target {
 		params.height = field.scrollHeight();
 		setLayoutParams(params);
 
-		setOnAttackClickListener();
+		attackReady();
 	}
 
-	private void setOnAttackClickListener() { // 어택리스너에서 어택리스너를 올리고
+	public void attackReady() { // 어택리스너에서 어택리스너를 올리고
 		OnClickListener attakable = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				attackLisenter(v);
+				attackReadyClicked(v);
 			}
 
 		};
@@ -135,7 +135,7 @@ public class Monster extends RelativeLayout implements Target {
 	// 어택 리스너 통합 해야함.
 
 	@SuppressLint("NewApi")
-	public void attackLisenter(View v) { // 
+	public void attackReadyClicked(View v) { //
 		if (damage.Int() == 0 || attackable == 0)
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
@@ -147,12 +147,12 @@ public class Monster extends RelativeLayout implements Target {
 
 		Static.attacker = (Target) v;
 
-		Listeners.setAttack();
+		Listeners.setAttacked();
 		field.player.enemy.field.setListener();
 		field.player.enemy.hero.setListener();
-		
+
 		field.player.endturn.setText("    취소");
-		field.player.endturn.setOnClickListener(	new View.OnClickListener() {
+		field.player.endturn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Static.Cancel(field.player, true);
@@ -177,9 +177,18 @@ public class Monster extends RelativeLayout implements Target {
 	public void attacked(int damage) {
 
 		vital.add(-damage);
+		removeCheck();
+		vitalCheck();
+	}
+
+	private void removeCheck() {
 		if (vital.Int() < 1) {
 			field.remove(this);
 		}
+	}
+
+	@Override
+	public void vitalCheck() {
 		if (isAttacked()) {
 			vital.setTextColor(Color.RED);
 			return;
@@ -193,7 +202,7 @@ public class Monster extends RelativeLayout implements Target {
 
 	public void newTurn() {
 		this.attackable = maxattackable;
-		setOnAttackClickListener();
+		attackReady();
 		attackCheck();
 	}
 
@@ -225,13 +234,13 @@ public class Monster extends RelativeLayout implements Target {
 		int playerindex = index();
 		// 상대입장에서 봐야 되니까 뒤집어짐.
 		int enemyindex = target.index();
-		
+
 		Static.Cancel(field.player, false);
 		if (!isChecked)
 			Sender.S("9 " + enemyindex + "," + playerindex);
-	} 
+	}
 
-	public int index() { 
+	public int index() {
 		return id;
 	}
 
@@ -283,4 +292,18 @@ public class Monster extends RelativeLayout implements Target {
 		}
 	}
 
+	@Override
+	public void heal(int amount) {
+		vital.add(amount);
+		if (vital.Int() > maxvital) {
+			vital.setInt(maxvital);
+		}
+		removeCheck();
+		vitalCheck();
+	}
+
+	@Override
+	public Player player() {
+		return field.player;
+	}
 }

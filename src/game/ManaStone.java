@@ -74,18 +74,18 @@ public class ManaStone extends LinearLayout {
 		return mana;
 	}
 
-	public void manaAdd(int amount) {
+	public void Add(int amount) {
 		mana += amount;
 		drawMana();
 	}
 
 	public void maxmanaAdd(int amount) {
 		maxmana += amount;
-		drawMana();
+		drawMana(); 
 	}
 
 	private void drawMana() {
-		removeAllViews();
+		removeAllViews(); 
 		textUpdate();
 		if (mana >= maxmana) {
 			for (int i = 0; i < mana; i++) {

@@ -128,14 +128,14 @@ public class Card extends RelativeLayout {
 		if (hasmonster)
 			addMonster(player);
 		if(haseffect)
-			effect.run();
+			effect.run(0);
 	}
 
 	private void addMonster(Player player) {
 		Monster monster = new Monster(context, this, player.field, index);
 		player.field.add(monster);
 		player.hand.remove(this);
-		player.hero.mana.manaAdd(-cost.Int());
+		player.hero.mana.Add(-cost.Int());
 		String monsterinfo = monster.toString();
 		Sender.S("8 " + player.me + "@" + monsterinfo);
 		try {

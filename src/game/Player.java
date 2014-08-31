@@ -23,12 +23,14 @@ public class Player {
 	Hand hand;
 	Random random;
 	Dummy dummy;
-	Field field;
+	public Field field;
 	boolean first, done;
 	int me;
 	Button change;
-	ImageButton usecard, endturn, heroabillity;
-	Hero hero;
+	ImageButton usecard;
+	public ImageButton endturn;
+	ImageButton heroabillity;
+	public Hero hero;
 
 	public Player enemy;
 	NetGame game;
@@ -328,4 +330,20 @@ public class Player {
 		return hero.toString();
 	}
 
+	public int me() {
+		return me;
+	}
+
+	public void setListner() {
+		field.setListener();
+		hero.setListener();
+	}
+
+	public void attackReady() {
+		field.attackReady();
+		hero.hero.attackReady();
+	}
+
+
 }
+

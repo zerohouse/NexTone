@@ -39,4 +39,12 @@ public interface Target {
 	public abstract void setVisibility(int visibility);
 
 	public abstract void setAttackBackground();
+
+	public abstract void heal(int amount);
+	
+	public void vitalCheck();
+
+	public abstract Player player();
+	
+	public void attackReady();
 }

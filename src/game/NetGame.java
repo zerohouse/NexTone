@@ -165,7 +165,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			case 4: // 4번이 넘어오면 턴을 넘긴다.
 				player1.newTurn();
 				break;
- 
+
 			case 5: // 맨처음 시작할때. 선공 플레이어가 세팅을 마쳤으면,
 					// 게임을 시작하고, 아니면 카드 바꾸기 아이템에
 					// 게임 시작 이벤트도 걸어준다.
@@ -174,13 +174,13 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 					player1.newTurn();
 					Sender.S("6 ");
 					return;
-				} 
-				
+				}
+
 				player1.ChangeToStartTurn();
 				break;
-			
+
 			case 6: // 처음 화면에 필드와 히어로를 추가한다.
-				initView(); 
+				initView();
 
 			case 7: // 7번은 영웅정보를 가지고 온다.
 					// (이미 생성된) 영웅 인스턴스의 정보를 바꾼다.
@@ -203,7 +203,6 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 				break;
 
-				
 			case 9: // 9번은 공격정보를 가져온다.
 					// 인덱스의 몬스터들끼리 공격을 주고 받는다.
 				String[] attack = response[1].split(",");
@@ -211,7 +210,8 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				another;
 				if (Integer.parseInt(attack[0]) == -1) {
 					one = player1.field.hero.hero;
-					another = player2.field.getByIndex(Integer.parseInt(attack[1]));
+					another = player2.field.getByIndex(Integer
+							.parseInt(attack[1]));
 					another.attack(one, true);
 					return;
 				}
@@ -223,29 +223,55 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			case 10:
 				Method.alert("상대방의 턴입니다."); // 턴알림
 				break;
-				
+
 			case 11:
 				Target attacker;
 				int resint = Integer.parseInt(response[1]);
-				
+
 				player2.hero.deSelect();
 				player2.field.othersNotAttack(); // 상대방의 필드에서 선택되면 attack이미지로 변경
-				
-				if(resint==-1)
+
+				if (resint == -1)
 					attacker = player2.hero.hero;
 				else
 					attacker = player2.field.getByIndex(resint);
-				
+
 				attacker.setAttackBackground();
-				
+
 				break;
-			
+
 			case 12:
 				Static.Cancel(player2, false);
+
+				break;
+
+			case 13:
+				String heal[] = response[1].split(",");
+
+				int index = Integer.parseInt(heal[1]);
+				int healamount = Integer.parseInt(heal[2]);
+				int manacost = Integer.parseInt(heal[3]);
+
+				Target healtarget;
+
+				if (Integer.parseInt(heal[0]) == 1) {
+					player2.hero.mana.Add(-manacost);
+					if (index != -1)
+						healtarget = player2.field.getByIndex(index);
+					else
+						healtarget = player2.hero.hero;
+					healtarget.heal(healamount);
+					return;
+				}
+				player1.hero.mana.Add(-manacost);
+				if (index != -1)
+					healtarget = player1.field.getByIndex(index);
+				else
+					healtarget = player1.hero.hero;
+				healtarget.heal(healamount);
 				
 				break;
-				
-				
+
 			}
 		} catch (Exception e) {
 		}

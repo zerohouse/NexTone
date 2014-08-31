@@ -67,7 +67,7 @@ public class Field extends LinearLayout {
 		}
 	}
 
-	protected void setListener() {
+	public void setListener() {
 		for (Monster monster : items) {
 			monster.setOnClickListener(Listeners.listener);
 		} 
@@ -135,6 +135,8 @@ public class Field extends LinearLayout {
 			monster.setOnClickListener(null);
 		}
 	}
+	
+
 
 	@SuppressLint("NewApi")
 	public void attackCheck() {
@@ -149,5 +151,13 @@ public class Field extends LinearLayout {
 			}
 		}
 	}
+
+	public void attackReady() {
+		for (Monster monster: items){
+			monster.attackReady();
+		}
+	}
+	
+	
 
 }
