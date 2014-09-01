@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 
+import net.Sender;
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -13,7 +14,6 @@ import com.mylikenews.nextoneandroid.R;
 
 public class ManaStone extends LinearLayout {
 
-	
 	int mana;
 	int maxmana;
 	Hero hero;
@@ -21,14 +21,14 @@ public class ManaStone extends LinearLayout {
 	LinearLayout wrap;
 	TextView textMana;
 	String text;
-	
+
 	public ManaStone(Context context, Hero herocontainer) {
 		super(context);
 		this.hero = herocontainer;
-		
+
 		wrap = new LinearLayout(context);
 		wrap.setOrientation(LinearLayout.VERTICAL);
-		
+
 		text = "";
 		textMana = new TextView(context);
 		textMana.setGravity(Gravity.RIGHT);
@@ -51,9 +51,9 @@ public class ManaStone extends LinearLayout {
 			manaimage.add(mana);
 		}
 	}
-	
-	private void textUpdate(){
-		textMana.setText("Mana("+mana+"/"+maxmana+")");
+
+	private void textUpdate() {
+		textMana.setText("Mana(" + mana + "/" + maxmana + ")");
 	}
 
 	public void setMana(int mana) {
@@ -74,18 +74,20 @@ public class ManaStone extends LinearLayout {
 		return mana;
 	}
 
-	public void Add(int amount) {
+	public void Add(int amount, boolean sended) {
+		if(!sended)
+			Sender.S("13 "+ hero.player.me + ","+ amount);
 		mana += amount;
 		drawMana();
 	}
 
 	public void maxmanaAdd(int amount) {
 		maxmana += amount;
-		drawMana(); 
+		drawMana();
 	}
 
 	private void drawMana() {
-		removeAllViews(); 
+		removeAllViews();
 		textUpdate();
 		if (mana >= maxmana) {
 			for (int i = 0; i < mana; i++) {
@@ -102,7 +104,7 @@ public class ManaStone extends LinearLayout {
 		for (int i = 0; i < mana; i++) {
 			addView(manaimage.get(i), 0);
 		}
-		
+
 	}
 
 	public RelativeLayout.LayoutParams getParams() {

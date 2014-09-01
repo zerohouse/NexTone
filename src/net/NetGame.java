@@ -1,4 +1,9 @@
-package game;
+package net;
+
+import game.Method;
+import game.Player;
+import game.Static;
+import game.Target;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,9 +11,9 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import net.Sender;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -78,7 +83,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 	}
 
-	void initView() {
+	public void initView() {
 		if (container.getChildCount() > 3) {
 			return;
 		}
@@ -163,6 +168,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				break;
 
 			case 4: // 4번이 넘어오면 턴을 넘긴다.
+				player2.endTurnByNet();
 				player1.newTurn();
 				break;
 
@@ -208,15 +214,17 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				String[] attack = response[1].split(",");
 				Target one,
 				another;
-				if (Integer.parseInt(attack[0]) == -1) {
-					one = player1.field.hero.hero;
+				if (Integer.parseInt(attack[0]) == -1)
+					one = player1.field.hero.hero();
+				else
+					one = player1.field.getByIndex(Integer.parseInt(attack[0]));
+
+				if (Integer.parseInt(attack[1]) == -1)
+					another = player2.field.hero.hero();
+				else
 					another = player2.field.getByIndex(Integer
 							.parseInt(attack[1]));
-					another.attack(one, true);
-					return;
-				}
-				one = player1.field.getByIndex(Integer.parseInt(attack[0]));
-				another = player2.field.getByIndex(Integer.parseInt(attack[1]));
+
 				another.attack(one, true);
 				break;
 
@@ -232,7 +240,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				player2.field.othersNotAttack(); // 상대방의 필드에서 선택되면 attack이미지로 변경
 
 				if (resint == -1)
-					attacker = player2.hero.hero;
+					attacker = player2.hero.hero();
 				else
 					attacker = player2.field.getByIndex(resint);
 
@@ -246,32 +254,57 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				break;
 
 			case 13:
+				String mana[] = response[1].split(",");
+				if (Integer.parseInt(mana[0]) == 1) {
+					player2.hero.mana.Add(Integer.parseInt(mana[1]), true);
+					return;
+				}
+				player1.hero.mana.Add(Integer.parseInt(mana[1]), true);
+
+				break;
+
+			case 16:
 				String heal[] = response[1].split(",");
 
+				int player = Integer.parseInt(heal[0]);
 				int index = Integer.parseInt(heal[1]);
 				int healamount = Integer.parseInt(heal[2]);
-				int manacost = Integer.parseInt(heal[3]);
 
 				Target healtarget;
 
-				if (Integer.parseInt(heal[0]) == 1) {
-					player2.hero.mana.Add(-manacost);
+				if (player == 1) {
 					if (index != -1)
 						healtarget = player2.field.getByIndex(index);
 					else
-						healtarget = player2.hero.hero;
-					healtarget.heal(healamount);
+						healtarget = player2.hero.hero();
+					healtarget.heal(healamount, true);
 					return;
 				}
-				player1.hero.mana.Add(-manacost);
 				if (index != -1)
 					healtarget = player1.field.getByIndex(index);
 				else
-					healtarget = player1.hero.hero;
-				healtarget.heal(healamount);
-				
+					healtarget = player1.hero.hero();
+				healtarget.heal(healamount, true);
+
 				break;
 
+			case 14:
+				String weapon[] = response[1].split(",");
+				int damage = Integer.parseInt(weapon[0]);
+				int vital = Integer.parseInt(weapon[1]);
+				String resource = weapon[2];
+				player2.hero.getWeapon(damage, vital, resource, true, 0);
+				break;
+
+			case 15:
+				String defense[] = response[1].split(",");
+				if (Integer.parseInt(defense[0]) == 1) {
+					player2.hero.getDefense(Integer.parseInt(defense[1]), true,
+							0);
+					return;
+				}
+				player1.hero.getDefense(Integer.parseInt(defense[1]), true, 0);
+				break;
 			}
 		} catch (Exception e) {
 		}
@@ -285,6 +318,10 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	private void endGame() {
 		// TODO Auto-generated method stub
 
+	}
+
+	public ViewGroup container() {
+		return container;
 	}
 
 }

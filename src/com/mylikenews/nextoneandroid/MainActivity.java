@@ -1,7 +1,7 @@
 package com.mylikenews.nextoneandroid;
 
+import net.NetGame;
 import game.Method;
-import game.NetGame;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import animation.hideAndSHow;
+import animation.HideAndShow;
 
 public class MainActivity extends Activity {
 
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 		container = (LinearLayout) findViewById(R.id.container);
 		animate = (RelativeLayout) findViewById(R.id.animate);
 
-		hideAndSHow hideshow = new hideAndSHow(container);
+		HideAndShow hideshow = new HideAndShow(container);
 		hideshow.animate();
 
 		Button connect = new Button(this);

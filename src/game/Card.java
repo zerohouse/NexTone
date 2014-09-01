@@ -135,11 +135,11 @@ public class Card extends RelativeLayout {
 		Monster monster = new Monster(context, this, player.field, index);
 		player.field.add(monster);
 		player.hand.remove(this);
-		player.hero.mana.Add(-cost.Int());
+		player.hero.mana.Add(-cost.Int(), false);
 		String monsterinfo = monster.toString();
 		Sender.S("8 " + player.me + "@" + monsterinfo);
 		try {
-			Thread.sleep(500);
+			Thread.sleep(500); 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

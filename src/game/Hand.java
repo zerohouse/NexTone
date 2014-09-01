@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import animation.hideAndSHow;
+import animation.HideAndShow;
 
 public class Hand extends LinearLayout {
 	ArrayList<Card> items; // 통일성을 위해 아이템스로.
@@ -36,7 +36,7 @@ public class Hand extends LinearLayout {
 		scroll.setSmoothScrollingEnabled(true);
 
 		// 애니메이션 세팅
-		hideAndSHow hideshow = new hideAndSHow(this);
+		HideAndShow hideshow = new HideAndShow(this);
 		hideshow.animate();
 
 	}

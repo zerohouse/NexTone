@@ -8,7 +8,7 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import animation.hideAndSHow;
+import animation.HideAndShow;
 
 public class Field extends LinearLayout {
 
@@ -16,7 +16,7 @@ public class Field extends LinearLayout {
 	ArrayList<Monster> items;
 	Context context;
 	Player player;
-	Hero hero;
+	public Hero hero;
 	LinearLayout.LayoutParams params;
 	AnimatorSet animate;
 	Monster selected;
@@ -40,7 +40,7 @@ public class Field extends LinearLayout {
 		scroll.addView(this);
 		scroll.setSmoothScrollingEnabled(true);
 
-		hideAndSHow hideshow = new hideAndSHow(this);
+		HideAndShow hideshow = new HideAndShow(this);
 		hideshow.animate();
 	}
 
@@ -76,11 +76,11 @@ public class Field extends LinearLayout {
 	public void add(Hero hero, int me) {
 		this.hero = hero;
 		if (me == 1) {
-			player.game.container.addView(hero,
-					player.game.container.getChildCount() - 1);
+			player.game.container().addView(hero,
+					player.game.container().getChildCount() - 1);
 			return;
 		}
-		player.game.container.addView(hero, 0);
+		player.game.container().addView(hero, 0);
 	}
 
 	public void endTurn() {

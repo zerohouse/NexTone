@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 import java.util.Random;
 
+import net.NetGame;
 import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -61,7 +62,7 @@ public class Player {
 		done = false;
 
 		// 영웅 설정
-		String herostring = "heroblue,1";
+		String herostring = "heroblue,5";
 		hero = new Hero(context, this, herostring);
 
 		// 버튼 선언부
@@ -121,6 +122,7 @@ public class Player {
 		for (Card card : selected) {
 			card.use(this);
 		}
+		cardStateUpdate();
 	}
 
 	private int costSum(ArrayList<Card> selected) {
@@ -140,12 +142,24 @@ public class Player {
 	}
 
 	@SuppressLint("NewApi")
-	private void endTurn() {
+	void endTurn() {
 		hero.removeView(usecard);
 		hero.removeView(endturn);
 
 		field.endTurn();
-		Sender.S(4 + " "); // 4 = 턴넘기기
+		hero.endTurn();
+		sendHeroState();
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Sender.S("4 "); // 4 = 턴넘기기
+	}
+
+	public void endTurnByNet() {
+		field.endTurn();
 		hero.endTurn();
 	}
 
@@ -196,10 +210,10 @@ public class Player {
 			@Override
 			public void onClick(View v) {
 				changeSelectedCard(v);
-				game.container.removeView(v);
+				game.container().removeView(v);
 			}
 		});
-		game.container.addView(change);
+		game.container().addView(change);
 		Method.alert("바꿀카드를 선택해 주세요.");
 	}
 
@@ -208,7 +222,7 @@ public class Player {
 			@Override
 			public void onClick(View v) {
 				changeSelectedCard(v);
-				game.container.removeView(v);
+				game.container().removeView(v);
 				game.initView();
 				newTurn();
 				Sender.S("6 ");
@@ -290,22 +304,35 @@ public class Player {
 
 		field.newTurn();
 		enemy.field.endTurn();
-		Sender.S("7 1@" + hero.toString());
+		sendHeroState();
 
 	}
 
-	private void newCard() {
+	public void sendHeroState() {
+		Sender.S("7 1@" + hero.toString());
+	}
+
+	public void newCard() {
+		hero.dummysize.setInt(dummy.size());
 		if (dummy.isEmpty()) {
 			hero.emptyDummy();
 			Method.alert("덱에 카드가 없습니다");
+			cardStateUpdate();
 			return;
 		}
 		Card newcard = dummy.pop();
 		if (hand.size() < 10) {
 			hand.add(newcard);
+			cardStateUpdate();
 			return;
 		}
+
 		Method.alert("카드가 너무 많습니다.\n 1장 사라집니다.");
+	}
+
+	public void cardStateUpdate() {
+		hero.dummysize.setText(" Cards: " + hand.size() + "/" + dummy.size());
+		sendHeroState();
 	}
 
 	public boolean done() {
@@ -344,6 +371,4 @@ public class Player {
 		hero.hero.attackReady();
 	}
 
-
 }
-

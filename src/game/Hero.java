@@ -1,5 +1,6 @@
 package game;
 
+import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
@@ -25,6 +26,7 @@ public class Hero extends RelativeLayout {
 	int heroabilityuseable;
 	String resource;
 
+	OnClickListener herosability;
 	ImageButton ability;
 
 	RelativeLayout.LayoutParams dummyparam;
@@ -57,6 +59,7 @@ public class Hero extends RelativeLayout {
 		mana.setMaxmana(0);
 
 		hero = new HeroCharacter(context, this, resource);
+		addView(hero);
 
 		dummysize = new ViewBinder(context, player.dummy.size(), this, true);
 		dummyparam = dummysize.getParams();
@@ -75,7 +78,7 @@ public class Hero extends RelativeLayout {
 		effect = EffectFactory.makeHeroEffect(Integer.parseInt(tmp[1]),
 				this.player);
 
-		OnClickListener herosability = new View.OnClickListener() {
+		herosability = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (heroabilityuseable == 0) {
@@ -104,29 +107,27 @@ public class Hero extends RelativeLayout {
 		if (mana.maxmana() < 10)
 			mana.maxmanaAdd(1);
 		mana.setMana(mana.maxmana());
-		dummysize.setInt(player.dummy.size());
-		dummysize.setText(" Cards: " + player.dummy.size());
-		hero.attackReady();
+		hero.newTurn();
+
+		ability.setOnClickListener(herosability);
 	}
 
 	public void endTurn() {
-		System.out.println();
-		hero.setOnClickListener(null);
+		hero.endTurn();
+		ability.setOnClickListener(null);
 	}
 
 	public void setByString(String set) {
 		String[] setsplit = set.split(",");
 		mana.setMana(Integer.parseInt(setsplit[0]));
 		mana.setMaxmana(Integer.parseInt(setsplit[1]));
-		hero.damage.setInt(Integer.parseInt(setsplit[3]));
-		hero.vital.setInt(Integer.parseInt(setsplit[4]));
-		dummysize.setText(" Cards: " + Integer.parseInt(setsplit[5]));
+		dummysize.setText(" Cards: " + Integer.parseInt(setsplit[6]) + "/"
+				+ Integer.parseInt(setsplit[5]));
 
-		if (Integer.parseInt(setsplit[2]) != 0) {
-			hero.defense.setInt(Integer.parseInt(setsplit[2]));
-			return;
-		}
-		hero.defense.setText("");
+		hero.setByInt(Integer.parseInt(setsplit[2]),
+				Integer.parseInt(setsplit[3]), Integer.parseInt(setsplit[4]));
+		hero.vitalCheck();
+
 	}
 
 	@Override
@@ -134,7 +135,8 @@ public class Hero extends RelativeLayout {
 		String heroState;
 		heroState = mana.mana() + "," + mana.maxmana() + ","
 				+ hero.defense.Int() + "," + hero.damage.Int() + ","
-				+ hero.vital.Int() + "," + dummysize.Int();
+				+ hero.vital.Int() + "," + dummysize.Int() + ","
+				+ player.hand.size();
 		return heroState;
 	}
 
@@ -179,10 +181,30 @@ public class Hero extends RelativeLayout {
 			return true;
 		return false;
 	}
-	
-	public void heroAbilityUseable(){
+
+	public void heroAbilityUseable() {
 		heroabilityuseable++;
 	}
 
+	public Target hero() {
+		return hero;
+	}
+
+	public void getWeapon(int damage, int vital, String resource,
+			boolean sended, int manacost) {
+		Weapon weapon = new Weapon(context, this, damage, vital, resource);
+		hero.getWepon(weapon);
+		mana.Add(-manacost, sended);
+		this.addView(weapon);
+		if (!sended)
+			Sender.S("14 " + damage + "," + vital + "," + resource);
+	}
+
+	public void getDefense(int defense, boolean Sended, int defensecost) {
+		hero.getDefense(defense);
+		mana.Add(-defensecost, Sended);
+		if (!Sended)
+			Sender.S("15 " + player.me + "," + defense);
+	}
 
 }

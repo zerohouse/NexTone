@@ -293,7 +293,10 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	@Override
-	public void heal(int amount) {
+	public void heal(int amount, boolean sended) {
+		if (!sended)
+			Sender.S("16 " + field.player.me + "," + id + "," + amount);
+
 		vital.add(amount);
 		if (vital.Int() > maxvital) {
 			vital.setInt(maxvital);
@@ -305,5 +308,13 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public Player player() {
 		return field.player;
+	}
+
+	@SuppressLint("NewApi")
+	@Override
+	public float getX(boolean isHero) {
+		if (isHero)
+			return getX() - Method.dpToPx(30);
+		return getX();
 	}
 }

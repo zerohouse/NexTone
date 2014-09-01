@@ -14,7 +14,7 @@ public interface Target {
 	
 	public abstract int index();
 
-	public abstract float getX();
+	public abstract float getX(boolean isHero);
 	
 	public abstract float getY();
 
@@ -40,7 +40,7 @@ public interface Target {
 
 	public abstract void setAttackBackground();
 
-	public abstract void heal(int amount);
+	public abstract void heal(int amount, boolean sended);
 	
 	public void vitalCheck();
 
