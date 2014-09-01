@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import components.ImageButton;
 import components.ViewBinder;
-import effects.Effect;
-import effects.EffectFactory;
+import effects.hero.HeroEffect;
+import effects.hero.HeroEffectFactory;
 
 public class Hero extends RelativeLayout {
 
 	Player player;
-	Effect effect;
+	HeroEffect effect;
 	int emptyDummy;
 	ViewBinder dummysize;
 	HeroCharacter hero;
@@ -75,7 +75,7 @@ public class Hero extends RelativeLayout {
 		ability.getParams().topMargin = Method.dpToPx(50);
 		addView(ability);
 
-		effect = EffectFactory.makeHeroEffect(Integer.parseInt(tmp[1]),
+		effect = HeroEffectFactory.makeHeroEffect(Integer.parseInt(tmp[1]),
 				this.player);
 
 		herosability = new View.OnClickListener() {
@@ -124,8 +124,9 @@ public class Hero extends RelativeLayout {
 		dummysize.setText(" Cards: " + Integer.parseInt(setsplit[6]) + "/"
 				+ Integer.parseInt(setsplit[5]));
 
-		hero.setByInt(Integer.parseInt(setsplit[2]),
-				Integer.parseInt(setsplit[3]), Integer.parseInt(setsplit[4]));
+		hero.setByString(Integer.parseInt(setsplit[2]) + ","
+				+ Integer.parseInt(setsplit[3]) + ","
+				+ Integer.parseInt(setsplit[4]));
 		hero.vitalCheck();
 
 	}
@@ -134,8 +135,7 @@ public class Hero extends RelativeLayout {
 	public String toString() {
 		String heroState;
 		heroState = mana.mana() + "," + mana.maxmana() + ","
-				+ hero.defense.Int() + "," + hero.damage.Int() + ","
-				+ hero.vital.Int() + "," + dummysize.Int() + ","
+				+ hero.toString() + "," + dummysize.Int() + ","
 				+ player.hand.size();
 		return heroState;
 	}

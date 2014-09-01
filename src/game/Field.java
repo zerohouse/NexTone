@@ -156,6 +156,10 @@ public class Field extends LinearLayout {
 			monster.attackReady();
 		}
 	}
+
+	public ArrayList<Monster> monsters() {
+		return items;
+	}
 	
 	
 

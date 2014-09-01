@@ -61,11 +61,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			player1.second();
 		}
 		this.first = first;
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		
 		Sender.S("7 1@" + player1.heroString());
 	}
 

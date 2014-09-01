@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			NetGame ngame = new NetGame(MainActivity.this, container, animate,
-					"10.73.38.71", 13333);
+					"192.168.0.17", 13333);
 			ngame.execute();
 			container.removeView(v);
 			container.addView(status);

@@ -11,9 +11,10 @@ import android.widget.RelativeLayout;
 import animation.Attack;
 
 import com.mylikenews.nextoneandroid.R;
-
 import components.ViewBinder;
-import effects.Effect;
+
+import effects.monster.aura.AuraEffect;
+import effects.monster.excute.ExcuteEffect;
 
 public class Monster extends RelativeLayout implements Target {
 
@@ -23,28 +24,23 @@ public class Monster extends RelativeLayout implements Target {
 	int attackable, maxattackable;
 	int maxvital, defaulmaxvital;
 	int id;
-	Effect whendeath;
-	Effect whenturn;
+
 	Context context;
 	ViewBinder damage, vital;
 	String resource;
 	RelativeLayout.LayoutParams params;
 	boolean uped = false;
 
-	public Monster(Context context, Card card, Field field, int index, boolean sended) {
+	public Monster(Context context, Card card, Field field, int index,
+			boolean sended) {
 		super(context);
 		deFault(context, field, index);
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
-		if(!sended){
+		if (!sended) {
 			Sender.S("8 " + field.player.me + "@" + toString());
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 		}
 	}
 
@@ -76,27 +72,21 @@ public class Monster extends RelativeLayout implements Target {
 		vitalparams.setMargins(0, 0, Method.dpToPx(7), 0);
 		this.vital.setGravity(Gravity.CENTER);
 	}
-	
-	
 
-	public Monster(Context context, String info, Field field, int index, boolean sended) {
+	public Monster(Context context, String info, Field field, int index,
+			boolean sended) {
 		super(context);
 		String[] cardinfo = info.split(",");
 		id = Integer.parseInt(cardinfo[0]);
 		deFault(context, field, id);
-		
+
 		setDamageVital(Integer.parseInt(cardinfo[1]),
 				Integer.parseInt(cardinfo[2]));
 		this.resource = cardinfo[3];
 		setBackgroundDefault();
-		if(!sended){
+		if (!sended) {
 			Sender.S("8 " + field.player.me + "@" + toString());
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 		}
 	}
 
@@ -164,7 +154,6 @@ public class Monster extends RelativeLayout implements Target {
 		setAttackBackground();
 		v.setY(-10);
 		this.uped = true;
-
 		Static.attacker = (Target) v;
 
 		Listeners.setAttacked();
@@ -194,6 +183,24 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	@Override
+	public void setByString(String setString) {
+		String[] tmp = setString.split(",");
+		int id = Integer.parseInt(tmp[1]);
+		int damage = Integer.parseInt(tmp[2]);
+		int vital = Integer.parseInt(tmp[3]);
+		String resource = tmp[4];
+		if (this.id != id) {
+			Method.alert("아이디가 다릅니다.");
+			return;
+		}
+		this.damage.setInt(damage);
+		this.vital.setInt(vital);
+		vitalCheck();
+		this.resource = resource;
+
+	}
+
+	@Override
 	public void attacked(int damage) {
 
 		vital.add(-damage);
@@ -203,6 +210,11 @@ public class Monster extends RelativeLayout implements Target {
 
 	private void removeCheck() {
 		if (vital.Int() < 1) {
+			if (death != null)
+				death.run();
+			if (state != null)
+				state.effectEnd();
+
 			field.remove(this);
 		}
 	}
@@ -269,9 +281,29 @@ public class Monster extends RelativeLayout implements Target {
 		return damage.Int();
 	}
 
+	ExcuteEffect endTurn, death = null;
+
+	public void setEndTurnEffect(ExcuteEffect effect) {
+		this.endTurn = effect;
+	}
+
+	public void setDeathEffect(ExcuteEffect effect) {
+		this.death = effect;
+	}
+
+	AuraEffect state = null;
+
+	public void setAuraEffect(AuraEffect effect) {
+		this.state = effect;
+		effect.effectStart();
+	}
+
 	public void endTurn() {
 		setOnClickListener(null);
 		attackdisAble();
+		if (endTurn != null) {
+			endTurn.run();
+		}
 	}
 
 	@Override
@@ -337,4 +369,9 @@ public class Monster extends RelativeLayout implements Target {
 			return getX() - Method.dpToPx(30);
 		return getX();
 	}
+
+	public Field field() {
+		return field;
+	}
+
 }

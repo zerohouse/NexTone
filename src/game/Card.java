@@ -1,7 +1,7 @@
 package game;
 
 import components.ViewBinder;
-import effects.Effect;
+import effects.hero.HeroEffect;
 import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -9,7 +9,7 @@ import android.widget.RelativeLayout;
 
 public class Card extends RelativeLayout {
 
-	Effect effect;
+	HeroEffect effect;
 	int monster;
 	boolean haseffect, hasmonster;
 	Context context;

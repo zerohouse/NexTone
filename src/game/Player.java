@@ -62,7 +62,7 @@ public class Player {
 		done = false;
 
 		// 영웅 설정
-		String herostring = "heroblue,8";
+		String herostring = "heroblue,9";
 		hero = new Hero(context, this, herostring);
 
 		// 버튼 선언부
