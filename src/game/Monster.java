@@ -31,13 +31,21 @@ public class Monster extends RelativeLayout implements Target {
 	RelativeLayout.LayoutParams params;
 	boolean uped = false;
 
-	public Monster(Context context, Card card, Field field, int index) {
+	public Monster(Context context, Card card, Field field, int index, boolean sended) {
 		super(context);
 		deFault(context, field, index);
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
-
+		if(!sended){
+			Sender.S("8 " + field.player.me + "@" + toString());
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void setBackgroundDefault() {
@@ -68,16 +76,28 @@ public class Monster extends RelativeLayout implements Target {
 		vitalparams.setMargins(0, 0, Method.dpToPx(7), 0);
 		this.vital.setGravity(Gravity.CENTER);
 	}
+	
+	
 
-	public Monster(Context context, String info, Field field, int index) {
+	public Monster(Context context, String info, Field field, int index, boolean sended) {
 		super(context);
-		deFault(context, field, index);
 		String[] cardinfo = info.split(",");
 		id = Integer.parseInt(cardinfo[0]);
+		deFault(context, field, id);
+		
 		setDamageVital(Integer.parseInt(cardinfo[1]),
 				Integer.parseInt(cardinfo[2]));
 		this.resource = cardinfo[3];
 		setBackgroundDefault();
+		if(!sended){
+			Sender.S("8 " + field.player.me + "@" + toString());
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public void attackCheck() {
@@ -260,7 +280,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public Monster cloneForAnimate() {
-		Monster monster = new Monster(context, this.toString(), field, id);
+		Monster monster = new Monster(context, this.toString(), field, id, true);
 		if (isAttacked()) {
 			monster.vital.setTextColor(Color.RED);
 		}

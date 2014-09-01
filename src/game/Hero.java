@@ -200,11 +200,21 @@ public class Hero extends RelativeLayout {
 			Sender.S("14 " + damage + "," + vital + "," + resource);
 	}
 
-	public void getDefense(int defense, boolean Sended, int defensecost) {
+	public void getDefense(int defense, boolean Sended, int manacost) {
+		mana.Add(-manacost, Sended);
 		hero.getDefense(defense);
-		mana.Add(-defensecost, Sended);
 		if (!Sended)
 			Sender.S("15 " + player.me + "," + defense);
+	}
+
+	public void setDamage(int damage, boolean sended) {
+		hero.damage.setInt(damage);
+		if (!sended)
+			Sender.S("18 " + player.me + "," + damage);
+	}
+
+	public void heroNewTurn() {
+		hero.newTurn();
 	}
 
 }

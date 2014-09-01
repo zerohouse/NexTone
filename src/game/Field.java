@@ -54,10 +54,9 @@ public class Field extends LinearLayout {
 		addView(monster);
 	}
 
-	public void add(String string) {
-		Monster monster = new Monster(context, string, this, items.size());
-		items.add(monster);
-		addView(monster);
+	public void addByString(String string, boolean sended) {
+		Monster monster = new Monster(context, string, this, items.size(), sended);
+		add(monster);
 	}
 
 	public void newTurn() {

@@ -26,7 +26,7 @@ public class Player {
 	Dummy dummy;
 	public Field field;
 	boolean first, done;
-	int me;
+	public int me;
 	Button change;
 	ImageButton usecard;
 	public ImageButton endturn;
@@ -62,7 +62,7 @@ public class Player {
 		done = false;
 
 		// 영웅 설정
-		String herostring = "heroblue,5";
+		String herostring = "heroblue,8";
 		hero = new Hero(context, this, herostring);
 
 		// 버튼 선언부
@@ -369,6 +369,10 @@ public class Player {
 	public void attackReady() {
 		field.attackReady();
 		hero.hero.attackReady();
+	}
+
+	public Context context() {
+		return context;
 	}
 
 }

@@ -202,10 +202,10 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 					// 8번을 통해 필드에 상대의 몬스터를 생성한다.
 				String[] mon = response[1].split("@");
 				if (mon[0].equals("1")) {
-					player2.field.add(mon[1]);
+					player2.field.addByString(mon[1], true);
 					return;
 				}
-				player1.field.add(mon[1]);
+				player1.field.addByString(mon[1], true);
 
 				break;
 
@@ -305,6 +305,16 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				}
 				player1.hero.getDefense(Integer.parseInt(defense[1]), true, 0);
 				break;
+				
+			case 18:
+				String dam[] = response[1].split(",");
+				if (Integer.parseInt(dam[0]) == 1) {
+					player2.hero.setDamage(Integer.parseInt(dam[1]), true);
+					return;
+				}
+				player1.hero.setDamage(Integer.parseInt(dam[1]), true);
+				break;
+				
 			}
 		} catch (Exception e) {
 		}

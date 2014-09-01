@@ -1,6 +1,5 @@
 package game;
 
-import net.Sender;
 import components.ViewBinder;
 import effects.Effect;
 import android.content.Context;
@@ -132,17 +131,10 @@ public class Card extends RelativeLayout {
 	}
 
 	private void addMonster(Player player) {
-		Monster monster = new Monster(context, this, player.field, index);
+		Monster monster = new Monster(context, this, player.field, index, false);
 		player.field.add(monster);
 		player.hand.remove(this);
 		player.hero.mana.Add(-cost.Int(), false);
-		String monsterinfo = monster.toString();
-		Sender.S("8 " + player.me + "@" + monsterinfo);
-		try {
-			Thread.sleep(500); 
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 
 }
