@@ -32,7 +32,7 @@ public class GameActivity extends Activity {
 
 		setContentView(R.layout.activity_game);
 
-		Method.context = this;
+		Method.setContext(this);
 		container = (LinearLayout) findViewById(R.id.container);
 		animate = (RelativeLayout) findViewById(R.id.animate);
 

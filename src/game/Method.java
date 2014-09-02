@@ -12,6 +12,8 @@ public class Method {
 	public static Context context;
 	static Toast toast;
 
+	
+	
 	public static RelativeLayout.LayoutParams getParams() {
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -44,6 +46,12 @@ public class Method {
 		int resId = context.getResources().getIdentifier(filename, "drawable",
 				context.getPackageName());
 		return resId;
+	}
+
+
+
+	public static void setContext(Context con) {
+		context = con;
 	}
 	
 
