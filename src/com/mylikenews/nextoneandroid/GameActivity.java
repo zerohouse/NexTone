@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import animation.HideAndShow;
 
-public class MainActivity extends Activity {
+public class GameActivity extends Activity {
 
 	LinearLayout container;
 	TextView status;
@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 	OnClickListener doconnect = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			NetGame ngame = new NetGame(MainActivity.this, container, animate,
+			NetGame ngame = new NetGame(GameActivity.this, container, animate,
 					"192.168.0.17", 13333);
 			ngame.execute();
 			container.removeView(v);
