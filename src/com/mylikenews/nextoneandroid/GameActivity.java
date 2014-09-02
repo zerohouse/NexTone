@@ -20,6 +20,8 @@ public class GameActivity extends Activity {
 	LinearLayout container;
 	TextView status;
 	RelativeLayout animate;
+	String herostring, dekstring, ip;
+	int port;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +47,20 @@ public class GameActivity extends Activity {
 		status.setGravity(Gravity.CENTER);
 		status.setText("참여자를 기다립니다.");
 
+		
+		dekstring = "1x2,2x2,3x26";
+		herostring = "heroblue,1";
+		ip = "10.73.43.233";
+		port = 13333;
 	}
 
 	OnClickListener doconnect = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			
 			NetGame ngame = new NetGame(GameActivity.this, container, animate,
-					"192.168.0.17", 13333);
+					ip, port, dekstring, herostring);
+			
 			ngame.execute();
 			container.removeView(v);
 			container.addView(status);

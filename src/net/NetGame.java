@@ -29,28 +29,32 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	Player player1, player2;
 	Context context;
 	LinearLayout container;
-	String player1dek, player2dek, player2hero;
+	String player1dek, player1hero, player2dek, player2hero;
 	boolean first;
 	String ip;
 	int port;
 	RelativeLayout animate;
 
 	public NetGame(Context context, LinearLayout container,
-			RelativeLayout animate, String ip, int port) {
+			RelativeLayout animate, String ip, int port, String dekstring,
+			String herostring) {
 		this.ip = ip;
 		this.port = port;
 		this.context = context;
 		this.container = container;
 		this.animate = animate;
-		player1dek = "1x2,2x2,3x26";
+		player1dek = dekstring;
+		player1hero = herostring;
+
+
 	}
 
-	public void Start(boolean first) {
-
+	public void player1Setting(boolean first) {
+		
 		Attack.set(animate);
 
 		container.removeAllViews();
-		player1 = new Player(context, player1dek, 1, this);
+		player1 = new Player(context, player1dek, player1hero, 1, this);
 		if (first) {
 			Method.alert("게임을 시작합니다.");
 			addPlayerCard(3);
@@ -61,13 +65,13 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			player1.second();
 		}
 		this.first = first;
-		
+
 		Sender.S("7 1@" + player1.heroString());
 	}
 
-	public void initSetting() {
+	public void player2Setting() {
 
-		player2 = new Player(context, player2dek, 2, this);
+		player2 = new Player(context, player2dek, player2hero, 2, this);
 		if (first) {
 			player2.second();
 		} else {
@@ -151,16 +155,18 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 			case 0: // 0번이 넘어오면 시작한다. (카드 바꾸기 화면 실행)
 				if (Integer.parseInt(response[1]) == 1) {
-					Start(true);
+					player1Setting(true);
 					return;
 				}
-				Start(false);
+				player1Setting(false);
 				break;
 
-			case 3: // 3번은 상데의 덱정보를 가지고 온다.
+			case 3: // 3번은 상데의 덱과 히어로정보를 가지고 온다.
 					// 상대의 덱을 세팅.
-				player2dek = response[1];
-				initSetting();
+				String[] dekhero = response[1].split(";");
+				player2dek = dekhero[0];
+				player2hero = dekhero[1];
+				player2Setting();
 				break;
 
 			case 4: // 4번이 넘어오면 턴을 넘긴다.
@@ -301,7 +307,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				}
 				player1.hero.getDefense(Integer.parseInt(defense[1]), true, 0);
 				break;
-				
+
 			case 18:
 				String dam[] = response[1].split(",");
 				if (Integer.parseInt(dam[0]) == 1) {
@@ -310,7 +316,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				}
 				player1.hero.setDamage(Integer.parseInt(dam[1]), true);
 				break;
-				
+
 			}
 		} catch (Exception e) {
 		}

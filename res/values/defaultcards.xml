@@ -2,15 +2,15 @@
 <resources>
 
     <string-array name="cards">
-        <item>suri;suri;1;2;3;black</item>
-        <item>센진i;suri;1;2;3;koreangirl</item>
-        <item>s서리바람i;suri;1;2;3;ring</item>
-        <item>알렉스;suri;1;2;3;saddo</item>
-        <item>그롬마쉬;suri;1;2;3;yangban</item>
-        <item>헬스크림;suri;1;2;3;ex</item>
-        <item>도꺱;suri;1;2;3;ex</item>
-        <item>s왕도꺱i;suri;1;2;3;ex</item>
-        <item>s후아;suri;1;2;3;ex</item>
+        <item>suri;suri;1;2;3;black;0</item>
+        <item>센진i;suri;1;2;3;koreangirl;0</item>
+        <item>s서리바람i;suri;1;2;3;ring;0</item>
+        <item>알렉스;suri;1;2;3;saddo;0</item>
+        <item>그롬마쉬;suri;1;2;3;yangban;0</item>
+        <item>헬스크림;suri;1;2;3;ex;0</item>
+        <item>도꺱;suri;1;2;3;ex;0</item>
+        <item>s왕도꺱i;suri;1;2;3;ex;0</item>
+        <item>s후아;suri;1;2;3;ex;0</item>
 
 
     </string-array>

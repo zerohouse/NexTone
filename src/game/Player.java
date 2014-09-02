@@ -18,7 +18,7 @@ import components.ImageButton;
 
 public class Player {
 
-	String dekstring;
+	String dekstring, herostring;
 	ArrayList<Card> dek;
 	Context context;
 	Hand hand;
@@ -28,9 +28,9 @@ public class Player {
 	boolean first, done;
 	public int me;
 	Button change;
-	ImageButton usecard;
+	ImageButton usecard, heroabillity;
 	public ImageButton endturn;
-	ImageButton heroabillity;
+
 	public Hero hero;
 
 	public Player enemy;
@@ -38,12 +38,13 @@ public class Player {
 
 	OnClickListener attacked;
 
-	public Player(Context context, String dekstring, int me, NetGame game) {
+	public Player(Context context, String dekstring, String herostring, int me,
+			NetGame game) {
 		this.me = me;
 		this.context = context;
 		this.dekstring = dekstring;
 		this.game = game;
-
+		this.herostring = herostring;
 		init();
 
 		makeDek();
@@ -62,7 +63,6 @@ public class Player {
 		done = false;
 
 		// 영웅 설정
-		String herostring = "heroblue,9";
 		hero = new Hero(context, this, herostring);
 
 		// 버튼 선언부
@@ -250,7 +250,7 @@ public class Player {
 		int removed = hand.removeAndReturnToDek(dek);
 		dekToHand(removed);
 		dekToDummy();
-		Sender.S(3 + " " + dekstring);
+		Sender.S(3 + " " + dekstring + ";" + herostring);
 		done = true;
 
 		try {
