@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="cards">
+    <string-array name="defaultcards">
         <item>suri;suri;1;2;3;black;0</item>
         <item>센진i;suri;1;2;3;koreangirl;0</item>
         <item>s서리바람i;suri;1;2;3;ring;0</item>

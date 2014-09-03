@@ -13,5 +13,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="title_activity_make_dek">MakeDek</string>
+    <string name="title_activity_select_dek">SelectDek</string>
+    <string name="title_activity_dek_list">DekList</string>
+    <string name="title_activity_select_hero">SelectHero</string>
 
 </resources>

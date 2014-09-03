@@ -165,7 +165,7 @@ public class Player {
 
 	private void makeDek() {
 		String[] defaultcards = context.getResources().getStringArray(
-				R.array.cards);
+				R.array.defaultcards);
 
 		String[] deksplit = dekstring.split(",");
 		String[] cardhowmany, cardinfo;
