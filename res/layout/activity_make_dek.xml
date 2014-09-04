@@ -9,15 +9,13 @@
     <TextView
         android:id="@+id/dekinfo"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_weight="1"
+        android:layout_height="63dp"
         android:gravity="center" >
     </TextView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:baselineAligned="false"
         android:orientation="horizontal" >
 

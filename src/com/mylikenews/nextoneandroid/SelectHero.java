@@ -35,7 +35,7 @@ public class SelectHero extends Activity {
 		for (int i = 0; i < 9; i++) {
 			hero = new TextView(this);
 			hero.setGravity(Gravity.CENTER);
-			hero.setText(selectedHero(i));
+			hero.setText(selectedHeroName(i));
 			hero.setTextAppearance(SelectHero.this, R.style.myText);
 			heros.add(hero);
 			layout.addView(hero);
@@ -44,9 +44,10 @@ public class SelectHero extends Activity {
 			listener = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Data data = new Data(id, selectedHero(v.getId()), "");
+					Data data = new Data(id, "heroblue,"+v.getId(), "");  //히어로 리소스 부분 수정해야댐..
 					sql.insert(data);
 					intent.putExtra("selected", data);
+					finish();
 					startActivity(intent);
 				}
 			};
@@ -55,35 +56,35 @@ public class SelectHero extends Activity {
 
 	}
 
-	public static String selectedHero(int i) {
+	public static String selectedHeroName(int i) {
 		String hero = "";
 		switch (i) {
 		case 0:
-			hero = "HeroBlue[주술사]";
+			hero = "[주술사]";
 			break;
 		case 1:
-			hero = "HeroBlue[마법사]";
+			hero = "[마법사]";
 			break;
 		case 2:
-			hero = "HeroBlue[사제]";
+			hero = "[사제]";
 			break;
 		case 3:
-			hero = "HeroBlue[도적]";
+			hero = "[도적]";
 			break;
 		case 4:
-			hero = "HeroBlue[전사]";
+			hero = "[전사]";
 			break;
 		case 5:
-			hero = "HeroBlue[흑마법사]";
+			hero = "[흑마법사]";
 			break;
 		case 6:
-			hero = "HeroBlue[사냥꾼]";
+			hero = "[사냥꾼]";
 			break;
 		case 7:
-			hero = "HeroBlue[성기사]";
+			hero = "[성기사]";
 			break;
 		case 8:
-			hero = "HeroBlue[드루이드]";
+			hero = "[드루이드]";
 			break;
 		}
 		return hero;

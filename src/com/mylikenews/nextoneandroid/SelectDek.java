@@ -5,16 +5,14 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import dek.Data;
 import dek.EachDek;
 import dek.Sql;
 
-public class DekList extends Activity {
+public class SelectDek extends Activity {
 
 	Intent intent;
 	Data intentdata;
@@ -35,17 +33,8 @@ public class DekList extends Activity {
 		layout.removeAllViews();
 		deklist = sql.dekList();
 		for (int i = 0; i < deklist.size(); i++) {
-			each = new EachDek(this, deklist.get(i), true);
+			each = new EachDek(this, deklist.get(i), false);
 			layout.addView(each);
-			listener = new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					EachDek dek = (EachDek) v.getParent();
-					sql.delete(dek.getData());
-					resetViews();
-				}
-			};
-			each.setRemoveListener(listener);
 
 			listener = new View.OnClickListener() {
 				@Override
@@ -56,24 +45,10 @@ public class DekList extends Activity {
 					startActivity(intent);
 				}
 			};
-			each.setOnClickListener(listener);
+			if (each.getData().getSum() > 15)
+				each.setOnClickListener(listener);
 		}
 
-		TextView text = new TextView(this);
-		text.setGravity(Gravity.CENTER);
-		text.setTextAppearance(this, R.style.myText);
-		text.setText("+ 새로운 덱 추가하기");
-
-		layout.addView(text);
-		selecthero = new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent newdek = new Intent(DekList.this, SelectHero.class);
-				newdek.putExtra("id", deklist.size() + 1);
-				startActivity(newdek);
-			}
-		};
-		text.setOnClickListener(selecthero);
 	}
 
 	@Override
@@ -83,6 +58,6 @@ public class DekList extends Activity {
 		layout = (LinearLayout) findViewById(R.id.deklist);
 		sql = new Sql(this);
 
-		intent = new Intent(this, MakeDek.class);
+		intent = new Intent(this, GameActivity.class);
 	}
 }

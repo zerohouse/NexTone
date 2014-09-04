@@ -1,7 +1,7 @@
 package com.mylikenews.nextoneandroid;
 
-import net.NetGame;
 import game.Method;
+import net.NetGame;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import animation.HideAndShow;
+import dek.Data;
 
 public class GameActivity extends Activity {
 
@@ -47,8 +48,8 @@ public class GameActivity extends Activity {
 		status.setGravity(Gravity.CENTER);
 		status.setText("참여자를 기다립니다.");
 
-		
-		dekstring = "1x2,2x2,3x26";
+		Data data = (Data) getIntent().getSerializableExtra("selected");
+		dekstring = data.getDekstring();
 		herostring = "heroblue,1";
 		ip = "10.73.43.233";
 		port = 13333;
