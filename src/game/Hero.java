@@ -15,7 +15,7 @@ public class Hero extends RelativeLayout {
 
 	Player player;
 	HeroEffect effect;
-	int emptyDummy;
+	int emptyDummy, herotype;
 	ViewBinder dummysize;
 	HeroCharacter hero;
 	public ManaStone mana;
@@ -24,7 +24,7 @@ public class Hero extends RelativeLayout {
 	RelativeLayout.LayoutParams params;
 	boolean getWeapon;
 	int heroabilityuseable;
-	String resource;
+	String heroresource;
 
 	OnClickListener herosability;
 	ImageButton ability;
@@ -34,14 +34,16 @@ public class Hero extends RelativeLayout {
 	Hero(Context context, Player player, String res) {
 		super(context);
 
-		String[] tmp = res.split(",");
-		resource = tmp[0];
+		String[] resourcesplit = res.split(",");
+		heroresource = resourcesplit[0];
+		herotype = Integer.parseInt(resourcesplit[1]);
+		
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		params.height = Method.dpToPx(110);
 
-		setBackgroundResource(Method.resId(resource + "back"));
+		setBackgroundResource(Method.resId(heroresource + "back"));
 		setLayoutParams(params);
 
 		this.context = context;
@@ -58,7 +60,7 @@ public class Hero extends RelativeLayout {
 		manaparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		mana.setMaxmana(0);
 
-		hero = new HeroCharacter(context, this, resource);
+		hero = new HeroCharacter(context, this, heroresource);
 		addView(hero);
 
 		dummysize = new ViewBinder(context, player.dummy.size(), this, true);
@@ -67,15 +69,15 @@ public class Hero extends RelativeLayout {
 
 		heroabilityuseable = 0;
 
-		ability = new ImageButton(context, Method.resId(resource + "ability"),
-				Method.resId(resource + "abilitypressed"), "2");
+		ability = new ImageButton(context, Method.resId("heroability"+herotype),
+				Method.resId("heroability"+herotype+"pressed"), "2");
 		ability.getParams().width = Method.dpToPx(40);
 		ability.getParams().height = Method.dpToPx(40);
 		ability.getParams().leftMargin = Method.dpToPx(210);
 		ability.getParams().topMargin = Method.dpToPx(50);
 		addView(ability);
 
-		effect = HeroEffectFactory.makeHeroEffect(Integer.parseInt(tmp[1]),
+		effect = HeroEffectFactory.makeHeroEffect(herotype,
 				this.player);
 
 		herosability = new View.OnClickListener() {
@@ -151,7 +153,7 @@ public class Hero extends RelativeLayout {
 	}
 
 	public void deSelect() {
-		hero.setBackgroundResource(Method.resId(resource));
+		hero.setBackgroundResource(Method.resId(heroresource));
 	}
 
 	public void setAttackBackground() {

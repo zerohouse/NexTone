@@ -1,5 +1,6 @@
 package com.mylikenews.nextoneandroid;
 
+import game.Method;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +15,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		Method.setContext(this);
 		TextView gamestart = (TextView) findViewById(R.id.gamestart);
 		gamestart.setText("게임하기");
 		TextView makedek = (TextView) findViewById(R.id.selectdek);

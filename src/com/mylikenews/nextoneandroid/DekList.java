@@ -23,6 +23,10 @@ public class DekList extends Activity {
 	LinearLayout layout;
 	OnClickListener listener, selecthero;
 	ArrayList<Data> deklist;
+	static int lastid = 1;
+	public static int LastId() {
+		return lastid;
+	}
 
 	@Override
 	protected void onResume() {
@@ -34,6 +38,8 @@ public class DekList extends Activity {
 	private void resetViews() {
 		layout.removeAllViews();
 		deklist = sql.dekList();
+		if(deklist.size()!=0)
+		lastid = deklist.get(deklist.size()-1).getId();
 		for (int i = 0; i < deklist.size(); i++) {
 			each = new EachDek(this, deklist.get(i), true);
 			layout.addView(each);
@@ -69,7 +75,6 @@ public class DekList extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent newdek = new Intent(DekList.this, SelectHero.class);
-				newdek.putExtra("id", deklist.size() + 1);
 				startActivity(newdek);
 			}
 		};
@@ -85,4 +90,7 @@ public class DekList extends Activity {
 
 		intent = new Intent(this, MakeDek.class);
 	}
+
+	
+	
 }

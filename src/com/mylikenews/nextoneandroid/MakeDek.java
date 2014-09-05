@@ -20,7 +20,6 @@ public class MakeDek extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Method.setContext(this);
 		setContentView(R.layout.activity_make_dek);
 
 		LinearLayout defcards = (LinearLayout) findViewById(R.id.defaultcards);

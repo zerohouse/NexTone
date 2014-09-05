@@ -38,7 +38,7 @@
             android:label="@string/title_activity_dek_list" >
         </activity>
         <activity
-            android:name=".SelectHero"
+            android:name=".SelectHeroAbility"
             android:label="@string/title_activity_select_hero" >
         </activity>
         <activity
@@ -49,6 +49,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".SelectHero"
+            android:label="@string/title_activity_select_hero" >
         </activity>
     </application>
 

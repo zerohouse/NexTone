@@ -18,7 +18,7 @@ public class Sql extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		String sql = "create table if not exists mydeklist"
-				+ " (id integer primary key autoincrement not null,"
+				+ " (id integer," //  primary key autoincrement not null
 				+ " hero text, dek text, summary text, sum integer);";
 		db.execSQL(sql);
 	}
@@ -37,6 +37,7 @@ public class Sql extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		// db.insert의 매개변수인 values가 ContentValues 변수이므로 그에 맞춤
 		// 데이터의 삽입은 put을 이용한다.
+		values.put("id", data.getId());
 		values.put("hero", data.getHerostring());
 		values.put("dek", data.getDekstring());
 		values.put("summary", data.getSummary());

@@ -61,4 +61,14 @@ public class Data implements Serializable {
 	public void setSum(int sum) {
 		this.sum = sum;
 	}
+
+	public int getHeroType() {
+		String[] heroinfo = herostring.split(",");
+		return Integer.parseInt(heroinfo[1]);
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 }

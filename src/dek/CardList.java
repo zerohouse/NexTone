@@ -5,6 +5,7 @@ import game.Method;
 import java.util.TreeSet;
 
 import com.mylikenews.nextoneandroid.R;
+import com.mylikenews.nextoneandroid.SelectHeroAbility;
 
 import android.content.Context;
 import android.view.View;
@@ -85,12 +86,14 @@ public class CardList {
 			sum += i;
 		}
 		data.setSum(sum);
-		String result = data.getHerostring() + "(" + sum + "/30)" + "\n";
+		String result = SelectHeroAbility.selectedHeroType(data.getHeroType()) + "("
+				+ sum + "/30)" + "\n";
 
-		result += String.format(
-				"[0]x%d, [1]x%d, [2]x%d, [3]x%d, [4]x%d, [5]x%d, [6]x%d, [7+]x%d",
-				costcounts[0], costcounts[1], costcounts[2], costcounts[3],
-				costcounts[4], costcounts[5], costcounts[6], costcounts[7]);
+		result += String
+				.format("[0]x%d, [1]x%d, [2]x%d, [3]x%d, [4]x%d, [5]x%d, [6]x%d, [7+]x%d",
+						costcounts[0], costcounts[1], costcounts[2],
+						costcounts[3], costcounts[4], costcounts[5],
+						costcounts[6], costcounts[7]);
 		dekinfo.setText(result);
 		sqlUpdate(result);
 
@@ -117,7 +120,7 @@ public class CardList {
 			String[] tmp;
 			int id, size;
 			CardinDek newcard;
- 
+
 			for (String s : dekcards) {
 				tmp = s.split("x");
 				id = Integer.parseInt(tmp[0]);
