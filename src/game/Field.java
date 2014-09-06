@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -14,7 +15,7 @@ public class Field extends LinearLayout {
 
 	HorizontalScrollView scroll;
 	ArrayList<Monster> items;
-	ArrayList<Monster> shield;
+	int shield;
 	Context context;
 	Player player;
 	public Hero hero;
@@ -32,7 +33,7 @@ public class Field extends LinearLayout {
 		this.context = context;
 		this.player = player;
 		items = new ArrayList<Monster>();
-		shield = new ArrayList<Monster>();
+		shield = 0;
 
 		scroll = new HorizontalScrollView(context);
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
@@ -49,9 +50,6 @@ public class Field extends LinearLayout {
 	public void remove(Monster monster) {
 		items.remove(monster);
 		removeView(monster);
-		if(monster.shield()){
-			shield.remove(monster);
-		}
 	}
 
 	public void add(Monster monster) {
@@ -164,16 +162,19 @@ public class Field extends LinearLayout {
 		return items;
 	}
 
-	public void setShield(Monster monster) {
-		shield.add(monster);
+	public void setShield() {
+		shield++;
+	}
+	
+	public void dieShield() {
+		shield--;
 	}
 
 	public boolean shieldInField() {
-		if (shield.size() > 0)
+		Log.i("shield", shield+"");
+		if (shield > 0)
 			return true;
 		return false;
 	}
-
-
 
 }

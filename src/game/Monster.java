@@ -86,8 +86,7 @@ public class Monster extends RelativeLayout implements Target {
 			boolean sended) {
 		super(context);
 		String[] cardinfo = info.split(",");
-		id = Integer.parseInt(cardinfo[0]);
-		deFault(context, field, id);
+		deFault(context, field, Integer.parseInt(cardinfo[0]));
 
 		setDamageVital(Integer.parseInt(cardinfo[1]),
 				Integer.parseInt(cardinfo[2]));
@@ -102,6 +101,28 @@ public class Monster extends RelativeLayout implements Target {
 			Sender.S("8 " + field.player.me + "@" + toString());
 
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Monster other = (Monster) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 
 	private void setEffects() {
@@ -122,7 +143,7 @@ public class Monster extends RelativeLayout implements Target {
 		switch (effect) {
 		case 1:
 			setBackgroundResource(R.drawable.vital);
-			field.setShield(this);
+			field.setShield();
 			shield = true;
 			break;
 		case 2:
@@ -168,14 +189,13 @@ public class Monster extends RelativeLayout implements Target {
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		params.height = field.scrollHeight();
 		setLayoutParams(params);
-		
+
 		charimage = new ImageView(context);
 		RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		charimage.setLayoutParams(lay);
 		addView(charimage);
-		
 
 		attackReady();
 	}
@@ -227,20 +247,18 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public String toString() {
-		String info;
-		info = id + "," + damage.Int() + "," + vital.Int() + "," + resource
+		return id + "," + damage.Int() + "," + vital.Int() + "," + resource
 				+ "," + effects;
-		return info;
 	}
 
 	@Override
 	public void setByString(String setString) {
 		String[] tmp = setString.split(",");
-		int id = Integer.parseInt(tmp[1]);
-		int damage = Integer.parseInt(tmp[2]);
-		int vital = Integer.parseInt(tmp[3]);
-		String resource = tmp[4];
-		this.effects = tmp[5];
+		int id = Integer.parseInt(tmp[0]);
+		int damage = Integer.parseInt(tmp[1]);
+		int vital = Integer.parseInt(tmp[2]);
+		String resource = tmp[3];
+		this.effects = tmp[4];
 		if (this.id != id) {
 			Method.alert("아이디가 다릅니다.");
 			return;
@@ -249,7 +267,6 @@ public class Monster extends RelativeLayout implements Target {
 		this.vital.setInt(vital);
 		vitalCheck();
 		this.resource = resource;
-
 	}
 
 	@Override
@@ -267,6 +284,8 @@ public class Monster extends RelativeLayout implements Target {
 			if (state != null)
 				state.effectEnd();
 
+			if (shield)
+				field.dieShield();
 			field.remove(this);
 		}
 	}
@@ -368,6 +387,8 @@ public class Monster extends RelativeLayout implements Target {
 
 	public Monster cloneForAnimate() {
 		Monster monster = new Monster(context, this.toString(), field, id, true);
+		if (shield)
+			field.dieShield();
 		if (isAttacked()) {
 			monster.vital.setTextColor(Color.RED);
 		}

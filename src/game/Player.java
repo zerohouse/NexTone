@@ -172,14 +172,15 @@ public class Player {
 		String eachcard;
 		Card card;
 		int howmany;
+		int id = 0;
 		for (String each : deksplit) {
 			cardhowmany = each.split("x");
 			eachcard = defaultcards[Integer.parseInt(cardhowmany[0])];
 			howmany = Integer.parseInt(cardhowmany[1]);
 
 			for (int i = 0; i < howmany; i++) {
-
-				card = new Card(context, eachcard, i);
+				card = new Card(context, eachcard, id);
+				id++;
 				dek.add(card);
 			}
 		}
