@@ -205,7 +205,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				String[] mon = response[1].split("@");
 				if (mon[0].equals("1")) {
 					player2.field.addByString(mon[1], true);
-					return;
+					return; 
 				}
 				player1.field.addByString(mon[1], true);
 

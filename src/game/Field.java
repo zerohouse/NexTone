@@ -14,6 +14,7 @@ public class Field extends LinearLayout {
 
 	HorizontalScrollView scroll;
 	ArrayList<Monster> items;
+	ArrayList<Monster> shield;
 	Context context;
 	Player player;
 	public Hero hero;
@@ -31,6 +32,7 @@ public class Field extends LinearLayout {
 		this.context = context;
 		this.player = player;
 		items = new ArrayList<Monster>();
+		shield = new ArrayList<Monster>();
 
 		scroll = new HorizontalScrollView(context);
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
@@ -47,6 +49,9 @@ public class Field extends LinearLayout {
 	public void remove(Monster monster) {
 		items.remove(monster);
 		removeView(monster);
+		if(monster.shield()){
+			shield.remove(monster);
+		}
 	}
 
 	public void add(Monster monster) {
@@ -55,7 +60,8 @@ public class Field extends LinearLayout {
 	}
 
 	public void addByString(String string, boolean sended) {
-		Monster monster = new Monster(context, string, this, items.size(), sended);
+		Monster monster = new Monster(context, string, this, items.size(),
+				sended);
 		add(monster);
 	}
 
@@ -69,9 +75,9 @@ public class Field extends LinearLayout {
 	public void setListener() {
 		for (Monster monster : items) {
 			monster.setOnClickListener(Listeners.listener);
-		} 
+		}
 	}
-	
+
 	public void add(Hero hero, int me) {
 		this.hero = hero;
 		if (me == 1) {
@@ -130,12 +136,10 @@ public class Field extends LinearLayout {
 	}
 
 	public void listenerNull() {
-		for (Monster monster: items){
+		for (Monster monster : items) {
 			monster.setOnClickListener(null);
 		}
 	}
-	
-
 
 	@SuppressLint("NewApi")
 	public void attackCheck() {
@@ -144,15 +148,14 @@ public class Field extends LinearLayout {
 				monster.setY(10);
 				monster.uped = false;
 				monster.attackCheck();
-			}
-			else{
+			} else {
 				monster.attackCheck();
 			}
 		}
 	}
 
 	public void attackReady() {
-		for (Monster monster: items){
+		for (Monster monster : items) {
 			monster.attackReady();
 		}
 	}
@@ -160,7 +163,17 @@ public class Field extends LinearLayout {
 	public ArrayList<Monster> monsters() {
 		return items;
 	}
-	
-	
+
+	public void setShield(Monster monster) {
+		shield.add(monster);
+	}
+
+	public boolean shieldInField() {
+		if (shield.size() > 0)
+			return true;
+		return false;
+	}
+
+
 
 }

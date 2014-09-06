@@ -53,4 +53,6 @@ public interface Target {
 	public abstract String toString();
 	
 	public abstract void setAlpha(float alpha);
+
+	public abstract boolean attackedable();
 }

@@ -150,6 +150,10 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	@SuppressLint("NewApi")
 	@Override
 	public void attack(Target target, boolean isChecked) {
+
+		if (!target.attackedable()) {
+			return;
+		}
 		if (!isChecked) {
 			if (damage.Int() == 0) {
 				Method.alert("공격할 수 없습니다.");
@@ -319,7 +323,12 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	public void getWepon(Weapon weapon) {
 		this.weapon = weapon;
-		newTurn();
+		if (weapon != null) {
+			attackable = weapon.attackAble();
+			damage.setInt(weapon.damage());
+		}
+		attackReady();
+		attackCheck();
 	}
 
 	@Override
@@ -340,6 +349,15 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	public void getDefense(int defense) {
 		this.defense.add(defense);
 		defenseCheck();
+	}
+
+	@Override
+	public boolean attackedable() {
+		if (hero.player.field.shieldInField()) {
+			Method.alert("방패 하수인부터 공격해야 합니다.");
+			return false;
+		}
+		return true;
 	}
 
 }

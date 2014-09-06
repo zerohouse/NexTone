@@ -4,15 +4,17 @@ import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import animation.Attack;
 
 import com.mylikenews.nextoneandroid.R;
-import components.ViewBinder;
 
+import components.ViewBinder;
 import effects.monster.aura.AuraEffect;
 import effects.monster.excute.ExcuteEffect;
 
@@ -24,7 +26,10 @@ public class Monster extends RelativeLayout implements Target {
 	int attackable, maxattackable;
 	int maxvital, defaulmaxvital;
 	int id;
+	int type;
 	String effects;
+	boolean shield = false;
+	ImageView charimage;
 
 	Context context;
 	ViewBinder damage, vital;
@@ -49,7 +54,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public void setBackgroundDefault() {
-		setBackgroundResource(Method.resId(resource));
+		charimage.setBackgroundResource(Method.resId(resource));
 	}
 
 	private void setDamageVital(int attack, int vital) {
@@ -89,6 +94,7 @@ public class Monster extends RelativeLayout implements Target {
 		this.resource = cardinfo[3];
 		setBackgroundDefault();
 		this.effects = cardinfo[4];
+		Log.i("effects", effects);
 
 		setEffects();
 
@@ -99,8 +105,31 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	private void setEffects() {
-		// TODO Auto-generated method stub
+		if (!effects.contains("#")) {
+			type = Integer.parseInt(effects);
+			return;
+		}
+		String[] effect = effects.split("#");
+		type = Integer.parseInt(effect[0]);
+		if (effect.length < 2)
+			return;
+		for (int i = 1; i < effect.length; i++) {
+			setEffect(Integer.parseInt(effect[i]));
+		}
+	}
 
+	private void setEffect(int effect) {
+		switch (effect) {
+		case 1:
+			setBackgroundResource(R.drawable.vital);
+			field.setShield(this);
+			shield = true;
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		}
 	}
 
 	public void attackCheck() {
@@ -112,7 +141,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public void attackAble() {
-		setBackgroundResource(Method.resId(resource + "attackable"));
+		charimage.setBackgroundResource(Method.resId(resource + "attackable"));
 	}
 
 	public void attackdisAble() {
@@ -139,6 +168,14 @@ public class Monster extends RelativeLayout implements Target {
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		params.height = field.scrollHeight();
 		setLayoutParams(params);
+		
+		charimage = new ImageView(context);
+		RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				RelativeLayout.LayoutParams.MATCH_PARENT);
+		charimage.setLayoutParams(lay);
+		addView(charimage);
+		
 
 		attackReady();
 	}
@@ -185,7 +222,7 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public void setAttackBackground() {
-		this.setBackgroundResource(Method.resId(resource + "attack"));
+		charimage.setBackgroundResource(Method.resId(resource + "attack"));
 	}
 
 	@Override
@@ -256,6 +293,9 @@ public class Monster extends RelativeLayout implements Target {
 	@SuppressLint("NewApi")
 	@Override
 	public void attack(Target target, boolean isChecked) {
+		if (!target.attackedable()) {
+			return;
+		}
 		if (!isChecked) {
 			if (damage.Int() == 0) {
 				Method.alert("공격력이 0인 하수인은 공격할 수 없습니다.");
@@ -387,6 +427,19 @@ public class Monster extends RelativeLayout implements Target {
 
 	public Field field() {
 		return field;
+	}
+
+	@Override
+	public boolean attackedable() {
+		if (field.shieldInField() && shield == false) {
+			Method.alert("방패 하수인부터 공격해야 합니다.");
+			return false;
+		}
+		return true;
+	}
+
+	public boolean shield() {
+		return shield;
 	}
 
 }
