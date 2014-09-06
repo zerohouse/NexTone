@@ -25,14 +25,14 @@ public class SpawnRandomTotem implements HeroEffect {
 
 		switch (totem) {
 		case 0:
-			monsterinfo = index + "," + 1 + "," + 1 + ",yangban";
+			monsterinfo = index + "," + 1 + "," + 1 + ",totem";
 			monster = new Monster(player.context(), monsterinfo, player.field,
 					index, false);
 			player.field.add(monster);
 			break;
 
 		case 1:
-			monsterinfo = index + "," + 0 + "," + 2 + ",black";
+			monsterinfo = index + "," + 0 + "," + 2 + ",totemheal";
 			monster = new Monster(player.context(), monsterinfo, player.field,
 					index, false);
 			player.field.add(monster);
@@ -41,10 +41,10 @@ public class SpawnRandomTotem implements HeroEffect {
 			break;
 			
 		case 2:
-			monsterinfo = index + "," + 0 + "," + 2 + ",ring";
+			monsterinfo = index + "," + 0 + "," + 2 + ",totemspell";
 			monster = new Monster(player.context(), monsterinfo, player.field,
 					index, false);
-			monster.setAuraEffect(AuraEffectFactory.makeAuraEffect(1, monster)); // 힐능력 부여
+			monster.setAuraEffect(AuraEffectFactory.makeAuraEffect(1, monster)); // 주문능력부여
 			player.field.add(monster);
 			break;
 		}

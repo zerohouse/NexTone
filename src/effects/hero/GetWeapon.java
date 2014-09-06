@@ -14,7 +14,6 @@ public class GetWeapon implements HeroEffect {
 	public void run(int manacost) {
 
 
-		player.hero.getWeapon(1, 2, "yangban", false, manacost);
-
+		player.hero.getWeapon(1, 2, "heroability3", false, manacost);
 	}
 }

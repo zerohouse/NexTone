@@ -64,13 +64,13 @@ public class SelectHeroAbility extends Activity {
 			hero = "[토템소환]";
 			break;
 		case 1:
-			hero = "[피해(1)]";
+			hero = "[불공(피해:1)]";
 			break;
 		case 2:
-			hero = "[치유(2)]";
+			hero = "[치유(회복:2)]";
 			break;
 		case 3:
-			hero = "[무기장착(1/2)]";
+			hero = "[도깨비방망이(1/2)]";
 			break;
 		case 4:
 			hero = "[방어(2)]";
@@ -79,10 +79,10 @@ public class SelectHeroAbility extends Activity {
 			hero = "[생명력-2/카드뽑기]";
 			break;
 		case 6:
-			hero = "[적영웅피해(2)]";
+			hero = "[1/1박쥐소환]";
 			break;
 		case 7:
-			hero = "[1/1도깨비소환]";
+			hero = "[적영웅피해(2)]";
 			break;
 		case 8:
 			hero = "[방어력1/공격력1]";
