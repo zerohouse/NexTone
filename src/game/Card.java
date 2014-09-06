@@ -10,23 +10,21 @@ import android.widget.RelativeLayout;
 public class Card extends RelativeLayout {
 
 	HeroEffect effect;
-	int monster;
-	boolean haseffect, hasmonster;
+	boolean haseffect;
 	Context context;
+	int monster;
 
 	ViewBinder cost, attack, vital;
-	String resource, name, description;
+	String resource, name, description, effects;
 	int index;
 	LinearLayout.LayoutParams params;
 
 	boolean selected;
 
-	public Card(Context context, String name, String description, int cost,
-			int attack, int vital, String resource, int index) {
+	public Card(Context context, String eachcard, int index) {
 		super(context);
 		this.context = context;
 
-		hasmonster = true;
 		params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -38,32 +36,50 @@ public class Card extends RelativeLayout {
 		params.setMargins(Method.dpToPx(4), Method.dpToPx(1), Method.dpToPx(4),
 				Method.dpToPx(1));
 
+
 		selected = false;
 
-		monster = 1;
-		this.resource = resource;
+		String[] cardinfo = eachcard.split(";");
 
+		name = cardinfo[0];
+		description = cardinfo[1];
+		resource = cardinfo[2];
+		
 		setBackgroundResource(Method.resId(resource + "c"));
 
-		this.attack = new ViewBinder(context, attack, this);
-		RelativeLayout.LayoutParams attackparam = this.attack.getParams();
-		attackparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		attackparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		attackparam.setMargins(Method.dpToPx(6), 0, 0, Method.dpToPx(1));
 
-		this.cost = new ViewBinder(context, cost, this);
-		RelativeLayout.LayoutParams costparam = this.cost.getParams();
-		costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		costparam.setMargins(0, Method.dpToPx(1), Method.dpToPx(6), 0);
+		switch (Integer.parseInt(cardinfo[3])) {
+		case 0:// 몬스터 카드
+			monster = 1;
 
-		this.vital = new ViewBinder(context, vital, this);
-		RelativeLayout.LayoutParams vitalparam = this.vital.getParams();
-		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		vitalparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		vitalparam.setMargins(0, 0, Method.dpToPx(6), Method.dpToPx(1));
+			effects = cardinfo[4]; // 종족,효과1,효과2,...
+			int cost = Integer.parseInt(cardinfo[5]);
+			int attack = Integer.parseInt(cardinfo[6]);
+			int defense = Integer.parseInt(cardinfo[7]);
 
-		this.name = name;
-		this.description = description;
+			this.attack = new ViewBinder(context, attack, this);
+			RelativeLayout.LayoutParams attackparam = this.attack.getParams();
+			attackparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			attackparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			attackparam.setMargins(Method.dpToPx(6), 0, 0, Method.dpToPx(1));
+
+			this.cost = new ViewBinder(context, cost, this);
+			RelativeLayout.LayoutParams costparam = this.cost.getParams();
+			costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			costparam.setMargins(0, Method.dpToPx(1), Method.dpToPx(6), 0);
+
+			this.vital = new ViewBinder(context, defense, this);
+			RelativeLayout.LayoutParams vitalparam = this.vital.getParams();
+			vitalparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			vitalparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			vitalparam.setMargins(0, 0, Method.dpToPx(6), Method.dpToPx(1));
+
+			break;
+		case 1:// 주문 카드
+			break;
+
+		}
+
 		this.index = index;
 
 		setOnClickListener(new View.OnClickListener() {
@@ -124,14 +140,15 @@ public class Card extends RelativeLayout {
 	}
 
 	public void use(Player player) {
-		if (hasmonster)
+		if (monster > 0)
 			addMonster(player);
-		if(haseffect)
+		if (haseffect)
 			effect.run(0);
 	}
 
 	private void addMonster(Player player) {
-		Monster monster = new Monster(context, this, player.field, index, false);
+		Monster monster = new Monster(context, this, player.field, effects,
+				false);
 		player.field.add(monster);
 		player.hand.remove(this);
 		player.hero.mana.Add(-cost.Int(), false);

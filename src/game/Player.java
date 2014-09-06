@@ -168,12 +168,9 @@ public class Player {
 				R.array.defaultcards);
 
 		String[] deksplit = dekstring.split(",");
-		String[] cardhowmany, cardinfo;
+		String[] cardhowmany;
 		String eachcard;
 		Card card;
-		int attack, defense, cost;
-		String resource;
-		String name, description;
 		int howmany;
 		for (String each : deksplit) {
 			cardhowmany = each.split("x");
@@ -181,16 +178,8 @@ public class Player {
 			howmany = Integer.parseInt(cardhowmany[1]);
 
 			for (int i = 0; i < howmany; i++) {
-				cardinfo = eachcard.split(";");
-				name = cardinfo[0];
-				description = cardinfo[1];
-				cost = Integer.parseInt(cardinfo[2]);
-				attack = Integer.parseInt(cardinfo[3]);
-				defense = Integer.parseInt(cardinfo[4]);
-				resource = cardinfo[5];
 
-				card = new Card(context, name, description, cost, attack,
-						defense, resource, i);
+				card = new Card(context, eachcard, i);
 				dek.add(card);
 			}
 		}

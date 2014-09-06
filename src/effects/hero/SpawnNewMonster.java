@@ -18,7 +18,7 @@ public class SpawnNewMonster implements HeroEffect {
 
 		int index = Static.index();
 		
-		String monsterinfo = index + ","+1+","+1+",bat";
+		String monsterinfo = index + ","+1+","+1+",bat,0";
 		Monster monster = new Monster(player.context(), monsterinfo, player.field, index, false);
 		player.field.add(monster);
 	}

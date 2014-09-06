@@ -2,17 +2,26 @@
 <resources>
 
     <string-array name="defaultcards">
-        <item>suri;suri;1;2;3;black;0</item>
-        <item>센진i;suri;1;2;3;koreangirl;0</item>
-        <item>s서리바람i;suri;1;2;3;ring;0</item>
-        <item>알렉스;suri;1;2;3;saddo;0</item>
-        <item>그롬마쉬;suri;1;2;3;yangban;0</item>
-        <item>헬스크림;suri;1;2;3;ex;0</item>
-        <item>도꺱;suri;1;2;3;ex;0</item>
-        <item>s왕도꺱i;suri;1;2;3;ex;0</item>
-        <item>s후아;suri;1;2;3;ex;0</item>
 
-
+        <!--
+     몬스터카드 이름 / 설명 / 리소스 / 카드타입 (0:몬스터, 1:주문)
+	 / 종족,효과1,효과2... / 코스트 / 공격력 / 방어력
+        -->
+        <item>박쥐;;bat;0;0;0;1;1</item>
+        <item>흥부;;boo;0;0;4;4;5</item>
+        <item>큰도깨비;;big;0;0;6;6;7</item>
+        <item>수리;;eagle;0;1;2;2;3</item>
+        <item>점깨비;;dot;0;1;2;3;2</item>
+        <item>양반;;yangban;0;1;4;2;7</item>
+        <item>흑형;;saddo;0;0.1;4;3;5</item>
+        <item>녹괴;;green;0;0.1;5;3;6</item>
+        <item>안경;;glass;0;0.1;1;0;4</item>
+        <item>걸이;;ring;0;0.1;3;3;3</item>
+        <item>할매;;grandmother;0;0.1;6;6;5</item>
+        <item>할배;;sabu;0;0.1;4;1;7</item>
+        <item>핑크;;pink;0;0.1;1;1;2</item>
+        <item>유병언;;youbyungun;0;0.1;5;5;4</item>
+        <item>맨인블랙;;man;0;1.1;3;1;4</item>
     </string-array>
 
 </resources>

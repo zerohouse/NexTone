@@ -24,6 +24,7 @@ public class Monster extends RelativeLayout implements Target {
 	int attackable, maxattackable;
 	int maxvital, defaulmaxvital;
 	int id;
+	String effects;
 
 	Context context;
 	ViewBinder damage, vital;
@@ -31,13 +32,16 @@ public class Monster extends RelativeLayout implements Target {
 	RelativeLayout.LayoutParams params;
 	boolean uped = false;
 
-	public Monster(Context context, Card card, Field field, int index,
+	public Monster(Context context, Card card, Field field, String effects,
 			boolean sended) {
 		super(context);
-		deFault(context, field, index);
+		this.effects = effects;
+		deFault(context, field, card.index());
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
+		setEffects();
+
 		if (!sended) {
 			Sender.S("8 " + field.player.me + "@" + toString());
 
@@ -84,10 +88,19 @@ public class Monster extends RelativeLayout implements Target {
 				Integer.parseInt(cardinfo[2]));
 		this.resource = cardinfo[3];
 		setBackgroundDefault();
+		this.effects = cardinfo[4];
+
+		setEffects();
+
 		if (!sended) {
 			Sender.S("8 " + field.player.me + "@" + toString());
 
 		}
+	}
+
+	private void setEffects() {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void attackCheck() {
@@ -178,7 +191,8 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public String toString() {
 		String info;
-		info = id + "," + damage.Int() + "," + vital.Int() + "," + resource;
+		info = id + "," + damage.Int() + "," + vital.Int() + "," + resource
+				+ "," + effects;
 		return info;
 	}
 
@@ -189,6 +203,7 @@ public class Monster extends RelativeLayout implements Target {
 		int damage = Integer.parseInt(tmp[2]);
 		int vital = Integer.parseInt(tmp[3]);
 		String resource = tmp[4];
+		this.effects = tmp[5];
 		if (this.id != id) {
 			Method.alert("아이디가 다릅니다.");
 			return;

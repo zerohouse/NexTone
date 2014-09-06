@@ -22,18 +22,17 @@ public class CardinDek extends LinearLayout implements Comparable<CardinDek> {
 		super(context);
 		// 카드 스트링 양식 (구분자 : ;)
 		// 카드이름;카드설명;코스트;데미지;바이탈;이미지리소스파일명;특수능력타입(0=empty)
-
 		String[] cardresource = string.split(";");
 		setGravity(Gravity.CENTER);
 		this.context = context;
 		name = cardresource[0];
 		description = cardresource[1];
 
-		cost = Integer.parseInt(cardresource[2]);
-		attack = Integer.parseInt(cardresource[3]);
-		vital = Integer.parseInt(cardresource[4]);
+		cost = Integer.parseInt(cardresource[5]);
+		attack = Integer.parseInt(cardresource[6]);
+		vital = Integer.parseInt(cardresource[7]);
 
-		resource = cardresource[5];
+		resource = cardresource[2];
 		this.id = id;
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -57,8 +56,9 @@ public class CardinDek extends LinearLayout implements Comparable<CardinDek> {
 	}
 
 	public String toStirng() {
-		return name + ";" + description + ";" + cost + ";" + attack + ";"
-				+ vital + ";" + resource + ";" + 0;
+		// "토템;;totem;0;0;0;1;1";
+		return name + ";" + description + ";" + resource + ";0;0;" + cost + ";"
+				+ attack + ";" + vital;
 	}
 
 	@Override
