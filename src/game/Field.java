@@ -15,7 +15,7 @@ public class Field extends LinearLayout {
 
 	HorizontalScrollView scroll;
 	ArrayList<Monster> items;
-	int shield;
+	int defenseMonster;
 	Context context;
 	Player player;
 	public Hero hero;
@@ -33,7 +33,7 @@ public class Field extends LinearLayout {
 		this.context = context;
 		this.player = player;
 		items = new ArrayList<Monster>();
-		shield = 0;
+		defenseMonster = 0;
 
 		scroll = new HorizontalScrollView(context);
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
@@ -162,17 +162,17 @@ public class Field extends LinearLayout {
 		return items;
 	}
 
-	public void setShield() {
-		shield++;
+	public void setDefenseMonster() {
+		defenseMonster++;
 	}
 	
-	public void dieShield() {
-		shield--;
+	public void dieDefenseMonster() {
+		defenseMonster--;
 	}
 
-	public boolean shieldInField() {
-		Log.i("shield", shield+"");
-		if (shield > 0)
+	public boolean defenseMonsterInField() {
+		Log.i("shield", defenseMonster+"");
+		if (defenseMonster > 0)
 			return true;
 		return false;
 	}

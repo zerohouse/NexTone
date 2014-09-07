@@ -28,8 +28,8 @@ public class Monster extends RelativeLayout implements Target {
 	int id;
 	int type;
 	String effects;
-	boolean shield = false;
-	ImageView charimage;
+	boolean defenseMonster, shield = false; // 방패/보호막
+	ImageView charimage, foreimage;
 
 	Context context;
 	ViewBinder damage, vital;
@@ -143,10 +143,18 @@ public class Monster extends RelativeLayout implements Target {
 		switch (effect) {
 		case 1:
 			setBackgroundResource(R.drawable.vital);
-			field.setShield();
-			shield = true;
+			field.setDefenseMonster();
+			defenseMonster = true;
 			break;
 		case 2:
+			foreimage = new ImageView(context);
+			foreimage.setBackgroundResource(R.drawable.shield);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			foreimage.setLayoutParams(lay);
+			addView(foreimage);
+			shield = true;
 			break;
 		case 3:
 			break;
@@ -271,10 +279,19 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public void attacked(int damage) {
+		if (shield && damage > 0) {
+			offShield();
+			return;
+		}
 
 		vital.add(-damage);
 		removeCheck();
 		vitalCheck();
+	}
+
+	private void offShield() {
+		removeView(foreimage);
+		shield = false;
 	}
 
 	private void removeCheck() {
@@ -284,8 +301,8 @@ public class Monster extends RelativeLayout implements Target {
 			if (state != null)
 				state.effectEnd();
 
-			if (shield)
-				field.dieShield();
+			if (defenseMonster)
+				field.dieDefenseMonster();
 			field.remove(this);
 		}
 	}
@@ -387,8 +404,8 @@ public class Monster extends RelativeLayout implements Target {
 
 	public Monster cloneForAnimate() {
 		Monster monster = new Monster(context, this.toString(), field, id, true);
-		if (shield)
-			field.dieShield();
+		if (defenseMonster)
+			field.dieDefenseMonster();
 		if (isAttacked()) {
 			monster.vital.setTextColor(Color.RED);
 		}
@@ -425,6 +442,11 @@ public class Monster extends RelativeLayout implements Target {
 		if (!sended)
 			Sender.S("16 " + field.player.me + "," + id + "," + amount);
 
+		if (shield && amount < 0) {
+			offShield();
+			return;
+		}
+		
 		vital.add(amount);
 		if (vital.Int() > maxvital) {
 			vital.setInt(maxvital);
@@ -452,15 +474,15 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public boolean attackedable() {
-		if (field.shieldInField() && shield == false) {
-			Method.alert("방패 하수인부터 공격해야 합니다.");
+		if (field.defenseMonsterInField() && defenseMonster == false) {
+			Method.alert("방어 하수인부터 공격해야 합니다.");
 			return false;
 		}
 		return true;
 	}
 
 	public boolean shield() {
-		return shield;
+		return defenseMonster;
 	}
 
 }

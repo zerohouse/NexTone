@@ -353,7 +353,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	@Override
 	public boolean attackedable() {
-		if (hero.player.field.shieldInField()) {
+		if (hero.player.field.defenseMonsterInField()) {
 			Method.alert("방패 하수인부터 공격해야 합니다.");
 			return false;
 		}

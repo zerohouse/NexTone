@@ -3,11 +3,14 @@ package game;
 import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+
 import components.ImageButton;
 import components.ViewBinder;
+
 import effects.hero.HeroEffect;
 import effects.hero.HeroEffectFactory;
 
@@ -71,10 +74,11 @@ public class Hero extends RelativeLayout {
 
 		ability = new ImageButton(context, Method.resId("heroability"+herotype),
 				Method.resId("heroability"+herotype+"pressed"), "2");
-		ability.getParams().width = Method.dpToPx(40);
-		ability.getParams().height = Method.dpToPx(40);
+		ability.getParams().width = Method.dpToPx(50);
+		ability.getParams().height = Method.dpToPx(50);
 		ability.getParams().leftMargin = Method.dpToPx(210);
 		ability.getParams().topMargin = Method.dpToPx(50);
+		ability.setTextColor(Color.WHITE); 
 		addView(ability);
 
 		effect = HeroEffectFactory.makeHeroEffect(herotype,
@@ -136,9 +140,8 @@ public class Hero extends RelativeLayout {
 	@Override
 	public String toString() {
 		String heroState;
-		heroState = mana.mana() + "," + mana.maxmana() + ","
-				+ hero.toString() + "," + dummysize.Int() + ","
-				+ player.hand.size();
+		heroState = mana.mana() + "," + mana.maxmana() + "," + hero.toString()
+				+ "," + dummysize.Int() + "," + player.hand.size();
 		return heroState;
 	}
 
