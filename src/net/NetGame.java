@@ -46,11 +46,10 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 		player1dek = dekstring;
 		player1hero = herostring;
 
-
 	}
 
 	public void player1Setting(boolean first) {
-		
+
 		Attack.set(animate);
 
 		container.removeAllViews();
@@ -205,7 +204,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				String[] mon = response[1].split("@");
 				if (mon[0].equals("1")) {
 					player2.field.addByString(mon[1], true);
-					return; 
+					return;
 				}
 				player1.field.addByString(mon[1], true);
 
@@ -268,25 +267,12 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			case 16:
 				String heal[] = response[1].split(",");
 
-				int player = Integer.parseInt(heal[0]);
-				int index = Integer.parseInt(heal[1]);
-				int healamount = Integer.parseInt(heal[2]);
+				int healamount = Integer.parseInt(heal[1]);
 
-				Target healtarget;
+				Target healtarget = getByIndex(heal[0]);
+				Target from = getByIndex(heal[2]);
 
-				if (player == 1) {
-					if (index != -1)
-						healtarget = player2.field.getByIndex(index);
-					else
-						healtarget = player2.hero.hero();
-					healtarget.heal(healamount, true);
-					return;
-				}
-				if (index != -1)
-					healtarget = player1.field.getByIndex(index);
-				else
-					healtarget = player1.hero.hero();
-				healtarget.heal(healamount, true);
+				healtarget.heal(healamount, true, from);
 
 				break;
 
@@ -320,6 +306,18 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			}
 		} catch (Exception e) {
 		}
+	}
+
+	private Target getByIndex(String index) {
+		String[] tmp = index.split("#");
+		if (Integer.parseInt(tmp[0]) == 1) {
+			if (Integer.parseInt(tmp[1]) == -1)
+				return player2.hero.hero();
+			return player2.field.getByIndex(Integer.parseInt(tmp[1]));
+		}
+		if (Integer.parseInt(tmp[1]) == -1)
+			return player1.hero.hero();
+		return player1.field.getByIndex(Integer.parseInt(tmp[1]));
 	}
 
 	@Override

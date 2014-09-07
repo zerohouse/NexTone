@@ -40,7 +40,7 @@ public interface Target {
 
 	public abstract void setAttackBackground();
 
-	public abstract void heal(int amount, boolean sended);
+	public abstract void heal(int amount, boolean sended, Target from);
 
 	public abstract void vitalCheck();
 
@@ -55,4 +55,6 @@ public interface Target {
 	public abstract void setAlpha(float alpha);
 
 	public abstract boolean attackedable();
+	
+	public abstract int PlayerInfo();
 }

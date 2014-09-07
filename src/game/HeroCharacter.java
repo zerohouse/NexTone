@@ -284,9 +284,10 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	}
 
 	@Override
-	public void heal(int amount, boolean sended) {
+	public void heal(int amount, boolean sended, Target from) {
 		if (!sended)
-			Sender.S("16 " + hero.player.me + "," + -1 + "," + amount);
+			Sender.S("16 " + hero.player.me + "#" + -1 + "," + amount + ","
+					+ from.PlayerInfo() + "#" + from.index());
 
 		vital.add(amount);
 		if (vital.Int() > maxvital) {
@@ -358,6 +359,11 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int PlayerInfo() {
+		return hero.player.me();
 	}
 
 }

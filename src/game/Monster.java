@@ -406,6 +406,8 @@ public class Monster extends RelativeLayout implements Target {
 		Monster monster = new Monster(context, this.toString(), field, id, true);
 		if (defenseMonster)
 			field.dieDefenseMonster();
+		if (shield)
+			monster.offShield();
 		if (isAttacked()) {
 			monster.vital.setTextColor(Color.RED);
 		}
@@ -438,15 +440,16 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	@Override
-	public void heal(int amount, boolean sended) {
+	public void heal(int amount, boolean sended, Target from) {
 		if (!sended)
-			Sender.S("16 " + field.player.me + "," + id + "," + amount);
+			Sender.S("16 " + field.player.me + "#" + id + "," + amount + ","
+					+ from.PlayerInfo() + "#" + from.index());
 
 		if (shield && amount < 0) {
 			offShield();
 			return;
 		}
-		
+
 		vital.add(amount);
 		if (vital.Int() > maxvital) {
 			vital.setInt(maxvital);
@@ -483,6 +486,11 @@ public class Monster extends RelativeLayout implements Target {
 
 	public boolean shield() {
 		return defenseMonster;
+	}
+
+	@Override
+	public int PlayerInfo() {
+		return field.player.me();
 	}
 
 }

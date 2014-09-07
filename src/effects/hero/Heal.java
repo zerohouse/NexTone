@@ -30,7 +30,7 @@ public class Heal implements HeroEffect {
 			public void onClick(View v) {
 				Target selected = (Target) v;
 				player.hero.mana.Add(-cost, false);
-				selected.heal(2, false);
+				selected.heal(2, false, player.hero.hero());
 				Static.Cancel(player, false);
 			}
 
