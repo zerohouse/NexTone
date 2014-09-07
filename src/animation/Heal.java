@@ -2,24 +2,19 @@ package animation;
 
 import game.Method;
 import game.Target;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
-import android.widget.RelativeLayout;
 
-public class Attack {
+public class Heal {
 
-	static RelativeLayout container;
-	static Target onesave;
 
 	@SuppressLint("NewApi")
-	public static void AttackEffect(Target one, Target another,
+	public static void HealEffect(Target one, Target another,
 			boolean isChecked) {
 
-		onesave = one;
 		int x = (int) one.getX(one.isHero());
 		int toX = (int) another.getX(one.isHero());
 
@@ -30,9 +25,9 @@ public class Attack {
 		int origny = (int) one.getMarginY() + block;
 
 		final Target clone = one.cloneForAnimate();
-		container.addView((View) clone);
+		Attack.container.addView((View) clone);
 
-		one.setAlpha((float) 0.5);
+		clone.setAlpha((float) 0.5);
 		clone.getParams().leftMargin = x;
 		clone.getParams().bottomMargin = origny;
 
@@ -44,9 +39,6 @@ public class Attack {
 				amounty);
 		animation.setInterpolator(new AccelerateInterpolator());
 
-		animation.setRepeatCount(1);
-		animation.setRepeatMode(ValueAnimator.REVERSE);
-
 		animation.setDuration(500); // duartion in ms
 		animation.setFillAfter(false);
 		clone.startAnimation(animation);
@@ -63,29 +55,24 @@ public class Attack {
 			@Override
 			public void onAnimationEnd(Animation arg0) {
 
-				onesave.setAlpha((float) 1);
-				container.removeView((View) clone);
+				Attack.container.removeView((View) clone);
 			}
 		});
 
 	}
 
-	public static void set(RelativeLayout animate) {
-		container = animate;
-	}
 
 	@SuppressLint("NewApi")
-	public static void AttackedEffect(Target one, Target another) {
-		onesave = one;
+	public static void HealedEffect(Target one, Target another) {
 		int x = (int) one.getX(one.isHero());
 		int toX = (int) another.getX(one.isHero());
 
 		int origny = (int) one.getMarginY();
 
 		final Target clone = one.cloneForAnimate();
-		container.addView((View) clone);
+		Attack.container.addView((View) clone);
 
-		one.setAlpha((float) 0.5);
+		clone.setAlpha((float) 0.5);
 		clone.getParams().leftMargin = x;
 		clone.getParams().bottomMargin = origny;
 
@@ -97,9 +84,6 @@ public class Attack {
 				amounty);
 		animation.setInterpolator(new AccelerateInterpolator());
 
-		animation.setRepeatCount(1);
-		animation.setRepeatMode(ValueAnimator.REVERSE);
-
 		animation.setDuration(500); // duartion in ms
 		animation.setFillAfter(false);
 		clone.startAnimation(animation);
@@ -116,8 +100,7 @@ public class Attack {
 			@Override
 			public void onAnimationEnd(Animation arg0) {
 
-				onesave.setAlpha((float) 1);
-				container.removeView((View) clone);
+				Attack.container.removeView((View) clone);
 			}
 		});
 	}

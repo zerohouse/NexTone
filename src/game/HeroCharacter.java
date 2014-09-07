@@ -1,9 +1,6 @@
 package game;
 
-import com.mylikenews.nextoneandroid.R;
-
 import net.Sender;
-import components.ViewBinder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -11,6 +8,10 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.RelativeLayout;
 import animation.Attack;
+import animation.Heal;
+
+import com.mylikenews.nextoneandroid.R;
+import components.ViewBinder;
 
 public class HeroCharacter extends RelativeLayout implements Target {
 
@@ -289,6 +290,8 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			Sender.S("16 " + hero.player.me + "#" + -1 + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index());
 
+		Heal.HealEffect(from, this, sended);
+
 		vital.add(amount);
 		if (vital.Int() > maxvital) {
 			vital.setInt(maxvital);
@@ -296,7 +299,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		defeatCheck();
 		vitalCheck();
 
-	}
+	} 
 
 	@Override
 	public Player player() {

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import animation.Attack;
+import animation.Heal;
 
 import com.mylikenews.nextoneandroid.R;
 
@@ -444,11 +445,15 @@ public class Monster extends RelativeLayout implements Target {
 		if (!sended)
 			Sender.S("16 " + field.player.me + "#" + id + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index());
-
+		
+		
+		
 		if (shield && amount < 0) {
 			offShield();
 			return;
 		}
+		
+		Heal.HealEffect(from, this, sended);
 
 		vital.add(amount);
 		if (vital.Int() > maxvital) {
