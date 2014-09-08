@@ -2,22 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:background="@drawable/mainback"
+    android:gravity="bottom"
     android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}" >
 
     <TextView
         android:id="@+id/gamestart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:text="@string/btn_start"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    
-    
+
     <TextView
         android:id="@+id/selectdek"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="40dp"
+        android:gravity="center"
+        android:text="@string/btn_dek"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-    
 
 </LinearLayout>
