@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.AsyncTask;	
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import animation.Attack;
+import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
 
@@ -50,7 +51,10 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 	public void player1Setting(boolean first) {
 
-		Attack.set(animate);
+		Attack.setAnimate(animate);
+		Helper.setHelper(context);
+		
+		
 
 		container.removeAllViews();
 		player1 = new Player(context, player1dek, player1hero, 1, this);

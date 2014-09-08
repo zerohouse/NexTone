@@ -222,4 +222,5 @@ public class Hero extends RelativeLayout {
 		hero.newTurn();
 	}
 
+
 }

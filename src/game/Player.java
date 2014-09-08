@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
 
@@ -90,6 +91,20 @@ public class Player {
 				endTurn();
 			}
 		});
+
+		OnClickListener downy = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (Card.select != null) {
+					Card.select.down();
+					Helper.hideInfo();
+				}
+
+			}
+		};
+
+		field.setOnClickListener(downy);
+		hero.setOnClickListener(downy);
 
 	}
 
@@ -179,7 +194,7 @@ public class Player {
 			howmany = Integer.parseInt(cardhowmany[1]);
 
 			for (int i = 0; i < howmany; i++) {
-				card = new Card(context, eachcard, id);
+				card = new Card(context, eachcard, hand, id);
 				id++;
 				dek.add(card);
 			}
@@ -242,6 +257,7 @@ public class Player {
 		dekToDummy();
 		Sender.S(3 + " " + dekstring + ";" + herostring);
 		done = true;
+		Card.stateChange = false;
 
 		try {
 			Thread.sleep(1000);
@@ -303,7 +319,6 @@ public class Player {
 	}
 
 	public void newCard() {
-		hero.dummysize.setInt(dummy.size());
 		if (dummy.isEmpty()) {
 			hero.emptyDummy();
 			Method.alert("덱에 카드가 없습니다");

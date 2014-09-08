@@ -6,13 +6,18 @@ import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import animation.Helper;
 
 public class Card extends RelativeLayout {
+
+	static boolean stateChange = true;
+	public static Card select = null;
 
 	HeroEffect effect;
 	boolean haseffect;
 	Context context;
 	int monster;
+	Hand hand;
 
 	ViewBinder cost, attack, vital;
 	String resource, name, description, effects;
@@ -21,7 +26,7 @@ public class Card extends RelativeLayout {
 
 	boolean selected;
 
-	public Card(Context context, String eachcard, int index) {
+	public Card(Context context, String eachcard, Hand hand, int index) {
 		super(context);
 		this.context = context;
 
@@ -36,7 +41,6 @@ public class Card extends RelativeLayout {
 		params.setMargins(Method.dpToPx(4), Method.dpToPx(1), Method.dpToPx(4),
 				Method.dpToPx(1));
 
-
 		selected = false;
 
 		String[] cardinfo = eachcard.split(";");
@@ -44,9 +48,8 @@ public class Card extends RelativeLayout {
 		name = cardinfo[0];
 		description = cardinfo[1];
 		resource = cardinfo[2];
-		
-		setBackgroundResource(Method.resId(resource + "c"));
 
+		setBackgroundResource(Method.resId(resource + "c"));
 
 		switch (Integer.parseInt(cardinfo[3])) {
 		case 0:// 몬스터 카드
@@ -85,30 +88,55 @@ public class Card extends RelativeLayout {
 		setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				toggleSelect();
+				if (stateChange) {
+					toggleMultipleSelect();
+					return;
+				}
+				toggleSingleSelect();
+
 			}
 		});
 	}
 
-	public void toggleSelect() {
+	public void toggleMultipleSelect() {
+
 		if (selected == false) {
-			this.setBackgroundResource(Method.resId(resource + "clicked"));
-			params.bottomMargin = Method.dpToPx(10);
-			setLayoutParams(params);
-			selected = true;
+			up();
 		} else {
-			this.setBackgroundResource(Method.resId(resource + "c"));
-			selected = false;
-			params.bottomMargin = 0;
-			setLayoutParams(params);
+			down();
 		}
 	}
 
-	public void deSelect() {
+	public void toggleSingleSelect() {
+		if (select == this) {
+			down();
+			select = null;
+			Helper.hideInfo();
+			return;
+		}
+		if (select != null)
+			select.down();
+		select = this;
+		Helper.showInfo(this);
+		up();
+	}
+
+	public void down() {
 		this.setBackgroundResource(Method.resId(resource + "c"));
 		selected = false;
 		params.bottomMargin = 0;
 		setLayoutParams(params);
+	}
+
+	private void up() {
+		this.setBackgroundResource(Method.resId(resource + "clicked"));
+		params.bottomMargin = Method.dpToPx(10);
+		setLayoutParams(params);
+		selected = true;
+	}
+
+	public void deSelect() {
+		up();
 	}
 
 	public boolean selected() {
@@ -144,6 +172,7 @@ public class Card extends RelativeLayout {
 			addMonster(player);
 		if (haseffect)
 			effect.run(0);
+		Helper.hideInfo();
 	}
 
 	private void addMonster(Player player) {
@@ -152,6 +181,14 @@ public class Card extends RelativeLayout {
 		player.field.add(monster);
 		player.hand.remove(this);
 		player.hero.mana.Add(-cost.Int(), false);
+	}
+
+	public String name() {
+		return name;
+	}
+	
+	public String description() {
+		return description;
 	}
 
 }

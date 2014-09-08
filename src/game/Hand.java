@@ -43,12 +43,34 @@ public class Hand extends LinearLayout {
 
 	public void add(Card card) {
 		items.add(card);
+		marginCheck();
 		addView(card);
+
+	}
+
+	private void marginCheck() {
+		if (items.size() < 5) {
+			for (Card card : items) {
+				card.params.leftMargin = 5;
+				card.params.rightMargin = 5;
+				card.params.width = Method.dpToPx(70);
+			}
+			return;
+		}
+		for (Card card : items) {
+			card.params.leftMargin = (int) (4 - (items.size() * 0.5 - 2)
+					* Method.dpToPx(3));
+			card.params.rightMargin = (int) (4 - (items.size() * 0.5 - 2)
+					* Method.dpToPx(3));
+			card.params.width = (int) (Method.dpToPx(70) - (items.size() * 0.5 - 2)
+					* Method.dpToPx(3));
+		}
 
 	}
 
 	public void remove(Card card) {
 		items.remove(card);
+		marginCheck();
 		removeView(card);
 	}
 
@@ -56,7 +78,7 @@ public class Hand extends LinearLayout {
 		int removes = 0;
 		for (int i = items.size() - 1; i > -1; i--) {
 			if (items.get(i).selected()) {
-				items.get(i).toggleSelect();
+				items.get(i).toggleMultipleSelect();
 				removeView(items.get(i));
 				clonedek.add(items.get(i));
 				items.remove(i);
@@ -87,5 +109,7 @@ public class Hand extends LinearLayout {
 	public View ScrollView() {
 		return scroll;
 	}
+
+
 
 }

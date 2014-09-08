@@ -158,6 +158,7 @@ public class Monster extends RelativeLayout implements Target {
 			shield = true;
 			break;
 		case 3:
+			newTurn();
 			break;
 		}
 	}
@@ -445,14 +446,12 @@ public class Monster extends RelativeLayout implements Target {
 		if (!sended)
 			Sender.S("16 " + field.player.me + "#" + id + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index());
-		
-		
-		
+
 		if (shield && amount < 0) {
 			offShield();
 			return;
 		}
-		
+
 		Heal.HealEffect(from, this, sended);
 
 		vital.add(amount);

@@ -70,8 +70,9 @@ public class Attack {
 
 	}
 
-	public static void set(RelativeLayout animate) {
+	public static void setAnimate(RelativeLayout animate) {
 		container = animate;
+		
 	}
 
 	@SuppressLint("NewApi")
