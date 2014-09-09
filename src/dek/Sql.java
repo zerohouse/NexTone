@@ -19,7 +19,7 @@ public class Sql extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		String sql = "create table if not exists mydeklist"
 				+ " (id integer," //  primary key autoincrement not null
-				+ " hero text, dek text, summary text, sum integer);";
+				+ " hero text, dek text, summary text, sum integer, name text);";
 		db.execSQL(sql);
 	}
 
@@ -41,6 +41,7 @@ public class Sql extends SQLiteOpenHelper {
 		values.put("hero", data.getHerostring());
 		values.put("dek", data.getDekstring());
 		values.put("summary", data.getSummary());
+		values.put("name", data.getName());
 		db.insert("mydeklist", null, values); // 테이블/널컬럼핵/데이터(널컬럼핵=디폴트)
 		// tip : 마우스를 db.insert에 올려보면 매개변수가 어떤 것이 와야 하는지 알 수 있다.
 	}
@@ -54,6 +55,7 @@ public class Sql extends SQLiteOpenHelper {
 		values.put("dek", data.getDekstring());
 		values.put("summary", data.getSummary());
 		values.put("sum", data.getSum() + "");
+		values.put("name", data.getName());
 		db.update("mydeklist", values, "id=?",
 				new String[] { data.getId() + "" });
 		Log.i("db",
@@ -73,10 +75,10 @@ public class Sql extends SQLiteOpenHelper {
 
 		SQLiteDatabase db = getReadableDatabase(); // db객체를 얻어온다. 읽기 전용
 		Cursor c = db.query("mydeklist", new String[] { "id", "dek", "hero",
-				"summary", "sum" }, null, null, null, null, null);
+				"summary", "sum", "name" }, null, null, null, null, null);
 		while (c.moveToNext()) {
 			result.add(new Data(c.getInt(0), c.getInt(4), c.getString(3), c
-					.getString(2), c.getString(1)));
+					.getString(2), c.getString(1), c.getString(5)));
 		}
 
 		return result;

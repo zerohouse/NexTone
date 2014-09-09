@@ -49,7 +49,7 @@ public class SelectHeroAbility extends Activity {
 			listener = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Data data = new Data(DekList.LastId() + 1, getIntent()
+					Data data = new Data(DekList.lastId() + 1, getIntent()
 							.getExtras().getString("resource")
 							+ ","
 							+ v.getId(), ""); // 히어로 리소스 부분 수정해야댐..

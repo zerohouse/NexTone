@@ -51,7 +51,7 @@ public class GameActivity extends Activity {
 		Data data = (Data) getIntent().getSerializableExtra("selected");
 		dekstring = data.getDekstring();
 		herostring = data.getHerostring();
-		ip = "192.168.0.11";
+		ip = "192.168.43.187";
 		port = 13333;
 	}
 

@@ -1,5 +1,7 @@
 package com.mylikenews.nextoneandroid;
 
+import game.Method;
+
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -24,7 +26,8 @@ public class DekList extends Activity {
 	OnClickListener listener, selecthero;
 	ArrayList<Data> deklist;
 	static int lastid = 1;
-	public static int LastId() {
+
+	public static int lastId() {
 		return lastid;
 	}
 
@@ -32,14 +35,15 @@ public class DekList extends Activity {
 	protected void onResume() {
 		super.onResume();
 		resetViews();
-
 	}
 
 	private void resetViews() {
 		layout.removeAllViews();
 		deklist = sql.dekList();
-		if(deklist.size()!=0)
-		lastid = deklist.get(deklist.size()-1).getId();
+
+		if (deklist.size() != 0)
+			lastid = deklist.get(deklist.size() - 1).getId();
+
 		for (int i = 0; i < deklist.size(); i++) {
 			each = new EachDek(this, deklist.get(i), true);
 			layout.addView(each);
@@ -64,8 +68,13 @@ public class DekList extends Activity {
 			};
 			each.setOnClickListener(listener);
 		}
+		makeAddButton();
 
+	}
+
+	private void makeAddButton() {
 		TextView text = new TextView(this);
+		text.setHeight(Method.dpToPx(50));
 		text.setGravity(Gravity.CENTER);
 		text.setTextAppearance(this, R.style.myText);
 		text.setText("+ 새로운 덱 추가하기");
@@ -91,6 +100,4 @@ public class DekList extends Activity {
 		intent = new Intent(this, MakeDek.class);
 	}
 
-	
-	
 }

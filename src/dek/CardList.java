@@ -86,14 +86,13 @@ public class CardList {
 			sum += i;
 		}
 		data.setSum(sum);
-		String result = SelectHeroAbility.heroType(data.getHeroType())[0] + "("
-				+ sum + "/30)" + "\n";
+		String result = data.getName() + " (" + sum + "/30)" + "\n";
 
-		result += String
-				.format("[0]x%d, [1]x%d, [2]x%d, [3]x%d, [4]x%d, [5]x%d, [6]x%d, [7+]x%d",
-						costcounts[0], costcounts[1], costcounts[2],
-						costcounts[3], costcounts[4], costcounts[5],
-						costcounts[6], costcounts[7]);
+		result += String.format(
+				"영웅능력 : %s\n0x%d, 1x%d, 2x%d, 3x%d, 4x%d, 5x%d, 6x%d, 7+x%d",
+				SelectHeroAbility.heroType(data.getHeroType())[0],
+				costcounts[0], costcounts[1], costcounts[2], costcounts[3],
+				costcounts[4], costcounts[5], costcounts[6], costcounts[7]);
 		dekinfo.setText(result);
 		sqlUpdate(result);
 

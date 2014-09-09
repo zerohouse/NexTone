@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/gamestart"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:gravity="center"
         android:text="@string/btn_start"
         android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -18,8 +18,8 @@
     <TextView
         android:id="@+id/selectdek"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="40dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="60dp"
         android:gravity="center"
         android:text="@string/btn_dek"
         android:textAppearance="?android:attr/textAppearanceLarge" />
