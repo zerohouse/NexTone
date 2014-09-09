@@ -86,7 +86,7 @@ public class CardList {
 			sum += i;
 		}
 		data.setSum(sum);
-		String result = SelectHeroAbility.selectedHeroType(data.getHeroType()) + "("
+		String result = SelectHeroAbility.heroType(data.getHeroType())[0] + "("
 				+ sum + "/30)" + "\n";
 
 		result += String

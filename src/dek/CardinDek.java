@@ -1,23 +1,28 @@
 package dek;
 
+import game.Method;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mylikenews.nextoneandroid.R;
 
-public class CardinDek extends LinearLayout implements Comparable<CardinDek> {
+public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 	int cost, attack, vital, id;
 	String name, description, resource;
 
+	ImageView background;
 	Context context;
 	TextView nameview, descriptionview;
 
 	int size = 1;
 
-	@SuppressLint("DefaultLocale")
+	@SuppressLint({ "DefaultLocale", "NewApi" })
 	public CardinDek(Context context, String string, int id) {
 		super(context);
 		// 카드 스트링 양식 (구분자 : ;)
@@ -33,26 +38,42 @@ public class CardinDek extends LinearLayout implements Comparable<CardinDek> {
 		vital = Integer.parseInt(cardresource[7]);
 
 		resource = cardresource[2];
+
 		this.id = id;
 
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
 		setLayoutParams(params);
-		setOrientation(LinearLayout.VERTICAL);
+		params.height = Method.dpToPx(75);
+
 		nameview = new TextView(context);
 		nameview.setTextAppearance(context, R.style.myText);
-
+		nameview.setGravity(Gravity.CENTER);
+		LayoutParams nameparams = Method.getParams();
+		nameview.setLayoutParams(nameparams);
+		nameparams.addRule(CENTER_HORIZONTAL);
 		setSize(size);
 		descriptionview = new TextView(context);
-
+		LayoutParams desparams = Method.getParams();
+		descriptionview.setLayoutParams(desparams);
+		desparams.addRule(CENTER_HORIZONTAL);
+		desparams.addRule(ALIGN_PARENT_BOTTOM);
 		String info = String.format("마나:%d, 공격력:%d, 체력:%d\n%s", cost, attack,
 				vital, this.description);
 		descriptionview.setText(info);
+		descriptionview.setGravity(Gravity.CENTER);
 
+		background = new ImageView(context);
+		LayoutParams imageparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT);
+		background.setLayoutParams(imageparams);
+		background.setScaleType(ScaleType.CENTER_CROP);
+		background.setImageResource(Method.resId(resource + "c"));
+		background.setAlpha((float) 0.5);
+		addView(background);
 		addView(nameview);
 		addView(descriptionview);
-
 	}
 
 	public String toStirng() {
