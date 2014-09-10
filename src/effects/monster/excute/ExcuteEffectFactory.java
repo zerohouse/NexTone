@@ -21,6 +21,16 @@ public class ExcuteEffectFactory {
 			return result;
 		}
 	}
+	
+	public static ExcuteEffect totemNumber(int num) {
+
+		
+		ExcuteEffect
+
+			result = new TotemNumber(num); // 힐링 템
+			return result;
+
+	}
 
 
 }

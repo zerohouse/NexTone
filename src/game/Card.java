@@ -17,6 +17,7 @@ public class Card extends RelativeLayout {
 	boolean haseffect;
 	Context context;
 	int monster;
+	String cardinfo;
 	Hand hand;
 
 	ViewBinder cost, attack, vital;
@@ -30,6 +31,7 @@ public class Card extends RelativeLayout {
 		super(context);
 		this.context = context;
 
+		this.cardinfo = eachcard;
 		params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -167,12 +169,15 @@ public class Card extends RelativeLayout {
 		return monster;
 	}
 
-	public void use(Player player) {
+	public void use(Player player, boolean sended) {
 		if (monster > 0)
 			addMonster(player);
 		if (haseffect)
 			effect.run(0);
 		Helper.hideInfo();
+		/*
+		 * if (!sended) Sender.S("20 " + player.me() + "," + index);
+		 */
 	}
 
 	private void addMonster(Player player) {
@@ -186,9 +191,16 @@ public class Card extends RelativeLayout {
 	public String name() {
 		return name;
 	}
-	
+
 	public String description() {
 		return description;
 	}
 
+	public static void stateChange() {
+		stateChange = true;
+	}
+
+	public String toString(){
+		return cardinfo;
+	}
 }

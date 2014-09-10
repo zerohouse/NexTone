@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import animation.Attack;
 import animation.Heal;
+import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
 
@@ -31,7 +32,9 @@ public class Monster extends RelativeLayout implements Target {
 	String effects;
 	boolean defenseMonster, shield = false; // 방패/보호막
 	ImageView charimage, foreimage;
+	Card card;
 
+	OnClickListener showHelper;
 	Context context;
 	ViewBinder damage, vital;
 	String resource;
@@ -41,15 +44,17 @@ public class Monster extends RelativeLayout implements Target {
 	public Monster(Context context, Card card, Field field, String effects,
 			boolean sended) {
 		super(context);
+		this.card = card;
 		this.effects = effects;
 		deFault(context, field, card.index());
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
 		setEffects();
-
+		setHelperShow();
 		if (!sended) {
-			Sender.S("8 " + field.player.me + "@" + toString());
+			Sender.S("8 " + field.player.me + "@" + toString() + "@"
+					+ card.toString() + "@" + id);
 
 		}
 	}
@@ -83,9 +88,11 @@ public class Monster extends RelativeLayout implements Target {
 		this.vital.setGravity(Gravity.CENTER);
 	}
 
-	public Monster(Context context, String info, Field field, int index,
-			boolean sended) {
+	public Monster(Context context, Card card, String info, Field field,
+			int index, boolean sended) {
 		super(context);
+
+		this.card = card;
 		String[] cardinfo = info.split(",");
 		deFault(context, field, Integer.parseInt(cardinfo[0]));
 
@@ -95,12 +102,12 @@ public class Monster extends RelativeLayout implements Target {
 		setBackgroundDefault();
 		this.effects = cardinfo[4];
 		Log.i("effects", effects);
-
+		setHelperShow();
 		setEffects();
-
+		
 		if (!sended) {
-			Sender.S("8 " + field.player.me + "@" + toString());
-
+			Sender.S("8 " + field.player.me + "@" + toString() + "@"
+					+ card.toString() + "@" + id);
 		}
 	}
 
@@ -158,8 +165,10 @@ public class Monster extends RelativeLayout implements Target {
 			shield = true;
 			break;
 		case 3:
-			newTurn();
+			if (field.player.me() == 1)
+				newTurn();
 			break;
+
 		}
 	}
 
@@ -185,7 +194,6 @@ public class Monster extends RelativeLayout implements Target {
 
 		setY(-10);
 		setY(10);
-
 		this.context = context;
 		this.field = field;
 		this.id = index;
@@ -206,6 +214,14 @@ public class Monster extends RelativeLayout implements Target {
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		charimage.setLayoutParams(lay);
 		addView(charimage);
+
+		showHelper = new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Helper.showInfo(card);
+			}
+		};
 
 		attackReady();
 	}
@@ -392,11 +408,15 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public void endTurn() {
-		setOnClickListener(null);
+		setHelperShow();
 		attackdisAble();
 		if (endTurn != null) {
 			endTurn.run();
 		}
+	}
+
+	public void setHelperShow() {
+		setOnClickListener(showHelper);
 	}
 
 	@Override
@@ -405,7 +425,8 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public Monster cloneForAnimate() {
-		Monster monster = new Monster(context, this.toString(), field, id, true);
+		Monster monster = new Monster(context, card, this.toString(), field,
+				id, true);
 		if (defenseMonster)
 			field.dieDefenseMonster();
 		if (shield)
@@ -495,6 +516,10 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public int PlayerInfo() {
 		return field.player.me();
+	}
+
+	public Card card() {
+		return card;
 	}
 
 }

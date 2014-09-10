@@ -17,16 +17,14 @@ public class Dummy {
 		int size, rannum;
 		Card card;
 
-		while (dek.size() > 1) {
+		while (dek.size() > 0) {
 			size = dek.size();
-			rannum = random.nextInt(size - 1);
+			rannum = random.nextInt(size);
 			result += rannum + ",";
 			card = dek.get(rannum);
 			items.push(card);
 			dek.remove(rannum);
 		}
-		items.push(dek.get(0));
-		result += 0;
 
 		return result;
 	}

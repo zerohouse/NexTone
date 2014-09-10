@@ -27,7 +27,7 @@ public class Player {
 	String dekstring, herostring;
 	ArrayList<Card> dek;
 	Context context;
-	Hand hand;
+	public Hand hand;
 	Random random;
 	Dummy dummy;
 	public Field field;
@@ -140,7 +140,7 @@ public class Player {
 		}
 
 		for (Card card : selected) {
-			card.use(this);
+			card.use(this, false);
 		}
 		cardStateUpdate();
 	}
@@ -245,7 +245,7 @@ public class Player {
 		Card rancard;
 		int added = 0;
 		while (added < size) {
-			rannum = random.nextInt(dek.size() - 1);
+			rannum = random.nextInt(dek.size());
 
 			rancard = dek.get(rannum);
 			if (!hand.contains(rancard)) {
@@ -349,8 +349,8 @@ public class Player {
 		this.dekstring = dekstring;
 	}
 
-	public void listenerNull() {
-		field.listenerNull();
+	public void listenerHelper() {
+		field.listenerHelper();
 		hero.listenerNull();
 	}
 
@@ -427,4 +427,5 @@ public class Player {
 		areyousure.show();
 
 	}
+
 }

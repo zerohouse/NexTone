@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import animation.Helper;
 import animation.HideAndShow;
 
 public class Field extends LinearLayout {
@@ -57,10 +58,12 @@ public class Field extends LinearLayout {
 		addView(monster);
 	}
 
-	public void addByString(String string, boolean sended) {
-		Monster monster = new Monster(context, string, this, items.size(),
+	public void addByString(String cardstring, int cardindex, String monsterstring, boolean sended) {
+		Card card = new Card(context, cardstring, player.hand, cardindex);
+		Monster monster = new Monster(context, card, monsterstring, this, items.size(),
 				sended);
 		add(monster);
+		Helper.showInfo(monster.card());
 	}
 
 	public void newTurn() {
@@ -133,9 +136,9 @@ public class Field extends LinearLayout {
 		return null;
 	}
 
-	public void listenerNull() {
+	public void listenerHelper() {
 		for (Monster monster : items) {
-			monster.setOnClickListener(null);
+			monster.setHelperShow();
 		}
 	}
 

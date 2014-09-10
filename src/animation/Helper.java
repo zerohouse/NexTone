@@ -4,6 +4,7 @@ import game.Card;
 import game.Method;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -18,6 +19,13 @@ public class Helper {
 			attackparams, descriptionparams, nameparams;
 	static TextView cost, vital, attack, description, name;
 	static ImageView character;
+	static Handler handler = new Handler();
+	static Runnable stop = new Runnable() {
+		@Override
+		public void run() {
+			hideInfo();
+		}
+	};
 
 	public static void setHelper(Context context) {
 		helper = new RelativeLayout(context);
@@ -26,7 +34,18 @@ public class Helper {
 		params.addRule(RelativeLayout.CENTER_IN_PARENT);
 		params.width = Method.dpToPx(140);
 		params.height = Method.dpToPx(180);
-		Attack.container.addView(helper);
+		
+		RelativeLayout layout = new RelativeLayout(context);
+		
+		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.MATCH_PARENT,
+				RelativeLayout.LayoutParams.MATCH_PARENT);
+		layout.setLayoutParams(param);
+		Attack.container.addView(layout);
+		layout.addView(helper);
+		HideAndShow animate = new HideAndShow(layout);
+		animate.animateForHelper();
+		
 		helper.setVisibility(View.INVISIBLE);
 
 		character = new ImageView(context);
@@ -42,7 +61,7 @@ public class Helper {
 
 		int horizontalmargin = Method.dpToPx(8);
 		int verticalmargin = Method.dpToPx(5);
-		
+
 		cost = new TextView(context);
 		cost.setTextAppearance(context, R.style.myText);
 		cost.setLayoutParams(costparams);
@@ -109,10 +128,11 @@ public class Helper {
 		vital.setText(card.vital() + "");
 		attack.setText(card.attack() + "");
 
+		handler.removeCallbacks(stop);
+		handler.postDelayed(stop, 3000);
 	}
 
 	public static void hideInfo() {
 		helper.setVisibility(View.INVISIBLE);
 	}
-
 }

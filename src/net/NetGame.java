@@ -1,5 +1,6 @@
 package net;
 
+import game.Card;
 import game.Method;
 import game.Player;
 import game.Static;
@@ -157,6 +158,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			switch (type) {
 
 			case 0: // 0번이 넘어오면 시작한다. (카드 바꾸기 화면 실행)
+				Card.stateChange();
 				if (Integer.parseInt(response[1]) == 1) {
 					player1Setting(true);
 					return;
@@ -203,15 +205,17 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				player1.hero.setByString(res[1]);
 				break;
 
-			case 8: // 8번은 생성할 몬스터의 정보를 가지고 온다.
-					// 8번을 통해 필드에 상대의 몬스터를 생성한다.
+			case 8: // 8번은 사용할 카드의 정보를 가지고 온다.
+					// 플레이어의 덱에있는 카드를 index를 통해 사용.
+
 				String[] mon = response[1].split("@");
 				if (mon[0].equals("1")) {
-					player2.field.addByString(mon[1], true);
+					player2.field.addByString(mon[2], Integer.parseInt(mon[3]),
+							mon[1], true);
 					return;
 				}
-				player1.field.addByString(mon[1], true);
-
+				player1.field.addByString(mon[2], Integer.parseInt(mon[3]),
+						mon[1], true);
 				break;
 
 			case 9: // 9번은 공격정보를 가져온다.
@@ -306,7 +310,8 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				}
 				player1.hero.setDamage(Integer.parseInt(dam[1]), true);
 				break;
-				
+
+
 			case 100:
 				player1.gameEnd(1); // 패배
 				Sender.S("550 ");
@@ -315,7 +320,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			case 101:
 				player1.gameEnd(2); // 상대가 나감.
 				break;
-				
+
 			case 103:
 				player1.gameEnd(3); // 상대가 나감.
 				break;
@@ -326,6 +331,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

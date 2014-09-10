@@ -63,7 +63,7 @@ public class Static {
 
 		player.attackReady();
 
-		player.enemy.listenerNull();
+		player.enemy.listenerHelper();
 		if (sendToAnother) {
 			Sender.S("12 ");
 		}
