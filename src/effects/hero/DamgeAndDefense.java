@@ -12,7 +12,7 @@ public class DamgeAndDefense implements HeroEffect {
 	@Override
 	public void run(int manacost) {
 
-		player.hero.getDefense(1, false, 1);
+		player.hero.getDefense(1, false, manacost);
 		player.hero.setDamage(1, false);
 		player.hero.heroNewTurn();
 	}

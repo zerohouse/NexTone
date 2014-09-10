@@ -144,7 +144,10 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	void defeatCheck() {
 		if (vital.Int() < 1) {
-			hero.player.defeat();
+			if (hero.player.me() == 2) {
+				hero.player.gameEnd(0);
+				return;
+			} 
 		}
 	}
 
@@ -299,7 +302,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		defeatCheck();
 		vitalCheck();
 
-	} 
+	}
 
 	@Override
 	public Player player() {

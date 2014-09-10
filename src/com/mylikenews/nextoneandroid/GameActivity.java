@@ -2,9 +2,13 @@ package com.mylikenews.nextoneandroid;
 
 import game.Method;
 import net.NetGame;
+import net.Sender;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -32,6 +36,8 @@ public class GameActivity extends Activity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		setContentView(R.layout.activity_game);
+		
+		NetGame.resetStart();
 
 		Method.setContext(this);
 		container = (LinearLayout) findViewById(R.id.container);
@@ -51,7 +57,7 @@ public class GameActivity extends Activity {
 		Data data = (Data) getIntent().getSerializableExtra("selected");
 		dekstring = data.getDekstring();
 		herostring = data.getHerostring();
-		ip = "192.168.43.187";
+		ip = "192.168.0.11";
 		port = 13333;
 	}
 
@@ -63,9 +69,58 @@ public class GameActivity extends Activity {
 					ip, port, dekstring, herostring);
 			
 			ngame.execute();
-			container.removeView(v);
+			container.removeView(v); 
 			container.addView(status);
 		}
 	};
+	
+	// 2.0 and above
+	@Override
+	public void onBackPressed() {
+		if(!NetGame.isStart()){
+			finish();
+			return;
+		}
+		showAreYouSureDialog();
+	}
 
+	// Before 2.0
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(!NetGame.isStart()){
+			finish();
+			return super.onKeyDown(keyCode, event);
+		}
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        showAreYouSureDialog();
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+
+	public void showAreYouSureDialog() {
+		AlertDialog.Builder areyousure = new AlertDialog.Builder(GameActivity.this);
+		
+		areyousure.setTitle("게임에서 나갑니다.");
+
+		// Set up the buttons
+		areyousure.setNegativeButton("포기하고 다음판 할래!",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						Sender.S("101 "); //항복
+						Sender.close();
+						finish();
+					}
+				});
+		areyousure.setPositiveButton("아니 잘못 눌렀어!",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
+		
+		areyousure.show();
+	}
 }

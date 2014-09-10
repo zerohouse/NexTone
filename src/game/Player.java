@@ -6,13 +6,18 @@ import java.util.Random;
 import net.NetGame;
 import net.Sender;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import animation.Helper;
 
+import com.mylikenews.nextoneandroid.DekList;
 import com.mylikenews.nextoneandroid.R;
 
 import components.ImageButton;
@@ -26,7 +31,7 @@ public class Player {
 	Random random;
 	Dummy dummy;
 	public Field field;
-	boolean first, done;
+	boolean first, done, gameend;
 	public int me;
 	Button change;
 	ImageButton usecard, heroabillity;
@@ -269,10 +274,6 @@ public class Player {
 			Sender.S(5 + " "); // IAMDONE (second)
 	}
 
-	public void defeat() {
-
-	}
-
 	public String dekToDummy() {
 		String ranorder = dummy.shffleAdd(dek, random);
 		return ranorder;
@@ -380,4 +381,50 @@ public class Player {
 		return context;
 	}
 
+	public void gameEnd(int type) {
+
+		AlertDialog.Builder areyousure = new AlertDialog.Builder(context);
+
+		if (gameend)
+			return;
+
+		gameend = true;
+
+		switch (type) {
+		case 0:
+			areyousure.setTitle("게임에서 승리하였습니다.");
+			Sender.S("100 ");
+			break;
+		case 1:
+			areyousure.setTitle("게임에서 패배하였습니다.");
+			break;
+		case 2:
+			areyousure.setTitle("상대가 게임을 포기했습니다.");
+			break;
+		case 3:
+			areyousure.setTitle("상대가 게임에서 떠났습니다.");
+			break;
+		}
+		
+		// Set up the buttons
+		areyousure.setPositiveButton("이전 화면으로",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						((Activity) context).finish();
+					}
+				});
+		areyousure.setNegativeButton("덱 구성하기",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						((Activity) context).finish();
+						Intent intent = new Intent(context, DekList.class);
+						context.startActivity(intent);
+					}
+				});
+
+		areyousure.show();
+
+	}
 }

@@ -7,12 +7,12 @@ import java.net.Socket;
 
 public class Sender {
 
-	Socket socket;
-	OutputStream out;
+	static Socket socket;
+	static OutputStream out;
 	static DataOutputStream dataout;
 	
-	public Sender(Socket socket){
-		this.socket = socket;
+	public Sender(Socket sock){
+		socket = sock;
 		try {
 			out = socket.getOutputStream();
 			dataout = new DataOutputStream(out);
@@ -20,6 +20,19 @@ public class Sender {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void close() {
+		try {
+			socket.close();
+			out.close();
+			dataout.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 	
 	public static void S(String send){
 		try {
@@ -36,5 +49,6 @@ public class Sender {
 			e.printStackTrace();
 		}
 	}
+
 
 }

@@ -1,5 +1,11 @@
 package com.mylikenews.nextoneandroid;
 
+/*
+ * 
+ * 덱 만들기 메뉴
+ * 
+ * */
+
 import game.Method;
 
 import java.util.ArrayList;

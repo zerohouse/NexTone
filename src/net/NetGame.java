@@ -12,7 +12,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import android.content.Context;
-import android.os.AsyncTask;	
+import android.os.AsyncTask;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -34,6 +34,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	boolean first;
 	String ip;
 	int port;
+	static boolean isgameStart = false;
 	RelativeLayout animate;
 
 	public NetGame(Context context, LinearLayout container,
@@ -51,10 +52,9 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 	public void player1Setting(boolean first) {
 
+		isgameStart = true;
 		Attack.setAnimate(animate);
 		Helper.setHelper(context);
-		
-		
 
 		container.removeAllViews();
 		player1 = new Player(context, player1dek, player1hero, 1, this);
@@ -306,8 +306,25 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				}
 				player1.hero.setDamage(Integer.parseInt(dam[1]), true);
 				break;
+				
+			case 100:
+				player1.gameEnd(1); // 패배
+				Sender.S("550 ");
+				break;
 
+			case 101:
+				player1.gameEnd(2); // 상대가 나감.
+				break;
+				
+			case 103:
+				player1.gameEnd(3); // 상대가 나감.
+				break;
+
+			case 550: // 게임 엔드.
+				Sender.close();
+				break;
 			}
+
 		} catch (Exception e) {
 		}
 	}
@@ -336,6 +353,14 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 	public ViewGroup container() {
 		return container;
+	}
+
+	public static boolean isStart() {
+		return isgameStart;
+	}
+
+	public static void resetStart() {
+		isgameStart = false;
 	}
 
 }

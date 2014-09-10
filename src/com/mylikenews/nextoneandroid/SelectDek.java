@@ -1,16 +1,23 @@
 package com.mylikenews.nextoneandroid;
 
+/*
+ * 
+ * 게임 진입시 덱선택하는 액티비티.
+ * 
+ * */
+
+
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import dek.Data;
 import dek.EachDek;
 import dek.Sql;
@@ -62,23 +69,36 @@ public class SelectDek extends Activity {
 		}
 
 		if (able == 0) {
-			TextView text = new TextView(SelectDek.this);
-			text.setGravity(Gravity.CENTER);
-
-			text.setTextAppearance(this, R.style.myText);
-			text.setText("\n\n사용가능한 덱이 없습니다.\n\n덱 만들러 가기");
-			layout.addView(text);
-
-			OnClickListener selecthero = new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent newdek = new Intent(SelectDek.this, DekList.class);
-					startActivity(newdek);
-				}
-			};
-			text.setOnClickListener(selecthero);
+			showGoToMakeDekDialog();
 		}
 
+	}
+	
+	public void showGoToMakeDekDialog() {
+		AlertDialog.Builder areyousure = new AlertDialog.Builder(SelectDek.this);
+		
+		areyousure.setTitle("사용가능한 덱이 없습니다.");
+
+		// Set up the buttons
+		areyousure.setPositiveButton("덱 만들러 가기",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					
+						Intent newdek = new Intent(SelectDek.this, DekList.class);
+						startActivity(newdek);
+					}
+				});
+		areyousure.setNegativeButton("이전 화면으로",
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				});
+	
+		
+		areyousure.show();
 	}
 
 	@Override

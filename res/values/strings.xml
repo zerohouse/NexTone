@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_offline_game">OfflineGame</string>
-    <string name="title_activity_main">NexTone - Welcome!</string>
+    <string name="title_activity_main">NexTone</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -17,6 +17,6 @@
     <string name="title_activity_dek_list">NexTone - 덱 선택하기</string>
     <string name="title_activity_select_hero">NexTone - 영웅능력 선택</string>
     <string name="btn_start">게임 시작하기</string>
-    <string name="btn_dek">나의 덱 만들기</string>
+    <string name="btn_dek">덱 만들기</string>
 
 </resources>

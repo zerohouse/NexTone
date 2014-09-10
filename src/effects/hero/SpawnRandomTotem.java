@@ -18,7 +18,7 @@ public class SpawnRandomTotem implements HeroEffect {
 	public void run(int manacost) {
 		player.hero.mana.Add(-manacost, false);
 
-		int totem = Static.ramdom.nextInt(3);
+		int totem = Static.ramdom.nextInt(4);
 		int index = Static.index();
 		String monsterinfo;
 		Monster monster;
@@ -45,6 +45,13 @@ public class SpawnRandomTotem implements HeroEffect {
 			monster = new Monster(player.context(), monsterinfo, player.field,
 					index, false);
 			monster.setAuraEffect(AuraEffectFactory.makeAuraEffect(1, monster)); // 주문능력부여
+			player.field.add(monster);
+			break;
+			
+		case 3:
+			monsterinfo = index + "," + 0 + "," + 2 + ",totemshield,0#1";
+			monster = new Monster(player.context(), monsterinfo, player.field,
+					index, false);
 			player.field.add(monster);
 			break;
 		}
