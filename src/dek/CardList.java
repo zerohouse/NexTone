@@ -18,13 +18,13 @@ public class CardList {
 	TextView dekinfo = null;
 	Context context;
 	LinearLayout layout;
-	TreeSet<CardinDek> items;
+	TreeSet<CardSelected> items;
 	Data data;
 	Sql sql;
 
 	private int sum() {
 		int sum = 0;
-		for (CardinDek card : items) {
+		for (CardSelected card : items) {
 			if (card.getSize() == 2)
 				sum++;
 			sum++;
@@ -37,7 +37,7 @@ public class CardList {
 		if (dekinfo == null)
 			return;
 		int[] costcounts = new int[8];
-		for (CardinDek card : items) {
+		for (CardSelected card : items) {
 			switch (card.getCost()) {
 			case 0:
 				if (card.getSize() == 2)
@@ -86,13 +86,18 @@ public class CardList {
 			sum += i;
 		}
 		data.setSum(sum);
-		String result = data.getName() + " (" + sum + "/30)" + "\n";
+		String result = data.getName() + "(" + sum + "/30)" + "\n";
 
-		result += String.format(
-				"영웅능력 : %s\n0x%d, 1x%d, 2x%d, 3x%d, 4x%d, 5x%d, 6x%d, 7+x%d",
-				SelectHeroAbility.heroType(data.getHeroType())[0],
-				costcounts[0], costcounts[1], costcounts[2], costcounts[3],
-				costcounts[4], costcounts[5], costcounts[6], costcounts[7]);
+		result += String.format("%s",
+				SelectHeroAbility.heroType(data.getHeroType())[0]);
+
+		/*
+		 * result += String.format(
+		 * "영웅능력 : %s\n0x%d, 1x%d, 2x%d, 3x%d, 4x%d, 5x%d, 6x%d, 7+x%d",
+		 * SelectHeroAbility.heroType(data.getHeroType())[0], costcounts[0],
+		 * costcounts[1], costcounts[2], costcounts[3], costcounts[4],
+		 * costcounts[5], costcounts[6], costcounts[7]);
+		 */
 		dekinfo.setText(result);
 		sqlUpdate(result);
 
@@ -113,18 +118,18 @@ public class CardList {
 		sql = new Sql(context);
 		String[] resource = context.getResources().getStringArray(
 				R.array.defaultcards);
-		items = new TreeSet<CardinDek>();
+		items = new TreeSet<CardSelected>();
 		if (!data.getDekstring().equals("")) {
 			String[] dekcards = data.getDekstring().split(",");
 			String[] tmp;
 			int id, size;
-			CardinDek newcard;
+			CardSelected newcard;
 
 			for (String s : dekcards) {
 				tmp = s.split("x");
 				id = Integer.parseInt(tmp[0]);
 				size = Integer.parseInt(tmp[1]);
-				newcard = new CardinDek(context, resource[id], id);
+				newcard = new CardSelected(context, resource[id], id);
 				newcard.setSize(size);
 				items.add(newcard);
 				layout.addView(newcard);
@@ -141,7 +146,7 @@ public class CardList {
 	public void update() {
 		infoUpdate();
 		layout.removeAllViews();
-		for (CardinDek card : items) {
+		for (CardSelected card : items) {
 			layout.addView(card);
 		}
 
@@ -152,7 +157,7 @@ public class CardList {
 			Method.alert("카드는 30장까지 추가할 수 있습니다.");
 			return false;
 		}
-		for (CardinDek card : items) {
+		for (CardSelected card : items) {
 			if (card.getId() == cardindek.getId()) {
 				if (card.getSize() == 1) {
 					card.setSize(2);
@@ -163,11 +168,11 @@ public class CardList {
 				}
 			}
 		}
-		CardinDek newcard = cardindek.clone();
+		CardSelected newcard = cardindek.clone();
 		OnClickListener removeSelected = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				remove((CardinDek) v);
+				remove((CardSelected) v);
 			}
 		};
 
@@ -180,12 +185,12 @@ public class CardList {
 	}
 
 	public void setListenerAll(OnClickListener Listener) {
-		for (CardinDek card : items) {
+		for (CardSelected card : items) {
 			card.setOnClickListener(Listener);
 		}
 	}
 
-	public void remove(CardinDek remove) {
+	public void remove(CardSelected remove) {
 		if (remove.getSize() == 2) {
 			remove.setSize(1);
 			infoUpdate();
@@ -198,7 +203,7 @@ public class CardList {
 
 	public String toString() {
 		String result = "";
-		for (CardinDek card : items) {
+		for (CardSelected card : items) {
 			result += "," + card.getId() + "x" + card.getSize();
 		}
 		if (result != "")

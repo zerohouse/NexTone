@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import dek.CardList;
 import dek.CardListDefault;
+import dek.CardSelected;
 import dek.CardinDek;
 import dek.Data;
 
@@ -39,7 +40,7 @@ public class MakeDek extends Activity {
 		OnClickListener removeSelected = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				selectedcards.remove((CardinDek) v);
+				selectedcards.remove((CardSelected) v);
 			}
 		};
 		selectedcards.setListenerAll(removeSelected);

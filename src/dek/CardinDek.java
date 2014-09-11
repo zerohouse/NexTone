@@ -105,8 +105,8 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 	}
 
 	@Override
-	public CardinDek clone() {
-		CardinDek result = new CardinDek(context, toStirng(), id);
+	public CardSelected clone() {
+		CardSelected result = new CardSelected(context, toStirng(), id);
 		return result;
 	}
 

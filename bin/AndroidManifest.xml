@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mylikenews.nextoneandroid"
-    android:screenOrientation="landscape"
+    android:screenOrientation="portrait"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -27,23 +27,28 @@
         </activity>
         <activity
             android:name=".MakeDek"
-            android:label="@string/title_activity_make_dek" >
+            android:label="@string/title_activity_make_dek"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SelectDek"
-            android:label="@string/title_activity_dek_list" >
+            android:label="@string/title_activity_dek_list"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".DekList"
-            android:label="@string/title_activity_dek_list" >
+            android:label="@string/title_activity_dek_list"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".SelectHeroAbility"
-            android:label="@string/title_activity_select_hero" >
+            android:label="@string/title_activity_select_hero"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

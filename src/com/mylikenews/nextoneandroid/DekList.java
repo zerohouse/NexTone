@@ -62,7 +62,7 @@ public class DekList extends Activity {
 				}
 			};
 			each.setRemoveListener(listener);
-
+ 
 			listener = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -94,9 +94,9 @@ public class DekList extends Activity {
 			}
 		};
 		text.setOnClickListener(selecthero);
-	}
-
-	@Override
+	}  
+  
+	@Override  
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dek_list);

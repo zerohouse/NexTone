@@ -49,7 +49,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		damage = new ViewBinder(context, 0, this);
 		damage.setBackgroundResource(R.drawable.attack);
 		damage.setGravity(Gravity.CENTER);
-
+ 
 		RelativeLayout.LayoutParams damageparams = damage.getParams();
 		damageparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 

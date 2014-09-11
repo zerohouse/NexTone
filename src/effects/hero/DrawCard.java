@@ -4,8 +4,8 @@ import game.Player;
 
 public class DrawCard implements HeroEffect {
 
-	Player player;
-
+	Player player; 
+ 
 	public DrawCard(Player player) {
 		this.player = player;
 	}
