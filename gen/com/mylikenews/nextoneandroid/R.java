@@ -17,7 +17,16 @@ public final class R {
         public static final int abc_slide_out_top=0x7f040005;
     }
     public static final class array {
+        public static final int bat=0x7f0c0007;
         public static final int defaultcards=0x7f0c0000;
+        public static final int defense=0x7f0c0005;
+        public static final int drawcard=0x7f0c0006;
+        public static final int druid=0x7f0c0009;
+        public static final int heal=0x7f0c0003;
+        public static final int hunter=0x7f0c0008;
+        public static final int magician=0x7f0c0002;
+        public static final int thief=0x7f0c0004;
+        public static final int totem=0x7f0c0001;
     }
     public static final class attr {
         /**  Custom divider drawable to use for elements in the action bar. 
@@ -1278,13 +1287,12 @@ containing a value of this type.
         public static final int always=0x7f05000b;
         public static final int animate=0x7f05003d;
         public static final int beginning=0x7f050011;
-        public static final int button1=0x7f050041;
-        public static final int button2=0x7f050043;
         public static final int checkbox=0x7f05002d;
         public static final int collapseActionView=0x7f05000d;
         public static final int container=0x7f05003e;
         public static final int default_activity_button=0x7f050028;
         public static final int defaultcards=0x7f050045;
+        public static final int defaults=0x7f050041;
         public static final int dekinfo=0x7f050044;
         public static final int deklist=0x7f05003c;
         public static final int description=0x7f050049;
@@ -1296,6 +1304,7 @@ containing a value of this type.
         public static final int expand_activities_button=0x7f050026;
         public static final int expanded_menu=0x7f05002c;
         public static final int gamestart=0x7f05003f;
+        public static final int heros=0x7f050043;
         public static final int home=0x7f050014;
         public static final int homeAsUp=0x7f050005;
         public static final int icon=0x7f05002a;

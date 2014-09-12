@@ -6,7 +6,7 @@
     tools:context="${relativePackage}.${activityClass}" >
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/defaults"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayout1"
@@ -14,11 +14,11 @@
         android:text="@string/defaultcard" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/heros"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/linearLayout1"
-        android:layout_toRightOf="@+id/button1"
+        android:layout_toRightOf="@+id/defaults"
         android:text="@string/herocard" />
 
     <TextView

@@ -136,4 +136,8 @@ public class EachDek extends RelativeLayout {
 		title.setTextColor(color);
 	}
 
+	public int getHeroType() {
+		return data.getHeroType();
+	}
+
 }
