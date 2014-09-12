@@ -38,7 +38,7 @@ public class MakeDek extends Activity {
 				cardslayout, data.getHeroType());
 		
 		defaultcards = new CardList(MakeDek.this,
-				cardslayout, 10);
+				cardslayout, 0);
 		defaultcards.show();
 		
 		

@@ -10,10 +10,6 @@ public class HeroEffectFactory {
 		HeroEffect result;
 		switch (type) {
 		
-		case 0:
-			result = new SpawnRandomTotem(player); // 주술
-			return result;
-		
 		case 1:
 			result = new FireBall(player); // 법사
 			return result;
@@ -38,7 +34,10 @@ public class HeroEffectFactory {
 		case 8:
 			result = new DamgeAndDefense(player); // 드루
 			return result;
-
+		case 9:
+			result = new SpawnRandomTotem(player); // 주술
+			return result;
+		
 			
 		default:
 			result = null;

@@ -18,9 +18,9 @@ import android.widget.RelativeLayout;
 import animation.Helper;
 
 import com.mylikenews.nextoneandroid.DekList;
-import com.mylikenews.nextoneandroid.R;
 
 import components.ImageButton;
+import dek.CardList;
 
 public class Player {
 
@@ -36,6 +36,7 @@ public class Player {
 	Button change;
 	ImageButton usecard, heroabillity;
 	public ImageButton endturn;
+	String[] defaultcards, herocards;
 
 	public Hero hero;
 
@@ -184,9 +185,10 @@ public class Player {
 	}
 
 	private void makeDek() {
-		String[] defaultcards = context.getResources().getStringArray(
-				R.array.defaultcards);
-
+		defaultcards = context.getResources().getStringArray(
+				CardList.heroType(0));
+		herocards = context.getResources().getStringArray(
+				CardList.heroType(hero.getHeroType()));
 		String[] deksplit = dekstring.split(",");
 		String[] cardhowmany;
 		String eachcard;
@@ -195,7 +197,7 @@ public class Player {
 		int id = 0;
 		for (String each : deksplit) {
 			cardhowmany = each.split("x");
-			eachcard = defaultcards[Integer.parseInt(cardhowmany[0])];
+			eachcard = getCardById(Integer.parseInt(cardhowmany[0]));
 			howmany = Integer.parseInt(cardhowmany[1]);
 
 			for (int i = 0; i < howmany; i++) {
@@ -205,6 +207,14 @@ public class Player {
 			}
 		}
 
+	}
+
+	private String getCardById(int id) {
+		if (id > 999) {
+			int resid = id % 1000;
+			return herocards[resid];
+		}
+		return defaultcards[id];
 	}
 
 	public void firstSetting(int size) {
@@ -405,7 +415,7 @@ public class Player {
 			areyousure.setTitle("상대가 게임에서 떠났습니다.");
 			break;
 		}
-		
+
 		// Set up the buttons
 		areyousure.setPositiveButton("이전 화면으로",
 				new DialogInterface.OnClickListener() {

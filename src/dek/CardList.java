@@ -19,7 +19,7 @@ public class CardList {
 				heroType(type));
 
 		items = new TreeSet<CardinDek>();
-		int i = 0;
+		int i = type * 1000; // 직업카드 = 자신의 히어로 타입 *1000 + 자신의 아이디를 가짐.
 		for (String s : resource) {
 			items.add(new CardinDek(context, s, i));
 			i++;
@@ -52,8 +52,9 @@ public class CardList {
 		switch (type) {
 
 		case 0:
-			result = R.array.totem;
+			result = R.array.defaultcards;
 			return result;
+
 		case 1:
 			result = R.array.magician;
 			return result;
@@ -78,9 +79,8 @@ public class CardList {
 		case 8:
 			result = R.array.druid;
 			return result;
-
-		case 10:
-			result = R.array.defaultcards;
+		case 9:
+			result = R.array.totem;
 			return result;
 
 		}

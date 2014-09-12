@@ -90,7 +90,7 @@ public class Hero extends RelativeLayout {
 				if (heroabilityuseable == 0) {
 					Method.alert("영웅능력은 한턴에 한번만 사용할 수 있습니다.");
 					return;
-				}
+				} 
 
 				if (!manaCheck(2)) {
 					Method.alert("마나가 부족합니다.");
@@ -220,6 +220,10 @@ public class Hero extends RelativeLayout {
 
 	public void heroNewTurn() {
 		hero.newTurn();
+	}
+
+	public int getHeroType() {
+		return herotype;
 	}
 
 

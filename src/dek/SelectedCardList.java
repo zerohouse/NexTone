@@ -4,7 +4,6 @@ import game.Method;
 
 import java.util.TreeSet;
 
-import com.mylikenews.nextoneandroid.R;
 import com.mylikenews.nextoneandroid.SelectHeroAbility;
 
 import android.content.Context;
@@ -21,6 +20,7 @@ public class SelectedCardList {
 	TreeSet<CardSelected> items;
 	Data data;
 	Sql sql;
+	String[] defaultcards, herocards;
 
 	private int sum() {
 		int sum = 0;
@@ -109,15 +109,17 @@ public class SelectedCardList {
 		sql.update(data);
 	}
 
-	public SelectedCardList(Context context, LinearLayout layout, TextView text,
-			Data data) {
+	public SelectedCardList(Context context, LinearLayout layout,
+			TextView text, Data data) {
 
 		this.layout = layout;
 		this.context = context;
 		this.data = data;
 		sql = new Sql(context);
-		String[] resource = context.getResources().getStringArray(
-				R.array.defaultcards);
+		defaultcards = context.getResources().getStringArray(
+				CardList.heroType(0));
+		herocards = context.getResources().getStringArray(
+				CardList.heroType(data.getHeroType()));
 		items = new TreeSet<CardSelected>();
 		if (!data.getDekstring().equals("")) {
 			String[] dekcards = data.getDekstring().split(",");
@@ -129,7 +131,7 @@ public class SelectedCardList {
 				tmp = s.split("x");
 				id = Integer.parseInt(tmp[0]);
 				size = Integer.parseInt(tmp[1]);
-				newcard = new CardSelected(context, resource[id], id);
+				newcard = new CardSelected(context, getCardById(id), id);
 				newcard.setSize(size);
 				items.add(newcard);
 				layout.addView(newcard);
@@ -141,6 +143,13 @@ public class SelectedCardList {
 		dekinfo = text;
 		infoUpdate();
 
+	}
+
+	private String getCardById(int id) {
+		if (id > 999) {
+			return herocards[(id % 1000)];
+		}
+		return defaultcards[id];
 	}
 
 	public void update() {
@@ -204,7 +213,7 @@ public class SelectedCardList {
 	public String toString() {
 		String result = "";
 		for (CardSelected card : items) {
-			result += "," + card.toString(); //card.tostring메소드를 만들어서 추가.
+			result += "," + card.toString(); // card.tostring메소드를 만들어서 추가.
 		}
 		if (result != "")
 			result = result.substring(1);
