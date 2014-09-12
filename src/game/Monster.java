@@ -50,10 +50,10 @@ public class Monster extends RelativeLayout implements Target {
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
-		setEffects();
 		setHelperShow();
+		setEffects();
 		if (!sended) {
-			Sender.S("8 " + field.player.me + "@" + toString() + "@"
+			Sender.S("8&" + field.player.me + "@" + toString() + "@"
 					+ card.toString() + "@" + id);
 
 		}
@@ -106,7 +106,7 @@ public class Monster extends RelativeLayout implements Target {
 		setEffects();
 		
 		if (!sended) {
-			Sender.S("8 " + field.player.me + "@" + toString() + "@"
+			Sender.S("8&" + field.player.me + "@" + toString() + "@"
 					+ card.toString() + "@" + id);
 		}
 	}
@@ -219,7 +219,7 @@ public class Monster extends RelativeLayout implements Target {
 
 			@Override
 			public void onClick(View v) {
-				Helper.showInfo(card);
+				Helper.showInfo(card.getAni());
 			}
 		};
 
@@ -246,7 +246,7 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
 		field.attackCheckUpedMonster();
-		Sender.S("11 " + id); // 선택한 것 알려주기
+		Sender.S("11&" + id); // 선택한 것 알려주기
 		setAttackBackground();
 		v.setY(-10);
 		this.uped = true;
@@ -378,7 +378,7 @@ public class Monster extends RelativeLayout implements Target {
 
 		Static.Cancel(field.player, false);
 		if (!isChecked)
-			Sender.S("9 " + enemyindex + "," + playerindex);
+			Sender.S("9&" + enemyindex + "," + playerindex);
 	}
 
 	public int index() {
@@ -465,7 +465,7 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public void heal(int amount, boolean sended, Target from) {
 		if (!sended)
-			Sender.S("16 " + field.player.me + "#" + id + "," + amount + ","
+			Sender.S("16&" + field.player.me + "#" + id + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index());
 
 		if (shield && amount < 0) {

@@ -1,10 +1,10 @@
 package animation;
 
-import game.Card;
 import game.Method;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -34,9 +34,9 @@ public class Helper {
 		params.addRule(RelativeLayout.CENTER_IN_PARENT);
 		params.width = Method.dpToPx(140);
 		params.height = Method.dpToPx(180);
-		
+
 		RelativeLayout layout = new RelativeLayout(context);
-		
+
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -45,7 +45,7 @@ public class Helper {
 		layout.addView(helper);
 		HideAndShow animate = new HideAndShow(layout);
 		animate.animateForHelper();
-		
+
 		helper.setVisibility(View.INVISIBLE);
 
 		character = new ImageView(context);
@@ -118,15 +118,16 @@ public class Helper {
 
 	}
 
-	public static void showInfo(Card card) {
-		character.setBackgroundResource(Method.resId(card.resource()));
+	public static void showInfo(Ani card) {
+		character.setBackgroundResource(Method.resId(card.getResource()));
 		helper.setVisibility(View.VISIBLE);
-		helper.setBackgroundResource(Method.resId(card.resource() + "c"));
-		name.setText(card.name());
-		description.setText(card.description());
-		cost.setText(card.cost() + "");
-		vital.setText(card.vital() + "");
-		attack.setText(card.attack() + "");
+		helper.setBackgroundResource(Method.resId(card.getResource() + "c"));
+		name.setText(card.getName());
+		description.setText(card.getDescription());
+		description.setGravity(Gravity.CENTER);
+		cost.setText(card.getCost() + "");
+		vital.setText(card.getVital() + "");
+		attack.setText(card.getAttack() + "");
 
 		handler.removeCallbacks(stop);
 		handler.postDelayed(stop, 3000);

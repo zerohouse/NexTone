@@ -19,9 +19,17 @@
         android:id="@+id/selectdek"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_marginBottom="60dp"
         android:gravity="center"
         android:text="@string/btn_dek"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/howtoplay"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginBottom="45dp"
+        android:gravity="center"
+        android:text="@string/btn_how"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </LinearLayout>

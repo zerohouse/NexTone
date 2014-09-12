@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import animation.Helper;
 import animation.HideAndShow;
 
 public class Field extends LinearLayout {
@@ -63,7 +62,6 @@ public class Field extends LinearLayout {
 		Monster monster = new Monster(context, card, monsterstring, this, items.size(),
 				sended);
 		add(monster);
-		Helper.showInfo(monster.card());
 	}
 
 	public void newTurn() {

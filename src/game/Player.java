@@ -176,7 +176,7 @@ public class Player {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Sender.S("4 "); // 4 = 턴넘기기
+		Sender.S("4&"); // 4 = 턴넘기기
 	}
 
 	public void endTurnByNet() {
@@ -245,7 +245,7 @@ public class Player {
 				game.container().removeView(v);
 				game.initView();
 				newTurn();
-				Sender.S("6 ");
+				Sender.S("6&");
 			}
 		});
 	}
@@ -270,18 +270,20 @@ public class Player {
 		int removed = hand.removeAndReturnToDek(dek);
 		dekToHand(removed);
 		dekToDummy();
-		Sender.S(3 + " " + dekstring + ";" + herostring);
+		Sender.S("3&" + dekstring + ";" + herostring);
 		done = true;
 		Card.stateChange = false;
-
+ 
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		if (!first)
-			Sender.S(5 + " "); // IAMDONE (second)
+		if (!first) {
+			Sender.S("5&"); // IAMDONE (second)
+			newCard("마나스톤;이번 턴에 마나를 1 획득합니다.;manaplus;0;0@0#1;0");
+		}
 	}
 
 	public String dekToDummy() {
@@ -312,7 +314,7 @@ public class Player {
 	@SuppressLint("NewApi")
 	public void newTurn() {
 		Method.alert("나의 턴");
-		Sender.S("10 ");
+		Sender.S("10&");
 		newCard();
 
 		hero.newTurn(); // 히어로 뉴턴에서 에러
@@ -326,7 +328,11 @@ public class Player {
 	}
 
 	public void sendHeroState() {
-		Sender.S("7 1@" + hero.toString());
+		Sender.S("7&1@" + hero.toString());
+	} 
+
+	private void newCard(String string) {
+		hand.add(new Card(context, string, hand, 900));
 	}
 
 	public void newCard() {
@@ -403,7 +409,7 @@ public class Player {
 		switch (type) {
 		case 0:
 			areyousure.setTitle("게임에서 승리하였습니다.");
-			Sender.S("100 ");
+			Sender.S("100&");
 			break;
 		case 1:
 			areyousure.setTitle("게임에서 패배하였습니다.");

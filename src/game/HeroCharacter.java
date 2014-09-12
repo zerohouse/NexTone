@@ -188,7 +188,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 		Static.Cancel(hero.player, false);
 		if (!isChecked)
-			Sender.S("9 " + enemyindex + "," + playerindex);
+			Sender.S("9&" + enemyindex + "," + playerindex);
 	}
 
 	private void setBackgroundDefault() {
@@ -290,7 +290,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	@Override
 	public void heal(int amount, boolean sended, Target from) {
 		if (!sended)
-			Sender.S("16 " + hero.player.me + "#" + -1 + "," + amount + ","
+			Sender.S("16&" + hero.player.me + "#" + -1 + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index());
 
 		Heal.HealEffect(from, this, sended);

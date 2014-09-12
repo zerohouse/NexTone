@@ -21,6 +21,7 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
+import animation.Ani;
 import animation.Attack;
 import animation.Helper;
 
@@ -70,7 +71,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 		}
 		this.first = first;
 
-		Sender.S("7 1@" + player1.heroString());
+		Sender.S("7&1@" + player1.heroString());
 	}
 
 	public void player2Setting() {
@@ -152,7 +153,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	}
 
 	private void Do(String resString) {
-		String[] response = resString.split(" ");
+		String[] response = resString.split("&");
 		try {
 			int type = Integer.parseInt(response[0]);
 			switch (type) {
@@ -185,7 +186,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				if (player1.done()) {
 					initView();
 					player1.newTurn();
-					Sender.S("6 ");
+					Sender.S("6&");
 					return;
 				}
 
@@ -216,6 +217,11 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				}
 				player1.field.addByString(mon[2], Integer.parseInt(mon[3]),
 						mon[1], true);
+				break;
+
+			case 80:
+				String[] ani = response[1].split("#");
+				Helper.showInfo(new Ani(ani[0], ani[1], ani[2], ani[3], ani[4], ani[5]));
 				break;
 
 			case 9: // 9번은 공격정보를 가져온다.
@@ -311,10 +317,9 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				player1.hero.setDamage(Integer.parseInt(dam[1]), true);
 				break;
 
-
 			case 100:
 				player1.gameEnd(1); // 패배
-				Sender.S("550 ");
+				Sender.S("550&");
 				break;
 
 			case 101:

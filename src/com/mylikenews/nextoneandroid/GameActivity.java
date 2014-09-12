@@ -31,6 +31,11 @@ public class GameActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		// 서버의 아이피와 포트를 지정한다.
+		ip = "192.168.0.17";
+		port = 13333;
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -57,8 +62,6 @@ public class GameActivity extends Activity {
 		Data data = (Data) getIntent().getSerializableExtra("selected");
 		dekstring = data.getDekstring();
 		herostring = data.getHerostring();
-		ip = "192.168.0.17";
-		port = 13333;
 	}
 
 	OnClickListener doconnect = new OnClickListener() {
@@ -108,7 +111,7 @@ public class GameActivity extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						Sender.S("101 "); //항복
+						Sender.S("101&"); //항복
 						Sender.close();
 						finish();
 					}

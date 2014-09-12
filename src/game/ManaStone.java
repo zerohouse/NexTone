@@ -76,7 +76,7 @@ public class ManaStone extends LinearLayout {
 
 	public void Add(int amount, boolean sended) {
 		if(!sended)
-			Sender.S("13 "+ hero.player.me + ","+ amount);
+			Sender.S("13&"+ hero.player.me + ","+ amount);
 		mana += amount;
 		drawMana();
 	}

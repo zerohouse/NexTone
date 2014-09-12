@@ -1,27 +1,32 @@
 package game;
 
-import components.ViewBinder;
-import effects.hero.HeroEffect;
+import net.Sender;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import animation.Ani;
 import animation.Helper;
+
+import components.ViewBinder;
+
+import effects.card.CardEffect;
 
 public class Card extends RelativeLayout {
 
 	static boolean stateChange = true;
 	public static Card select = null;
 
-	HeroEffect effect;
 	boolean haseffect;
 	Context context;
 	int monster;
 	String cardinfo;
 	Hand hand;
+	Ani ani;
 
 	ViewBinder cost, attack, vital;
-	String resource, name, description, effects;
+	String resource, name, description, monstereffects, cardeffects;
 	int index;
 	LinearLayout.LayoutParams params;
 
@@ -53,25 +58,44 @@ public class Card extends RelativeLayout {
 
 		setBackgroundResource(Method.resId(resource + "c"));
 
-		switch (Integer.parseInt(cardinfo[3])) {
-		case 0:// 몬스터 카드
-			monster = 1;
+		int cost = Integer.parseInt(cardinfo[5]);
+		this.cost = new ViewBinder(context, cost, this);
+		RelativeLayout.LayoutParams costparam = this.cost.getParams();
+		costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		costparam.setMargins(0, Method.dpToPx(1), Method.dpToPx(6), 0);
 
-			effects = cardinfo[4]; // 종족,효과1,효과2,...
-			int cost = Integer.parseInt(cardinfo[5]);
+		// 효과 종류 구분해서 나눠줌. 카드이펙트가 잇는경우 @로 구분.
+		if (!cardinfo[4].contains("@")) {
+			monstereffects = cardinfo[4]; // 효과1,효과2,...
+		} else {
+			String[] tmp = cardinfo[4].split("@");
+			monstereffects = tmp[0];
+			cardeffects = tmp[1];
+		}
+
+		switch (Integer.parseInt(cardinfo[3])) {
+
+		case 0:// 주문 카드 (몬스터 = 0)
+			monster = 0;
+			haseffect = true;
+			this.ani = new Ani(resource, name, description, cost + "", " ", " ");
+
+			break;
+
+		default:// 몬스터 카드
+			monster = Integer.parseInt(cardinfo[3]);
+
 			int attack = Integer.parseInt(cardinfo[6]);
 			int defense = Integer.parseInt(cardinfo[7]);
+
+			this.ani = new Ani(resource, name, description, cost + "", attack
+					+ "", defense + "");
 
 			this.attack = new ViewBinder(context, attack, this);
 			RelativeLayout.LayoutParams attackparam = this.attack.getParams();
 			attackparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			attackparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 			attackparam.setMargins(Method.dpToPx(6), 0, 0, Method.dpToPx(1));
-
-			this.cost = new ViewBinder(context, cost, this);
-			RelativeLayout.LayoutParams costparam = this.cost.getParams();
-			costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			costparam.setMargins(0, Method.dpToPx(1), Method.dpToPx(6), 0);
 
 			this.vital = new ViewBinder(context, defense, this);
 			RelativeLayout.LayoutParams vitalparam = this.vital.getParams();
@@ -80,9 +104,6 @@ public class Card extends RelativeLayout {
 			vitalparam.setMargins(0, 0, Method.dpToPx(6), Method.dpToPx(1));
 
 			break;
-		case 1:// 주문 카드
-			break;
-
 		}
 
 		this.index = index;
@@ -98,6 +119,7 @@ public class Card extends RelativeLayout {
 
 			}
 		});
+
 	}
 
 	public void toggleMultipleSelect() {
@@ -119,7 +141,7 @@ public class Card extends RelativeLayout {
 		if (select != null)
 			select.down();
 		select = this;
-		Helper.showInfo(this);
+		Helper.showInfo(ani);
 		up();
 	}
 
@@ -170,22 +192,30 @@ public class Card extends RelativeLayout {
 	}
 
 	public void use(Player player, boolean sended) {
+		Sender.S("80&" + ani.toString());
+		player.hand.remove(this);
+		player.hero.mana.Add(-cost.Int(), false);
 		if (monster > 0)
 			addMonster(player);
+
 		if (haseffect)
-			effect.run(0);
+			runEffects(player, cardeffects);
 		Helper.hideInfo();
-		/*
-		 * if (!sended) Sender.S("20 " + player.me() + "," + index);
-		 */
+	}
+
+	private void runEffects(Player player, String effects) {
+		String[] effect = effects.split("#");
+		for (int i = 0; i < effect.length; i += 2) {
+			CardEffect.run(player, Integer.parseInt(effect[i]),
+					Integer.parseInt(effect[i + 1]));
+			Log.i("effect", effects);
+		}
 	}
 
 	private void addMonster(Player player) {
-		Monster monster = new Monster(context, this, player.field, effects,
-				false);
+		Monster monster = new Monster(context, this, player.field,
+				monstereffects, false);
 		player.field.add(monster);
-		player.hand.remove(this);
-		player.hero.mana.Add(-cost.Int(), false);
 	}
 
 	public String name() {
@@ -200,7 +230,11 @@ public class Card extends RelativeLayout {
 		stateChange = true;
 	}
 
-	public String toString(){
+	public String toString() {
 		return cardinfo;
+	}
+
+	public Ani getAni() {
+		return ani;
 	}
 }
