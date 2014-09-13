@@ -13,6 +13,6 @@ public class AttackEmenyHero implements HeroEffect {
 	public void run(int manacost) {
 
 		player.hero.mana.Add(-manacost, false);
-		player.enemy.hero.hero().heal(-2, false, player.hero.hero());
+		player.enemy.hero.hero().heal(-2, false, player.hero.hero(), "star");
 	}
 }

@@ -2,20 +2,17 @@ package game;
 
 import net.Sender;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import animation.Ani;
 import animation.Helper;
-
 import components.ViewBinder;
-
-import effects.card.CardEffect;
 
 public class Card extends RelativeLayout {
 
 	static boolean stateChange = true;
+	public static boolean use = false;
 	public static Card select = null;
 
 	boolean haseffect;
@@ -26,7 +23,7 @@ public class Card extends RelativeLayout {
 	Ani ani;
 
 	ViewBinder cost, attack, vital;
-	String resource, name, description, monstereffects, cardeffects;
+	String resource, name, description, monstereffects, cardeffect;
 	int index;
 	LinearLayout.LayoutParams params;
 
@@ -70,7 +67,7 @@ public class Card extends RelativeLayout {
 		} else {
 			String[] tmp = cardinfo[4].split("@");
 			monstereffects = tmp[0];
-			cardeffects = tmp[1];
+			cardeffect = tmp[1];
 		}
 
 		switch (Integer.parseInt(cardinfo[3])) {
@@ -192,24 +189,73 @@ public class Card extends RelativeLayout {
 	}
 
 	public void use(Player player, boolean sended) {
-		Sender.S("80&" + ani.toString());
-		player.hand.remove(this);
-		player.hero.mana.Add(-cost.Int(), false);
-		if (monster > 0)
-			addMonster(player);
-
-		if (haseffect)
-			runEffects(player, cardeffects);
 		Helper.hideInfo();
+
+		if (haseffect) {
+			runEffects(player, cardeffect, this);
+			return;
+		}
+
+		addMonster(player);
+		removeCardFromHand(player);
 	}
 
-	private void runEffects(Player player, String effects) {
+	private void removeCardFromHand(Player player) {
+		Sender.S("80&" + ani.toString()); // send effect
+		player.hand.remove(this); // remove card
+		player.hero.mana.Add(-cost.Int(), false); // consume mana
+	}
+
+	private void runEffects(final Player player, String effects, Card card) {
 		String[] effect = effects.split("#");
-		for (int i = 0; i < effect.length; i += 2) {
-			CardEffect.run(player, Integer.parseInt(effect[i]),
-					Integer.parseInt(effect[i + 1]));
-			Log.i("effect", effects);
+		int type = Integer.parseInt(effect[0]);
+		final int amount = Integer.parseInt(effect[1]);
+
+		switch (type) {
+		case 0:
+			player.hero.mana.Add(amount, false);
+			removeCardFromHand(player);
+			break;
+
+		case 100:
+
+			Method.alert("대상을 선택하세요.");
+
+			OnClickListener heal = new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Target selected = (Target) v;
+					selected.heal(amount, false, player.hero.hero(), null);
+					Static.Cancel(player, false);
+					removeCardFromHand(player);
+				}
+
+			};
+
+			Listeners.setListener(heal);
+
+			player.endturn.setText("    취소");
+			player.endturn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Static.Cancel(player, true);
+
+				}
+
+			});
+
+			player.field.setListener();
+			player.hero.setListener();
+			player.enemy.field.setListener();
+			player.enemy.hero.setListener();
+			break;
+
+		default:
+			if (monster > 0)
+				addMonster(player);
+			break;
 		}
+
 	}
 
 	private void addMonster(Player player) {

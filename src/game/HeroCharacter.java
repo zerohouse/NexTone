@@ -49,7 +49,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		damage = new ViewBinder(context, 0, this);
 		damage.setBackgroundResource(R.drawable.attack);
 		damage.setGravity(Gravity.CENTER);
- 
+
 		RelativeLayout.LayoutParams damageparams = damage.getParams();
 		damageparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
@@ -147,7 +147,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			if (hero.player.me() == 2) {
 				hero.player.gameEnd(0);
 				return;
-			} 
+			}
 		}
 	}
 
@@ -288,12 +288,12 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	}
 
 	@Override
-	public void heal(int amount, boolean sended, Target from) {
+	public void heal(int amount, boolean sended, Target from, String resource) {
 		if (!sended)
 			Sender.S("16&" + hero.player.me + "#" + -1 + "," + amount + ","
-					+ from.PlayerInfo() + "#" + from.index());
+					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
-		Heal.HealEffect(from, this, sended);
+		Heal.HealEffect(from, this, sended, resource);
 
 		vital.add(amount);
 		if (vital.Int() > maxvital) {

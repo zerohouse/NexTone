@@ -14,6 +14,7 @@ import com.mylikenews.nextoneandroid.R;
 
 public class Helper {
 
+	static Context context;
 	static RelativeLayout helper;
 	static RelativeLayout.LayoutParams params, costparams, vitalparams,
 			attackparams, descriptionparams, nameparams;
@@ -27,15 +28,16 @@ public class Helper {
 		}
 	};
 
-	public static void setHelper(Context context) {
-		helper = new RelativeLayout(context);
+	public static void setHelper(Context con) {
+		context = con;
+		helper = new RelativeLayout(con);
 		params = Method.getParams();
 		helper.setLayoutParams(params);
 		params.addRule(RelativeLayout.CENTER_IN_PARENT);
 		params.width = Method.dpToPx(140);
 		params.height = Method.dpToPx(180);
 
-		RelativeLayout layout = new RelativeLayout(context);
+		RelativeLayout layout = new RelativeLayout(con);
 
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -48,7 +50,7 @@ public class Helper {
 
 		helper.setVisibility(View.INVISIBLE);
 
-		character = new ImageView(context);
+		character = new ImageView(con);
 		RelativeLayout.LayoutParams charparams = Method.getParams();
 		character.setLayoutParams(charparams);
 		charparams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -62,15 +64,15 @@ public class Helper {
 		int horizontalmargin = Method.dpToPx(8);
 		int verticalmargin = Method.dpToPx(5);
 
-		cost = new TextView(context);
-		cost.setTextAppearance(context, R.style.myText);
+		cost = new TextView(con);
+		cost.setTextAppearance(con, R.style.myText);
 		cost.setLayoutParams(costparams);
 		costparams.rightMargin = horizontalmargin;
 		costparams.topMargin = verticalmargin;
 		costparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
-		vital = new TextView(context);
-		vital.setTextAppearance(context, R.style.myText);
+		vital = new TextView(con);
+		vital.setTextAppearance(con, R.style.myText);
 		vital.setLayoutParams(vitalparams);
 
 		vitalparams.rightMargin = horizontalmargin;
@@ -78,16 +80,16 @@ public class Helper {
 		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		vitalparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
-		attack = new TextView(context);
-		attack.setTextAppearance(context, R.style.myText);
+		attack = new TextView(con);
+		attack.setTextAppearance(con, R.style.myText);
 		attack.setLayoutParams(attackparams);
 
 		attackparams.leftMargin = horizontalmargin;
 		attackparams.bottomMargin = verticalmargin;
 		attackparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
-		description = new TextView(context);
-		description.setTextAppearance(context, R.style.myBtnText);
+		description = new TextView(con);
+		description.setTextAppearance(con, R.style.myBtnText);
 		description.setBackgroundColor(Color.argb(200, 200, 200, 200));
 		description.setLayoutParams(descriptionparams);
 		descriptionparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -95,8 +97,8 @@ public class Helper {
 		descriptionparams.bottomMargin = Method.dpToPx(30);
 		description.setId(1);
 
-		name = new TextView(context);
-		name.setTextAppearance(context, R.style.myText);
+		name = new TextView(con);
+		name.setTextAppearance(con, R.style.myText);
 		name.setLayoutParams(nameparams);
 		name.setBackgroundColor(Color.BLACK);
 		nameparams.addRule(RelativeLayout.CENTER_HORIZONTAL);

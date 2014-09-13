@@ -30,7 +30,7 @@ public class FireBall implements HeroEffect {
 			public void onClick(View v) {
 				Target selected = (Target) v;
 				player.hero.mana.Add(-cost, false);
-				selected.heal(-1, false, player.hero.hero());
+				selected.heal(-1, false, player.hero.hero(), "heroability1");
 				Static.Cancel(player, false);
 
 			}

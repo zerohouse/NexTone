@@ -104,7 +104,7 @@ public class Monster extends RelativeLayout implements Target {
 		Log.i("effects", effects);
 		setHelperShow();
 		setEffects();
-		
+
 		if (!sended) {
 			Sender.S("8&" + field.player.me + "@" + toString() + "@"
 					+ card.toString() + "@" + id);
@@ -463,17 +463,17 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	@Override
-	public void heal(int amount, boolean sended, Target from) {
+	public void heal(int amount, boolean sended, Target from, String resource) {
 		if (!sended)
 			Sender.S("16&" + field.player.me + "#" + id + "," + amount + ","
-					+ from.PlayerInfo() + "#" + from.index());
+					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
 		if (shield && amount < 0) {
 			offShield();
 			return;
 		}
 
-		Heal.HealEffect(from, this, sended);
+		Heal.HealEffect(from, this, sended, resource);
 
 		vital.add(amount);
 		if (vital.Int() > maxvital) {

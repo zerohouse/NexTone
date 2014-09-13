@@ -286,7 +286,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				Target healtarget = getByIndex(heal[0]);
 				Target from = getByIndex(heal[2]);
 
-				healtarget.heal(healamount, true, from);
+				healtarget.heal(healamount, true, from,  heal[3]);
 
 				break;
 

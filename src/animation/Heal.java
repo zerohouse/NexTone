@@ -5,15 +5,18 @@ import game.Target;
 import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class Heal {
 
-
 	@SuppressLint("NewApi")
 	public static void HealEffect(Target one, Target another,
-			boolean isChecked) {
+			boolean isChecked, String resource) {
 
 		int x = (int) one.getX(one.isHero());
 		int toX = (int) another.getX(one.isHero());
@@ -24,26 +27,62 @@ public class Heal {
 
 		int origny = (int) one.getMarginY() + block;
 
-		final Target clone = one.cloneForAnimate();
-		Attack.container.addView((View) clone);
+		final View object;
+		if (resource == null) {
+			object = (View) one.cloneForAnimate();
+		} else {
+			RelativeLayout tmp1 = new RelativeLayout(Helper.context);
+			ImageView tmp = new ImageView(Helper.context);
+			RelativeLayout.LayoutParams tmpparams = Method.getParams();
+			tmp.setLayoutParams(tmpparams);
+			tmpparams.addRule(RelativeLayout.CENTER_IN_PARENT);
+			tmpparams.height = Method.dpToPx(70);
+			tmpparams.width = Method.dpToPx(70);
+			tmp.setImageResource(Method.resId(resource));
+			tmp1.addView(tmp);
 
-		clone.setAlpha((float) 0.5);
-		clone.getParams().leftMargin = x;
-		clone.getParams().bottomMargin = origny;
+			object = tmp1;
+		}
+		RelativeLayout.LayoutParams params = Method.getParams();
+		object.setLayoutParams(params);
+		params.height = Method.dpToPx(70);
+		params.width = Method.dpToPx(70);
+
+		params.height = one.getHeight();
+		params.width = one.getWidth();
+
+		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+
+		Attack.container.addView(object);
+
+		params.leftMargin = x;
+		params.bottomMargin = origny;
 
 		int amountx = toX - x;
 
 		int amounty = another.getTopY() - one.getTopY();
 
-		TranslateAnimation animation = new TranslateAnimation(0, amountx, 0,
+		TranslateAnimation translate = new TranslateAnimation(0, amountx, 0,
 				amounty);
-		animation.setInterpolator(new AccelerateInterpolator());
+		translate.setInterpolator(new AccelerateInterpolator());
 
-		animation.setDuration(500); // duartion in ms
-		animation.setFillAfter(false);
-		clone.startAnimation(animation);
+		translate.setDuration(600); // duartion in ms
+		translate.setFillAfter(false);
 
-		animation.setAnimationListener(new Animation.AnimationListener() {
+		AlphaAnimation alpha = new AlphaAnimation(1.0f, 0.3f);
+		alpha.setDuration(600);
+		// animation1.setStartOffset(5000);
+		alpha.setFillAfter(false);
+
+		AnimationSet animations = new AnimationSet(false);// false mean dont
+															// share
+															// interpolators
+		animations.addAnimation(translate);
+		animations.addAnimation(alpha);
+
+		object.startAnimation(animations);
+
+		animations.setAnimationListener(new Animation.AnimationListener() {
 			@Override
 			public void onAnimationStart(Animation arg0) {
 			}
@@ -55,54 +94,9 @@ public class Heal {
 			@Override
 			public void onAnimationEnd(Animation arg0) {
 
-				Attack.container.removeView((View) clone);
+				Attack.container.removeView((View) object);
 			}
 		});
 
 	}
-
-
-	@SuppressLint("NewApi")
-	public static void HealedEffect(Target one, Target another) {
-		int x = (int) one.getX(one.isHero());
-		int toX = (int) another.getX(one.isHero());
-
-		int origny = (int) one.getMarginY();
-
-		final Target clone = one.cloneForAnimate();
-		Attack.container.addView((View) clone);
-
-		clone.setAlpha((float) 0.5);
-		clone.getParams().leftMargin = x;
-		clone.getParams().bottomMargin = origny;
-
-		int amountx = x - toX;
-
-		int amounty = another.getTopY() - one.getTopY();
-
-		TranslateAnimation animation = new TranslateAnimation(0, amountx, 0,
-				amounty);
-		animation.setInterpolator(new AccelerateInterpolator());
-
-		animation.setDuration(500); // duartion in ms
-		animation.setFillAfter(false);
-		clone.startAnimation(animation);
-
-		animation.setAnimationListener(new Animation.AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation arg0) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation arg0) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animation arg0) {
-
-				Attack.container.removeView((View) clone);
-			}
-		});
-	}
-
 }

@@ -13,7 +13,7 @@ public class DrawCard implements HeroEffect {
 	@Override
 	public void run(int manacost) {
 		player.hero.mana.Add(-manacost, false);
-		player.hero.hero().heal(-2, false, player.hero.hero());
+		player.hero.hero().heal(-2, false, player.hero.hero(), null);
 		player.newCard();
 		player.sendHeroState();
 	}
