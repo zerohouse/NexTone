@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 import net.Sender;
 import android.content.Context;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import animation.Ani;
 import animation.Helper;
+
 import components.ViewBinder;
 
 public class Card extends RelativeLayout {
@@ -14,6 +17,9 @@ public class Card extends RelativeLayout {
 	static boolean stateChange = true;
 	public static boolean use = false;
 	public static Card select = null;
+	public static ArrayList<String> defaultcards = null;
+	public static ArrayList<String> herocards = null;
+	public static ArrayList<String> enemycards = null;
 
 	boolean haseffect;
 	Context context;
