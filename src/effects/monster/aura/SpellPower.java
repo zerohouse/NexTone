@@ -1,6 +1,5 @@
 package effects.monster.aura;
 
-import effects.card.State;
 import game.Method;
 import game.Monster;
 
@@ -16,13 +15,13 @@ public class SpellPower implements AuraEffect {
 
 	@Override
 	public void effectStart() {
-		State.spellpower += 1;
+		monster.player().spellpowerAdd(1);
 		Method.alert("주문력+1");
 	}
 
 	@Override
 	public void effectEnd() {
-		State.spellpower -= 1;
+		monster.player().spellpowerAdd(-1);
 		Method.alert("주문력-1");
 	}
 

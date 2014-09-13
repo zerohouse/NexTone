@@ -459,7 +459,7 @@ public class Monster extends RelativeLayout implements Target {
 			return field.getHeight() + field.player.hero.getHeight();
 		} else {
 			return field.getHeight();
-		}
+		} 
 	}
 
 	@Override

@@ -37,6 +37,7 @@ public class Player {
 	ImageButton usecard, heroabillity;
 	public ImageButton endturn;
 	String[] defaultcards, herocards;
+	int spellpower;
 
 	public Hero hero;
 
@@ -53,7 +54,6 @@ public class Player {
 		this.game = game;
 		this.herostring = herostring;
 		init();
-
 		makeDek();
 
 	}
@@ -68,6 +68,7 @@ public class Player {
 		dummy = new Dummy();
 		dek = new ArrayList<Card>();
 		done = false;
+		spellpower = 0;
 
 		// 영웅 설정
 		hero = new Hero(context, this, herostring);
@@ -273,7 +274,7 @@ public class Player {
 		Sender.S("3&" + dekstring + ";" + herostring);
 		done = true;
 		Card.stateChange = false;
- 
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -282,9 +283,10 @@ public class Player {
 
 		if (!first) {
 			Sender.S("5&"); // IAMDONE (second)
-			newCard("마나스톤;이번 턴에 마나를 1 획득합니다.;manaplus;0;0@0#1;0");
+			newCard("마나스톤;이번 턴에 마나를 1 획득합니다.;manaplus;0;0%0#1;0");
 		}
-	}
+	} 
+	 
 
 	public String dekToDummy() {
 		String ranorder = dummy.shffleAdd(dek, random);
@@ -329,7 +331,7 @@ public class Player {
 
 	public void sendHeroState() {
 		Sender.S("7&1@" + hero.toString());
-	} 
+	}
 
 	private void newCard(String string) {
 		hand.add(new Card(context, string, hand, 900));
@@ -442,6 +444,14 @@ public class Player {
 
 		areyousure.show();
 
+	}
+
+	public void spellpowerAdd(int i) {
+		spellpower += i;
+	}
+	
+	public int getSpellpower() {
+		return spellpower;
 	}
 
 }

@@ -58,28 +58,25 @@ public class Card extends RelativeLayout {
 		int cost = Integer.parseInt(cardinfo[5]);
 		this.cost = new ViewBinder(context, cost, this);
 		RelativeLayout.LayoutParams costparam = this.cost.getParams();
-		costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		costparam.setMargins(0, Method.dpToPx(1), Method.dpToPx(6), 0);
+		// costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		costparam.setMargins(Method.dpToPx(6), Method.dpToPx(1), 0, 0);
 
-		// 효과 종류 구분해서 나눠줌. 카드이펙트가 잇는경우 @로 구분.
-		if (!cardinfo[4].contains("@")) {
+		// 효과 종류 구분해서 나눠줌. 카드이펙트가 잇는경우 %로 구분.
+		if (!cardinfo[4].contains("%")) {
 			monstereffects = cardinfo[4]; // 효과1,효과2,...
+			haseffect = false;
 		} else {
-			String[] tmp = cardinfo[4].split("@");
+			String[] tmp = cardinfo[4].split("%");
 			monstereffects = tmp[0];
 			cardeffect = tmp[1];
+			haseffect = true;
 		}
 
-		switch (Integer.parseInt(cardinfo[3])) {
+		monster = Integer.parseInt(cardinfo[3]);
 
-		case 0:// 주문 카드 (몬스터 = 0)
-			monster = 0;
-			haseffect = true;
+		if (monster == 0)
 			this.ani = new Ani(resource, name, description, cost + "", " ", " ");
-
-			break;
-
-		default:// 몬스터 카드
+		else {
 			monster = Integer.parseInt(cardinfo[3]);
 
 			int attack = Integer.parseInt(cardinfo[6]);
@@ -100,7 +97,6 @@ public class Card extends RelativeLayout {
 			vitalparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			vitalparam.setMargins(0, 0, Method.dpToPx(6), Method.dpToPx(1));
 
-			break;
 		}
 
 		this.index = index;
@@ -207,27 +203,40 @@ public class Card extends RelativeLayout {
 	}
 
 	private void runEffects(final Player player, String effects, Card card) {
-		String[] effect = effects.split("#");
+		final String[] effect = effects.split("#");
 		int type = Integer.parseInt(effect[0]);
 		final int amount = Integer.parseInt(effect[1]);
 
+
+
 		switch (type) {
 		case 0:
-			player.hero.mana.Add(amount, false);
 			removeCardFromHand(player);
+			player.hero.mana.Add(amount, false);
+
 			break;
 
 		case 100:
 
 			Method.alert("대상을 선택하세요.");
 
+			
 			OnClickListener heal = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Target selected = (Target) v;
-					selected.heal(amount, false, player.hero.hero(), null);
-					Static.Cancel(player, false);
+
+					if (monster > 0)
+						addMonster(player);
+
 					removeCardFromHand(player);
+					Target selected = (Target) v;
+					Static.Cancel(player, false);
+					String res = null;
+					if (effect.length == 3) {
+						res = effect[2];
+					}
+					selected.heal(amount, false, player.hero.hero(), res);
+
 				}
 
 			};
@@ -249,13 +258,7 @@ public class Card extends RelativeLayout {
 			player.enemy.field.setListener();
 			player.enemy.hero.setListener();
 			break;
-
-		default:
-			if (monster > 0)
-				addMonster(player);
-			break;
 		}
-
 	}
 
 	private void addMonster(Player player) {

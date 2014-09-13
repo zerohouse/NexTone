@@ -30,6 +30,10 @@
         <item>강시;돌진;mchinese;1;0#3;3;3;1</item>
         <item>대형강시;돌진;bchinese;1;0#3;4;2;5</item>
         <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
+        
+        <item>작은새;나올때 피해1 돼지를 던집니다.;sbird;1;0%100#-1#pig;1;1;1</item>
+        <item>새;나올때 피해1 돼지를 던집니다.;mbird;1;0%100#-1#pig;3;2;2</item>
+        <item>화난새;나올때 피해2 돼지를 던집니다.;bbird;1;0%100#-2#pig;5;4;2</item>
     </string-array>
     <string-array name="totem">
 
@@ -39,11 +43,13 @@
     <string-array name="magician">
 
         <!-- 법사 -->
-        <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
+        <item>멧돼지;피해6 돼지를 던집니다.;pig;0;0%100#-6#pig;4;0;0</item>
+        <item>돼지의왕;피해10 돼지를 던집니다.;pig;0;0%100#-10#pig;10;0;0</item>
     </string-array>
     <string-array name="heal">
 
         <!-- 사제 -->
+        <item>돼지;피해2 돼지를 던집니다.;pig;0;0%100#-2#pig;1;0;0</item>
         <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
     </string-array>
     <string-array name="thief">
@@ -69,12 +75,13 @@
     <string-array name="hunter">
 
         <!-- 냥꾼 직업카드 -->
-        <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
+        <item>돼지;피해2 돼지를 던집니다.;pig;0;0%100#-2#pig;1;0;0</item>
     </string-array>
     <string-array name="druid">
 
         <!-- 드루 직업카드 -->
-        <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
+        <item>뽜이아;피해1 파이어볼을 던집니다.;fireball;0;0%100#-1#fireball;0;0;0</item>
+        <item>마나++;이번 턴에 마나를 2 획득합니다.;manaplus;0;0%0#2;0;0;0</item>
     </string-array>
 
 </resources>

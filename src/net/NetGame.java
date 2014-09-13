@@ -221,7 +221,8 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 			case 80:
 				String[] ani = response[1].split("#");
-				Helper.showInfo(new Ani(ani[0], ani[1], ani[2], ani[3], ani[4], ani[5]));
+				Helper.showInfo(new Ani(ani[0], ani[1], ani[2], ani[3], ani[4],
+						ani[5]));
 				break;
 
 			case 9: // 9번은 공격정보를 가져온다.
@@ -286,8 +287,11 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 				Target healtarget = getByIndex(heal[0]);
 				Target from = getByIndex(heal[2]);
 
-				healtarget.heal(healamount, true, from,  heal[3]);
-
+				if (heal[3].equals("null")) {
+					healtarget.heal(healamount, true, from, null);
+					break;
+				}
+				healtarget.heal(healamount, true, from, heal[3]);
 				break;
 
 			case 14:

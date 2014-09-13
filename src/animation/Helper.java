@@ -45,6 +45,7 @@ public class Helper {
 		layout.setLayoutParams(param);
 		Attack.container.addView(layout);
 		layout.addView(helper);
+		
 		HideAndShow animate = new HideAndShow(layout);
 		animate.animateForHelper();
 
@@ -67,9 +68,9 @@ public class Helper {
 		cost = new TextView(con);
 		cost.setTextAppearance(con, R.style.myText);
 		cost.setLayoutParams(costparams);
-		costparams.rightMargin = horizontalmargin;
+		costparams.leftMargin = horizontalmargin;
 		costparams.topMargin = verticalmargin;
-		costparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		//costparams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
 		vital = new TextView(con);
 		vital.setTextAppearance(con, R.style.myText);
