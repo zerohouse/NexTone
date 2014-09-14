@@ -40,6 +40,7 @@ public class Card extends RelativeLayout {
 		this.context = context;
 		this.cardid = cardid;
 		this.cardinfo = eachcard;
+		this.ani = new Ani(eachcard);
 		params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -80,16 +81,10 @@ public class Card extends RelativeLayout {
 
 		monster = Integer.parseInt(cardinfo[3]);
 
-		if (monster == 0)
-			this.ani = new Ani(resource, name, description, cost + "", " ", " ");
-		else {
-			monster = Integer.parseInt(cardinfo[3]);
+		if (monster != 0) {
 
 			int attack = Integer.parseInt(cardinfo[6]);
 			int defense = Integer.parseInt(cardinfo[7]);
-
-			this.ani = new Ani(resource, name, description, cost + "", attack
-					+ "", defense + "");
 
 			this.attack = new ViewBinder(context, attack, this);
 			RelativeLayout.LayoutParams attackparam = this.attack.getParams();

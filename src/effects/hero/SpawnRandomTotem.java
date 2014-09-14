@@ -1,6 +1,7 @@
 package effects.hero;
 
 import effects.monster.aura.AuraEffectFactory;
+import effects.monster.excute.ExcuteEffect;
 import effects.monster.excute.ExcuteEffectFactory;
 import game.Card;
 import game.Method;
@@ -44,7 +45,12 @@ public class SpawnRandomTotem implements HeroEffect {
 			monster = new Monster(player.context(), card, player.field, false);
 
 			player.field.add(monster);
-			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(0));
+			monster.setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					addTotem(0);
+				}
+			});
 			break;
 
 		case 1:
@@ -58,7 +64,12 @@ public class SpawnRandomTotem implements HeroEffect {
 
 			monster.setEndTurnEffect(ExcuteEffectFactory.makeExcuteEffect(1,
 					monster)); // 힐능력 부여
-			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(1));
+			monster.setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					addTotem(1);
+				}
+			});
 			break;
 
 		case 2:
@@ -69,7 +80,12 @@ public class SpawnRandomTotem implements HeroEffect {
 			monster = new Monster(player.context(), card, player.field, false);
 			monster.setAuraEffect(AuraEffectFactory.makeAuraEffect(1, monster)); // 주문능력부여
 			player.field.add(monster);
-			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(2));
+			monster.setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					addTotem(2);
+				}
+			});
 			break;
 
 		case 3:
@@ -79,12 +95,17 @@ public class SpawnRandomTotem implements HeroEffect {
 					player.hand, index, -5);
 			monster = new Monster(player.context(), card, player.field, false);
 			player.field.add(monster);
-			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(3));
+			monster.setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					addTotem(3);
+				}
+			});
 			break;
 		}
 	}
 
-	public static void retoreTotem(int num) {
+	public static void addTotem(int num) {
 		totems.add(num);
 	}
 }

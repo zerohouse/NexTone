@@ -76,7 +76,8 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 		addView(descriptionview);
 	}
 
-	public String toStirng() {
+	@Override
+	public String toString() {
 		// "토템;;totem;0;0;0;1;1";
 		return name + ";" + description + ";" + resource + ";0;0;" + cost + ";"
 				+ attack + ";" + vital;
@@ -106,7 +107,7 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 
 	@Override
 	public CardSelected clone() {
-		CardSelected result = new CardSelected(context, toStirng(), id);
+		CardSelected result = new CardSelected(context, toString(), id);
 		return result;
 	}
 
