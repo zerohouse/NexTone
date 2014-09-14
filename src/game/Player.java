@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import net.NetGame;
 import net.Sender;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -43,12 +42,12 @@ public class Player {
 	public Hero hero;
 
 	public Player enemy;
-	NetGame game;
+	Game game;
 
 	OnClickListener attacked;
 
 	public Player(Context context, String dekstring, String herostring, int me,
-			NetGame game, boolean first) {
+			Game game, boolean first) {
 		this.me = me;
 		this.context = context;
 		this.dekstring = dekstring;

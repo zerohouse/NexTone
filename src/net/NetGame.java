@@ -1,6 +1,7 @@
 package net;
 
 import game.Card;
+import game.Game;
 import game.Method;
 import game.Player;
 import game.Static;
@@ -27,7 +28,7 @@ import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
 
-public class NetGame extends AsyncTask<Void, Integer, Void> {
+public class NetGame extends AsyncTask<Void, Integer, Void> implements Game {
 
 	Player player1, player2;
 	Context context;
@@ -89,6 +90,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 	}
 
+	@Override
 	public void initView() {
 		if (container.getChildCount() > 3) {
 			return;
@@ -222,8 +224,8 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 					player2.field.addByCard(card, true);
 					return;
 				}
-				cardstring = player1.getCardStringById(Integer
-						.parseInt(mon[2]));
+				cardstring = player1
+						.getCardStringById(Integer.parseInt(mon[2]));
 				card = new Card(context, cardstring, player1.hand,
 						Integer.parseInt(mon[1]), Integer.parseInt(mon[2]));
 				player1.field.addByCard(card, true);
@@ -355,11 +357,9 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 	private String getCardStringById(String string) {
 		String[] tmp = string.split("@");
 		if (tmp[0].equals("1")) {
-			return player2.getCardStringById(Integer
-					.parseInt(tmp[2]));
+			return player2.getCardStringById(Integer.parseInt(tmp[2]));
 		}
-		return player1.getCardStringById(Integer
-				.parseInt(tmp[2]));
+		return player1.getCardStringById(Integer.parseInt(tmp[2]));
 
 	}
 
@@ -385,6 +385,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 	}
 
+	@Override
 	public ViewGroup container() {
 		return container;
 	}

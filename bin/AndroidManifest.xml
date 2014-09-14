@@ -10,6 +10,8 @@
         android:targetSdkVersion="21" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:allowBackup="true"
@@ -50,19 +52,16 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".SelectHero"
-            android:label="@string/title_activity_select_hero" >
+            android:label="@string/title_activity_select_hero"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".BlueToothGame"
-            android:label="@string/title_activity_blue_tooth_game" >
+            android:name=".BluetoothActivity"
+            android:label="@string/title_activity_bluetooth_game"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

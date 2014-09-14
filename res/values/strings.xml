@@ -19,5 +19,6 @@
     <string name="defaultcard">기본카드</string>
     <string name="herocard">영웅카드</string>
     <string name="title_activity_blue_tooth_game">BlueToothGame</string>
+    <string name="title_activity_bluetooth_game">BluetoothGame</string>
 
 </resources>
