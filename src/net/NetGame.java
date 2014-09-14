@@ -59,7 +59,7 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 		Helper.setHelper(context);
 
 		container.removeAllViews();
-		player1 = new Player(context, player1dek, player1hero, 1, this);
+		player1 = new Player(context, player1dek, player1hero, 1, this, first);
 		if (first) {
 			Method.alert("게임을 시작합니다.");
 			addPlayerCard(3);
@@ -76,7 +76,8 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 
 	public void player2Setting() {
 
-		player2 = new Player(context, player2dek, player2hero, 2, this);
+		player2 = new Player(context, player2dek, player2hero, 2, this,
+				!player1.getFirst());
 		if (first) {
 			player2.second();
 		} else {
@@ -210,19 +211,26 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 					// 플레이어의 덱에있는 카드를 index를 통해 사용.
 
 				String[] mon = response[1].split("@");
+
+				Card card;
+				String cardstring;
 				if (mon[0].equals("1")) {
-					player2.field.addByString(mon[2], Integer.parseInt(mon[3]),
-							mon[1], true);
+					cardstring = player2.getCardStringById(Integer
+							.parseInt(mon[2]));
+					card = new Card(context, cardstring, player2.hand,
+							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]));
+					player2.field.addByCard(card, true);
 					return;
 				}
-				player1.field.addByString(mon[2], Integer.parseInt(mon[3]),
-						mon[1], true);
+				cardstring = player1.getCardStringById(Integer
+						.parseInt(mon[2]));
+				card = new Card(context, cardstring, player1.hand,
+						Integer.parseInt(mon[1]), Integer.parseInt(mon[2]));
+				player1.field.addByCard(card, true);
 				break;
 
 			case 80:
-				String[] ani = response[1].split("#");
-				Helper.showInfo(new Ani(ani[0], ani[1], ani[2], ani[3], ani[4],
-						ani[5]));
+				Helper.showInfo(new Ani(getCardStringById(response[1])));
 				break;
 
 			case 9: // 9번은 공격정보를 가져온다.
@@ -342,6 +350,17 @@ public class NetGame extends AsyncTask<Void, Integer, Void> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private String getCardStringById(String string) {
+		String[] tmp = string.split("@");
+		if (tmp[0].equals("1")) {
+			return player2.getCardStringById(Integer
+					.parseInt(tmp[2]));
+		}
+		return player1.getCardStringById(Integer
+				.parseInt(tmp[2]));
+
 	}
 
 	private Target getByIndex(String index) {

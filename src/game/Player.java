@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import net.NetGame;
@@ -36,8 +37,8 @@ public class Player {
 	Button change;
 	ImageButton usecard, heroabillity;
 	public ImageButton endturn;
-	String[] defaultcards, herocards;
 	int spellpower;
+	int idforMonster = 0;
 
 	public Hero hero;
 
@@ -47,12 +48,13 @@ public class Player {
 	OnClickListener attacked;
 
 	public Player(Context context, String dekstring, String herostring, int me,
-			NetGame game) {
+			NetGame game, boolean first) {
 		this.me = me;
 		this.context = context;
 		this.dekstring = dekstring;
 		this.game = game;
 		this.herostring = herostring;
+		this.first = first;
 		init();
 		makeDek();
 
@@ -186,36 +188,70 @@ public class Player {
 	}
 
 	private void makeDek() {
-		defaultcards = context.getResources().getStringArray(
-				CardList.heroType(0));
-		herocards = context.getResources().getStringArray(
-				CardList.heroType(hero.getHeroType()));
+
+		if (!first) {
+			idforMonster = 100;
+			Static.index = 300;
+		}
+
+		if (Card.defaultcards == null) {
+			Card.defaultcards = new ArrayList<String>(Arrays.asList(context
+					.getResources().getStringArray(CardList.heroType(0))));
+		}
+		if (Card.herocards == null) {
+			Card.herocards = new ArrayList<String>(Arrays.asList(context
+					.getResources().getStringArray(
+							CardList.heroType(hero.getHeroType()))));
+		} else {
+			Card.enemycards = new ArrayList<String>(Arrays.asList(context
+					.getResources().getStringArray(
+							CardList.heroType(hero.getHeroType()))));
+		}
+
 		String[] deksplit = dekstring.split(",");
 		String[] cardhowmany;
 		String eachcard;
 		Card card;
 		int howmany;
-		int id = 0;
+
 		for (String each : deksplit) {
 			cardhowmany = each.split("x");
-			eachcard = getCardById(Integer.parseInt(cardhowmany[0]));
+			int cardid = Integer.parseInt(cardhowmany[0]);
+			eachcard = getCardStringById(cardid);
 			howmany = Integer.parseInt(cardhowmany[1]);
 
 			for (int i = 0; i < howmany; i++) {
-				card = new Card(context, eachcard, hand, id);
-				id++;
+				card = new Card(context, eachcard, hand, idforMonster, cardid);
+				idforMonster++;
 				dek.add(card);
 			}
 		}
 
 	}
 
-	private String getCardById(int id) {
+	public String getCardStringById(int id) {
+		switch (id) {
+		case -1:
+			return "박쥐;;bat;1;0;0;1;1";
+		case -2:
+			return "토템;;totem;1;0;0;1;1";
+		case -3:
+			return "치유토템;내 턴이 끝날때 내 캐릭터들의 체력을 1 회복합니다.;totemheal;1;0;0;0;2";
+		case -4:
+			return "주문토템;주문력+1;totemspell;1;0;0;0;2";
+		case -5:
+			return "수호토템;방어;totemshield;1;0#1;0;0;2";
+		case -6:
+			return "마나+;마나를 1 획득합니다.;manaplus;0;0%0#1;0;0;0";
+
+		}
 		if (id > 999) {
 			int resid = id % 1000;
-			return herocards[resid];
+			if (me == 1)
+				return Card.herocards.get(resid);
+			return Card.enemycards.get(resid);
 		}
-		return defaultcards[id];
+		return Card.defaultcards.get(id);
 	}
 
 	public void firstSetting(int size) {
@@ -283,10 +319,9 @@ public class Player {
 
 		if (!first) {
 			Sender.S("5&"); // IAMDONE (second)
-			newCard("마나스톤;이번 턴에 마나를 1 획득합니다.;manaplus;0;0%0#1;0");
+			hand.add(new Card(context, getCardStringById(-6), hand, -1, -6));
 		}
-	} 
-	 
+	}
 
 	public String dekToDummy() {
 		String ranorder = dummy.shffleAdd(dek, random);
@@ -333,9 +368,6 @@ public class Player {
 		Sender.S("7&1@" + hero.toString());
 	}
 
-	private void newCard(String string) {
-		hand.add(new Card(context, string, hand, 900));
-	}
 
 	public void newCard() {
 		if (dummy.isEmpty()) {
@@ -449,9 +481,13 @@ public class Player {
 	public void spellpowerAdd(int i) {
 		spellpower += i;
 	}
-	
+
 	public int getSpellpower() {
 		return spellpower;
+	}
+
+	public boolean getFirst() {
+		return first;
 	}
 
 }

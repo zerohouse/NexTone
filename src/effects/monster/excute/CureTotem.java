@@ -13,7 +13,7 @@ public class CureTotem implements ExcuteEffect {
 	@Override
 	public void run() {
 		for (Monster monster : monster.field().monsters())
-			monster.heal(1, false, monster, null);
+			monster.heal(1, false, monster, "heroability2");
 	}
 
 }

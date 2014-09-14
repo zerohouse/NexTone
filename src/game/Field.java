@@ -57,10 +57,9 @@ public class Field extends LinearLayout {
 		addView(monster);
 	}
 
-	public void addByString(String cardstring, int cardindex, String monsterstring, boolean sended) {
-		Card card = new Card(context, cardstring, player.hand, cardindex);
-		Monster monster = new Monster(context, card, monsterstring, this, items.size(),
-				sended);
+	public void addByCard(Card card, boolean sended) {
+			Monster monster = new Monster(context, card, this, sended);
+
 		add(monster);
 	}
 
@@ -166,13 +165,13 @@ public class Field extends LinearLayout {
 	public void setDefenseMonster() {
 		defenseMonster++;
 	}
-	
+
 	public void dieDefenseMonster() {
 		defenseMonster--;
 	}
 
 	public boolean defenseMonsterInField() {
-		Log.i("shield", defenseMonster+"");
+		Log.i("shield", defenseMonster + "");
 		if (defenseMonster > 0)
 			return true;
 		return false;

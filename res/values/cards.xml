@@ -81,7 +81,7 @@
 
         <!-- 드루 직업카드 -->
         <item>뽜이아;피해1 파이어볼을 던집니다.;fireball;0;0%100#-1#fireball;0;0;0</item>
-        <item>마나++;이번 턴에 마나를 2 획득합니다.;manaplus;0;0%0#2;0;0;0</item>
+        <item>마나++;마나를 2 획득합니다.;manaplus;0;0%0#2;0;0;0</item>
     </string-array>
 
 </resources>

@@ -14,9 +14,13 @@ import android.widget.RelativeLayout;
 
 public class Heal {
 
+	static RelativeLayout container = null;
+	int thisid;
+	static int i = 0;
+
 	@SuppressLint("NewApi")
-	public static void HealEffect(Target one, Target another,
-			boolean isChecked, String resource) {
+	public void HealEffect(Target one, Target another, boolean isChecked,
+			String resource) {
 
 		int x = (int) one.getX(one.isHero());
 		int toX = (int) another.getX(one.isHero());
@@ -53,7 +57,15 @@ public class Heal {
 
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 
-		Attack.container.addView(object);
+		if (container == null) {
+			container = new RelativeLayout(Helper.context);
+			RelativeLayout.LayoutParams relparams = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			container.setLayoutParams(relparams);
+			Attack.container.addView(container);
+		}
+		container.addView(object);
 
 		params.leftMargin = x;
 		params.bottomMargin = origny;
@@ -61,6 +73,9 @@ public class Heal {
 		int amountx = toX - x;
 
 		int amounty = another.getTopY() - one.getTopY();
+
+		i++;
+		thisid = i;
 
 		TranslateAnimation translate = new TranslateAnimation(0, amountx, 0,
 				amounty);
@@ -93,8 +108,8 @@ public class Heal {
 
 			@Override
 			public void onAnimationEnd(Animation arg0) {
-
-				Attack.container.removeView((View) object);
+				if (thisid == i)
+					container.removeAllViews();
 			}
 		});
 

@@ -17,8 +17,8 @@
         android:label="@string/app_name" >
         <activity
             android:name=".NetWorkGame"
-            android:screenOrientation="portrait"
-            android:label="@string/title_activity_offline_game" >
+            android:label="@string/title_activity_offline_game"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".GameActivity"
@@ -59,6 +59,15 @@
         <activity
             android:name=".SelectHero"
             android:label="@string/title_activity_select_hero" >
+        </activity>
+        <activity
+            android:name=".BlueToothGame"
+            android:label="@string/title_activity_blue_tooth_game" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -33,18 +33,16 @@ public class SpawnRandomTotem implements HeroEffect {
 
 		int totem = totems.get(Static.ramdom.nextInt(totems.size()));
 		int index = Static.index();
-		String monsterinfo;
 		Monster monster;
 		Card card;
 		switch (totem) {
 		case 0:
 			totems.remove((Integer) 0);
 
-			monsterinfo = index + "," + 1 + "," + 1 + ",totem,0";
-			card = new Card(player.context(), "토템;;totem;0;0;0;1;1",
-					player.hand, index);
-			monster = new Monster(player.context(), card, monsterinfo,
-					player.field, index, false);
+			card = new Card(player.context(), player.getCardStringById(-2),
+					player.hand, index, -2);
+			monster = new Monster(player.context(), card, player.field, false);
+
 			player.field.add(monster);
 			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(0));
 			break;
@@ -52,13 +50,12 @@ public class SpawnRandomTotem implements HeroEffect {
 		case 1:
 			totems.remove((Integer) 1);
 
-			monsterinfo = index + "," + 0 + "," + 2 + ",totemheal,0";
-			card = new Card(player.context(), "치유토템;;totemheal;0;0;0;0;2",
-					player.hand, index);
+			card = new Card(player.context(), player.getCardStringById(-3),
+					player.hand, index, -3);
+			monster = new Monster(player.context(), card, player.field, false);
 
-			monster = new Monster(player.context(), card, monsterinfo,
-					player.field, index, false);
 			player.field.add(monster);
+
 			monster.setEndTurnEffect(ExcuteEffectFactory.makeExcuteEffect(1,
 					monster)); // 힐능력 부여
 			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(1));
@@ -67,12 +64,9 @@ public class SpawnRandomTotem implements HeroEffect {
 		case 2:
 			totems.remove((Integer) 2);
 
-			monsterinfo = index + "," + 0 + "," + 2 + ",totemspell,0";
-			card = new Card(player.context(), "주문토템;;totemspell;0;0;0;0;2",
-					player.hand, index);
-
-			monster = new Monster(player.context(), card, monsterinfo,
-					player.field, index, false);
+			card = new Card(player.context(), player.getCardStringById(-4),
+					player.hand, index, -4);
+			monster = new Monster(player.context(), card, player.field, false);
 			monster.setAuraEffect(AuraEffectFactory.makeAuraEffect(1, monster)); // 주문능력부여
 			player.field.add(monster);
 			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(2));
@@ -81,12 +75,9 @@ public class SpawnRandomTotem implements HeroEffect {
 		case 3:
 			totems.remove((Integer) 3);
 
-			monsterinfo = index + "," + 0 + "," + 2 + ",totemshield,0#1";
-			card = new Card(player.context(), "수호토템;;totemshield;0;0#1;0;0;2",
-					player.hand, index);
-
-			monster = new Monster(player.context(), card, monsterinfo,
-					player.field, index, false);
+			card = new Card(player.context(), player.getCardStringById(-5),
+					player.hand, index, -5);
+			monster = new Monster(player.context(), card, player.field, false);
 			player.field.add(monster);
 			monster.setDeathEffect(ExcuteEffectFactory.totemNumber(3));
 			break;

@@ -70,7 +70,6 @@ public class GameActivity extends Activity {
 			
 			NetGame ngame = new NetGame(GameActivity.this, container, animate,
 					ip, port, dekstring, herostring);
-			
 			ngame.execute();
 			container.removeView(v); 
 			container.addView(status);

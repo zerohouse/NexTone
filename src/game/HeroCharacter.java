@@ -22,6 +22,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	RelativeLayout.LayoutParams params;
 	Weapon weapon = null;
 	Context context;
+	Heal healeffect = null;
 
 	public HeroCharacter(Context context, Hero hero, String resource) {
 		super(context);
@@ -293,7 +294,9 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			Sender.S("16&" + hero.player.me + "#" + -1 + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
-		Heal.HealEffect(from, this, sended, resource);
+		if(healeffect ==null)
+			healeffect = new Heal();
+		healeffect.HealEffect(from, this, sended, resource);
 
 		vital.add(amount);
 		if (vital.Int() > maxvital) {

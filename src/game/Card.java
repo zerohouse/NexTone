@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import animation.Ani;
 import animation.Helper;
-
 import components.ViewBinder;
 
 public class Card extends RelativeLayout {
@@ -30,15 +29,16 @@ public class Card extends RelativeLayout {
 
 	ViewBinder cost, attack, vital;
 	String resource, name, description, monstereffects, cardeffect;
-	int index;
+	int idforMonster, cardid;
 	LinearLayout.LayoutParams params;
 
 	boolean selected;
 
-	public Card(Context context, String eachcard, Hand hand, int index) {
+	public Card(Context context, String eachcard, Hand hand, int idforMonster,
+			int cardid) {
 		super(context);
 		this.context = context;
-
+		this.cardid = cardid;
 		this.cardinfo = eachcard;
 		params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -105,7 +105,7 @@ public class Card extends RelativeLayout {
 
 		}
 
-		this.index = index;
+		this.idforMonster = idforMonster;
 
 		setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -167,7 +167,7 @@ public class Card extends RelativeLayout {
 	}
 
 	public int index() {
-		return index;
+		return cardid;
 	}
 
 	public int cost() {
@@ -203,7 +203,7 @@ public class Card extends RelativeLayout {
 	}
 
 	private void removeCardFromHand(Player player) {
-		Sender.S("80&" + ani.toString()); // send effect
+		Sender.S("80&" + player.me + "@" + -1 + "@" + cardid); // send effect
 		player.hand.remove(this); // remove card
 		player.hero.mana.Add(-cost.Int(), false); // consume mana
 	}
@@ -212,8 +212,6 @@ public class Card extends RelativeLayout {
 		final String[] effect = effects.split("#");
 		int type = Integer.parseInt(effect[0]);
 		final int amount = Integer.parseInt(effect[1]);
-
-
 
 		switch (type) {
 		case 0:
@@ -226,7 +224,6 @@ public class Card extends RelativeLayout {
 
 			Method.alert("대상을 선택하세요.");
 
-			
 			OnClickListener heal = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -268,8 +265,7 @@ public class Card extends RelativeLayout {
 	}
 
 	private void addMonster(Player player) {
-		Monster monster = new Monster(context, this, player.field,
-				monstereffects, false);
+		Monster monster = new Monster(context, this, player.field, false);
 		player.field.add(monster);
 	}
 
@@ -291,5 +287,13 @@ public class Card extends RelativeLayout {
 
 	public Ani getAni() {
 		return ani;
+	}
+
+	public String getMonstereffects() {
+		return monstereffects;
+	}
+
+	public int getMonsterindex() {
+		return idforMonster;
 	}
 }

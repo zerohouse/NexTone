@@ -9,7 +9,7 @@ import net.Sender;
 
 public class Static {
 	static Target attacker = null;
-	static int index = 30;
+	static int index = 200;
 	public static Random ramdom = new Random();
 
 	static ArrayList<HeroEffect> endTurn = new ArrayList<HeroEffect>();

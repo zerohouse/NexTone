@@ -4,7 +4,6 @@ import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +32,8 @@ public class Monster extends RelativeLayout implements Target {
 	boolean defenseMonster, shield = false; // 방패/보호막
 	ImageView charimage, foreimage;
 	Card card;
+	
+	Heal healeffect = null;
 
 	OnClickListener showHelper;
 	Context context;
@@ -41,21 +42,19 @@ public class Monster extends RelativeLayout implements Target {
 	RelativeLayout.LayoutParams params;
 	boolean uped = false;
 
-	public Monster(Context context, Card card, Field field, String effects,
-			boolean sended) {
+	public Monster(Context context, Card card, Field field, boolean sended) {
 		super(context);
 		this.card = card;
-		this.effects = effects;
-		deFault(context, field, card.index());
+		this.effects = card.getMonstereffects();
+		deFault(context, field, card.getMonsterindex());
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
 		setHelperShow();
 		setEffects();
-		if (!sended) {
-			Sender.S("8&" + field.player.me + "@" + toString() + "@"
-					+ card.toString() + "@" + id);
 
+		if (!sended) {
+			Sender.S("8&" + field.player.me + "@" + id + "@" + card.index());
 		}
 	}
 
@@ -86,29 +85,6 @@ public class Monster extends RelativeLayout implements Target {
 
 		vitalparams.setMargins(0, 0, Method.dpToPx(7), 0);
 		this.vital.setGravity(Gravity.CENTER);
-	}
-
-	public Monster(Context context, Card card, String info, Field field,
-			int index, boolean sended) {
-		super(context);
-
-		this.card = card;
-		String[] cardinfo = info.split(",");
-		deFault(context, field, Integer.parseInt(cardinfo[0]));
-
-		setDamageVital(Integer.parseInt(cardinfo[1]),
-				Integer.parseInt(cardinfo[2]));
-		this.resource = cardinfo[3];
-		setBackgroundDefault();
-		this.effects = cardinfo[4];
-		Log.i("effects", effects);
-		setHelperShow();
-		setEffects();
-
-		if (!sended) {
-			Sender.S("8&" + field.player.me + "@" + toString() + "@"
-					+ card.toString() + "@" + id);
-		}
 	}
 
 	@Override
@@ -425,8 +401,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public Monster cloneForAnimate() {
-		Monster monster = new Monster(context, card, this.toString(), field,
-				id, true);
+		Monster monster = new Monster(context, card, field, true);
 		if (defenseMonster)
 			field.dieDefenseMonster();
 		if (shield)
@@ -459,7 +434,7 @@ public class Monster extends RelativeLayout implements Target {
 			return field.getHeight() + field.player.hero.getHeight();
 		} else {
 			return field.getHeight();
-		} 
+		}
 	}
 
 	@Override
@@ -473,9 +448,12 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 		}
 
-		Heal.HealEffect(from, this, sended, resource);
+		if(healeffect ==null)
+			healeffect = new Heal();
+		healeffect.HealEffect(from, this, sended, resource);
 
 		vital.add(amount);
+
 		if (vital.Int() > maxvital) {
 			vital.setInt(maxvital);
 		}
