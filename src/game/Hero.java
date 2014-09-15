@@ -4,6 +4,7 @@ import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -81,6 +82,7 @@ public class Hero extends RelativeLayout {
 		ability.setTextColor(Color.WHITE); 
 		addView(ability);
 
+		Log.i("tag",herotype+"");
 		effect = HeroEffectFactory.makeHeroEffect(herotype,
 				this.player);
 

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
-
 public class MainActivity extends Activity {
 
 	@Override
@@ -16,27 +15,48 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Method.setContext(this);
-		
-		TextView gamestart = (TextView) findViewById(R.id.gamestart);
+
+		final TextView gamestart = (TextView) findViewById(R.id.gamestart);
 		TextView makedek = (TextView) findViewById(R.id.selectdek);
-		
-		OnClickListener startgame = new OnClickListener() {
+		final TextView bluegame = (TextView) findViewById(R.id.bluetoothgame);
+		final TextView tcpgame = (TextView) findViewById(R.id.tcpgame);
+
+		gamestart.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this,SelectDek.class);
+				gamestart.setVisibility(View.GONE);
+				tcpgame.setVisibility(View.VISIBLE);
+				bluegame.setVisibility(View.VISIBLE);
+			}
+		});
+		bluegame.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this,
+						GameBluetooth.class);
 				startActivity(intent);
 			}
-		};
-		gamestart.setOnClickListener(startgame);
+		});
+		tcpgame.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MainActivity.this,
+						GameTcpIp.class);
+				startActivity(intent);
+			}
+		});
 		
+		
+		
+
 		OnClickListener dekmake = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(MainActivity.this,DekList.class);
+				Intent intent = new Intent(MainActivity.this, DekList.class);
 				startActivity(intent);
 			}
 		};
 		makedek.setOnClickListener(dekmake);
-		
+
 	}
 }

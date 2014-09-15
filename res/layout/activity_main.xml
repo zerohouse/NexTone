@@ -7,13 +7,40 @@
     android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}" >
 
-    <TextView
-        android:id="@+id/gamestart"
+    <LinearLayout
+        android:id="@+id/gamemenu"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/btn_start"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/gamestart"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:text="@string/btn_start"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/tcpgame"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center"
+            android:text="@string/tcpgame"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/bluetoothgame"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:gravity="center"
+            android:text="@string/bluegame"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/selectdek"

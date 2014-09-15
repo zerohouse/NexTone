@@ -24,6 +24,7 @@ import dek.Sql;
 
 public class SelectDek extends Activity {
 
+	Bundle extra;
 	Intent intent;
 	Data intentdata;
 	Sql sql;
@@ -55,10 +56,11 @@ public class SelectDek extends Activity {
 					EachDek dek = (EachDek) v;
 					intent.putExtra("selected", dek.getData());
 					intent.putExtra("state", "select");
-					startActivity(intent);
+					setResult(RESULT_OK, intent);
+					finish();
 				}
 			};
-			if (each.getData().getSum() > 15) { // 사용 가능한 덱
+			if (each.getData().getSum() > 29) { // 사용 가능한 덱
 				each.setOnClickListener(listener);
 				able++;
 			} else {
@@ -96,8 +98,6 @@ public class SelectDek extends Activity {
 						finish();
 					}
 				});
-	
-		
 		areyousure.show();
 	}
 
@@ -105,8 +105,10 @@ public class SelectDek extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dek_list);
+		extra = new Bundle();
+		intent = new Intent();
 		layout = (LinearLayout) findViewById(R.id.deklist);
 		sql = new Sql(this);
-		intent = new Intent(this, GameActivity.class);
+		intent = new Intent(this, GameTcpIp.class);
 	}
 }
