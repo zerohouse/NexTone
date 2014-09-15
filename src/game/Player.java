@@ -220,7 +220,7 @@ public class Player {
 			howmany = Integer.parseInt(cardhowmany[1]);
 
 			for (int i = 0; i < howmany; i++) {
-				card = new Card(context, eachcard, hand, idforMonster, cardid);
+				card = new Card(context, eachcard, idforMonster, cardid);
 				idforMonster++;
 				dek.add(card);
 			}
@@ -318,7 +318,10 @@ public class Player {
 
 		if (!first) {
 			Sender.S("5&"); // IAMDONE (second)
-			hand.add(new Card(context, getCardStringById(-6), hand, -1, -6));
+			hand.add(new Card(context, getCardStringById(-6), -1, -6));
+			//hand.add(new Card(context, "", -1, -6));
+			
+			//성장돼지;매턴이 끝날때마다 +1/+1을 얻습니다.;pig;1;0%950#1=1;8;7;7
 		}
 	}
 
@@ -366,7 +369,6 @@ public class Player {
 	public void sendHeroState() {
 		Sender.S("7&1@" + hero.toString());
 	}
-
 
 	public void newCard() {
 		if (dummy.isEmpty()) {
@@ -489,4 +491,8 @@ public class Player {
 		return first;
 	}
 
+	public void heal(int amount, boolean sended, Target from, String resource) {
+		field.heal(amount, sended, from, resource);
+		hero.hero().heal(amount, sended, from, resource);
+	}
 }

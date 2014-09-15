@@ -58,7 +58,7 @@ public class Field extends LinearLayout {
 	}
 
 	public void addByCard(Card card, boolean sended) {
-			Monster monster = new Monster(context, card, this, sended);
+		Monster monster = new Monster(context, card, this, sended);
 
 		add(monster);
 	}
@@ -175,6 +175,12 @@ public class Field extends LinearLayout {
 		if (defenseMonster > 0)
 			return true;
 		return false;
+	}
+
+	public void heal(int amount, boolean sended, Target from, String resource) {
+		for (int i = items.size() - 1; i > -1; i--) {
+			items.get(i).heal(amount, sended, from, resource);
+		}
 	}
 
 }

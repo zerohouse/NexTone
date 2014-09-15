@@ -19,7 +19,7 @@ public class SpawnNewMonster implements HeroEffect {
 
 		int index = Static.index();
 		Card card = new Card(player.context(), player.getCardStringById(-1),
-				player.hand, index, -1);
+				index, -1);
 		Monster monster = new Monster(player.context(), card, player.field,
 				false);
 		player.field.add(monster);

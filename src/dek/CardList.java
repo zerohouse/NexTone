@@ -5,6 +5,7 @@ import java.util.TreeSet;
 import com.mylikenews.nextoneandroid.R;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
@@ -18,19 +19,21 @@ public class CardList {
 		String[] resource = context.getResources().getStringArray(
 				heroType(type));
 
+		Log.i("start", type+"카드리스트 만들기 시작");
 		items = new TreeSet<CardinDek>();
 		int i = type * 1000; // 직업카드 = 자신의 히어로 타입 *1000 + 자신의 아이디를 가짐.
 		for (String s : resource) {
+			Log.i("each", s);
 			items.add(new CardinDek(context, s, i));
 			i++;
 		}
 
 		this.layout = layout;
 		this.context = context;
+		add();
 	}
 
-	public void show() {
-		layout.removeAllViews();
+	public void add() {
 		for (CardinDek card : items) {
 			layout.addView(card);
 		}
@@ -85,6 +88,12 @@ public class CardList {
 
 		}
 		return result;
+	}
+
+	public void setHeight() {
+		for(CardinDek card : items){
+			card.setHeight();
+		}
 	}
 
 }

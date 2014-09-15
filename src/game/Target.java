@@ -61,4 +61,9 @@ public interface Target {
 	public abstract int getHeight();
 
 	public abstract int getWidth();
+
+	public abstract void abilityUp(String amount, boolean sended, Target from,
+			String res);
+
+	void damageCheck();
 }

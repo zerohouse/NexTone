@@ -22,8 +22,7 @@ import effects.monster.excute.ExcuteEffect;
 public class Monster extends RelativeLayout implements Target {
 
 	Field field;
-	int defauldamage;
-	int defaulvital;
+	final int defaultattack, defaultvital;
 	int attackable, maxattackable;
 	int maxvital, defaulmaxvital;
 	int id;
@@ -32,7 +31,7 @@ public class Monster extends RelativeLayout implements Target {
 	boolean defenseMonster, shield = false; // 방패/보호막
 	ImageView charimage, foreimage;
 	Card card;
-	
+
 	Heal healeffect = null;
 
 	OnClickListener showHelper;
@@ -47,6 +46,8 @@ public class Monster extends RelativeLayout implements Target {
 		this.card = card;
 		this.effects = card.getMonstereffects();
 		deFault(context, field, card.getMonsterindex());
+		defaultattack = card.attack();
+		defaultvital = card.vital();
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
@@ -63,7 +64,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	private void setDamageVital(int attack, int vital) {
-		defauldamage = attack;
+		
 		damage = new ViewBinder(context, attack, this);
 		damage.setBackgroundResource(R.drawable.attack);
 		RelativeLayout.LayoutParams damageparams = damage.getParams();
@@ -303,6 +304,10 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public void vitalCheck() {
+		if (vital.Int() > defaultvital) {
+			vital.setTextColor(Color.GREEN);
+			return;
+		}
 		if (isAttacked()) {
 			vital.setTextColor(Color.RED);
 			return;
@@ -310,15 +315,19 @@ public class Monster extends RelativeLayout implements Target {
 		vital.setTextColor(Color.WHITE);
 	}
 
+	@Override
+	public void damageCheck() {
+		if (damage.Int() > defaultattack) {
+			damage.setTextColor(Color.GREEN);
+			return;
+		}
+		damage.setTextColor(Color.WHITE);
+	}
+
 	private boolean isAttacked() {
 		return vital.Int() < maxvital;
 	}
 
-	public void newTurn() {
-		this.attackable = maxattackable;
-		attackReady();
-		attackCheck();
-	}
 
 	@SuppressLint("NewApi")
 	@Override
@@ -366,7 +375,11 @@ public class Monster extends RelativeLayout implements Target {
 		return damage.Int();
 	}
 
-	ExcuteEffect endTurn, death = null;
+	ExcuteEffect newTurn, endTurn, death = null;
+	
+	public void setNewTurnEffect(ExcuteEffect effect) {
+		this.newTurn = effect;
+	}
 
 	public void setEndTurnEffect(ExcuteEffect effect) {
 		this.endTurn = effect;
@@ -388,6 +401,15 @@ public class Monster extends RelativeLayout implements Target {
 		attackdisAble();
 		if (endTurn != null) {
 			endTurn.run();
+		}
+	}
+	
+	public void newTurn() {
+		this.attackable = maxattackable;
+		attackReady();
+		attackCheck();
+		if (newTurn != null) {
+			newTurn.run();
 		}
 	}
 
@@ -438,6 +460,36 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	@Override
+	public void abilityUp(String amount, boolean sended, Target from,
+			String resource) {
+
+		if (!sended)
+			Sender.S("160&" + field.player.me + "#" + id + "," + amount + ","
+					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+
+		if (healeffect == null)
+			healeffect = new Heal();
+		healeffect.HealEffect(from, this, sended, resource);
+
+		String[] tmp = amount.split("=");
+
+		int attackamount = Integer.parseInt(tmp[0]);
+		int vitalamount = Integer.parseInt(tmp[1]);
+
+		damage.add(attackamount);
+		vital.add(vitalamount);
+		maxvital += vitalamount;
+
+		if (vital.Int() > maxvital) {
+			vital.setInt(maxvital);
+		}
+		removeCheck();
+		vitalCheck();
+		damageCheck();
+
+	}
+
+	@Override
 	public void heal(int amount, boolean sended, Target from, String resource) {
 		if (!sended)
 			Sender.S("16&" + field.player.me + "#" + id + "," + amount + ","
@@ -448,7 +500,7 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 		}
 
-		if(healeffect ==null)
+		if (healeffect == null)
 			healeffect = new Heal();
 		healeffect.HealEffect(from, this, sended, resource);
 

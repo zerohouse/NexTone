@@ -116,13 +116,12 @@ public class GameBluetooth extends Activity implements
 		areyousure.setTitle("게임에서 나갑니다.");
 
 		// Set up the buttons
-		areyousure.setNegativeButton("포기하고 다음판 할래!",
+		areyousure.setNegativeButton("졌다. 니가 짱먹어라",
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
 						Sender.S("101&"); // 항복
-						Sender.close();
 						finish();
 					}
 				});
@@ -195,7 +194,7 @@ public class GameBluetooth extends Activity implements
 				herostring = data.getHerostring();
 				game = new Game(GameBluetooth.this, container, animate,
 						dekstring, herostring);
-  
+
 				game.waitForDekSelect();
 				start = true;
 

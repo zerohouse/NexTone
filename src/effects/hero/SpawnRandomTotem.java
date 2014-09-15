@@ -41,7 +41,7 @@ public class SpawnRandomTotem implements HeroEffect {
 			totems.remove((Integer) 0);
 
 			card = new Card(player.context(), player.getCardStringById(-2),
-					player.hand, index, -2);
+					index, -2);
 			monster = new Monster(player.context(), card, player.field, false);
 
 			player.field.add(monster);
@@ -57,7 +57,7 @@ public class SpawnRandomTotem implements HeroEffect {
 			totems.remove((Integer) 1);
 
 			card = new Card(player.context(), player.getCardStringById(-3),
-					player.hand, index, -3);
+					index, -3);
 			monster = new Monster(player.context(), card, player.field, false);
 
 			player.field.add(monster);
@@ -76,7 +76,7 @@ public class SpawnRandomTotem implements HeroEffect {
 			totems.remove((Integer) 2);
 
 			card = new Card(player.context(), player.getCardStringById(-4),
-					player.hand, index, -4);
+					index, -4);
 			monster = new Monster(player.context(), card, player.field, false);
 			monster.setAuraEffect(AuraEffectFactory.makeAuraEffect(1, monster)); // 주문능력부여
 			player.field.add(monster);
@@ -92,7 +92,7 @@ public class SpawnRandomTotem implements HeroEffect {
 			totems.remove((Integer) 3);
 
 			card = new Card(player.context(), player.getCardStringById(-5),
-					player.hand, index, -5);
+					index, -5);
 			monster = new Monster(player.context(), card, player.field, false);
 			player.field.add(monster);
 			monster.setDeathEffect(new ExcuteEffect() {

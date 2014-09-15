@@ -168,11 +168,16 @@ public class SelectedCardList {
 		}
 		for (CardSelected card : items) {
 			if (card.getId() == cardindek.getId()) {
+				if (card.isLegend()) {
+					Method.alert("전설카드는 한장만 넣을 수 있습니다.");
+					return false;
+				}
 				if (card.getSize() == 1) {
 					card.setSize(2);
 					update();
 					return true;
 				} else {
+					Method.alert("카드는 두장까지 넣을 수 있습니다.");
 					return false;
 				}
 			}

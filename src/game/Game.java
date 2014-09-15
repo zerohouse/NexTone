@@ -43,7 +43,7 @@ public class Game {
 		Helper.setHelper(context);
 
 		container.removeAllViews();
-		
+
 		player1 = new Player(context, player1dek, player1hero, 1, this, first);
 		if (first) {
 			Method.alert("게임을 시작합니다.");
@@ -174,15 +174,15 @@ public class Game {
 				if (mon[0].equals("1")) {
 					cardstring = player2.getCardStringById(Integer
 							.parseInt(mon[2]));
-					card = new Card(context, cardstring, player2.hand,
+					card = new Card(context, cardstring,
 							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]));
 					player2.field.addByCard(card, true);
 					return;
 				}
 				cardstring = player1
 						.getCardStringById(Integer.parseInt(mon[2]));
-				card = new Card(context, cardstring, player1.hand,
-						Integer.parseInt(mon[1]), Integer.parseInt(mon[2]));
+				card = new Card(context, cardstring, Integer.parseInt(mon[1]),
+						Integer.parseInt(mon[2]));
 				player1.field.addByCard(card, true);
 				break;
 
@@ -258,6 +258,21 @@ public class Game {
 				}
 				healtarget.heal(healamount, true, from, heal[3]);
 				break;
+				
+			case 160:
+				String ability[] = response[1].split(",");
+				String abamount = ability[1];
+
+				Target abtarget = getByIndex(ability[0]);
+				Target abfrom = getByIndex(ability[2]);
+
+				if (ability[3].equals("null")) {
+					abtarget.abilityUp(abamount, true, abfrom, null);
+					break;
+				}
+				abtarget.abilityUp(abamount, true, abfrom, ability[3]);
+				break;
+				
 
 			case 14:
 				String weapon[] = response[1].split(",");

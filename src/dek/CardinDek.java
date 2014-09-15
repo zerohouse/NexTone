@@ -14,11 +14,13 @@ import com.mylikenews.nextoneandroid.R;
 
 public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 	int cost, attack, vital, id;
-	String name, description, resource;
+	String name, description, resource, string;
+	boolean hasMonster;
 
-	ImageView background;
+	ImageView background, character;
 	Context context;
 	TextView nameview, descriptionview;
+	LinearLayout.LayoutParams params;
 
 	int size = 1;
 
@@ -27,11 +29,16 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 		super(context);
 		// 카드 스트링 양식 (구분자 : ;)
 		// 카드이름;카드설명;코스트;데미지;바이탈;이미지리소스파일명;특수능력타입(0=empty)
+		this.string = string;
 		String[] cardresource = string.split(";");
 		setGravity(Gravity.CENTER);
 		this.context = context;
 		name = cardresource[0];
 		description = cardresource[1];
+
+		hasMonster = true;
+		if (Integer.parseInt(cardresource[3]) == 0)
+			hasMonster = false;
 
 		cost = Integer.parseInt(cardresource[5]);
 		attack = Integer.parseInt(cardresource[6]);
@@ -41,11 +48,10 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 
 		this.id = id;
 
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+		params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
 		setLayoutParams(params);
-		params.height = Method.dpToPx(75);
 
 		nameview = new TextView(context);
 		nameview.setTextAppearance(context, R.style.myText);
@@ -53,14 +59,16 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 		LayoutParams nameparams = Method.getParams();
 		nameview.setLayoutParams(nameparams);
 		nameparams.addRule(CENTER_HORIZONTAL);
+		nameview.setId(100);
+
 		setSize(size);
 		descriptionview = new TextView(context);
 		LayoutParams desparams = Method.getParams();
 		descriptionview.setLayoutParams(desparams);
 		desparams.addRule(CENTER_HORIZONTAL);
-		desparams.addRule(ALIGN_PARENT_BOTTOM);
-		String info = String.format("마나:%d, 공격력:%d, 체력:%d\n%s", cost, attack,
-				vital, this.description);
+		desparams.addRule(BELOW, nameview.getId());
+		String info = String.format("공격력:%d, 체력:%d\n%s", attack, vital,
+				this.description);
 		descriptionview.setText(info);
 		descriptionview.setGravity(Gravity.CENTER);
 
@@ -68,19 +76,38 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 		LayoutParams imageparams = new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT);
 		background.setLayoutParams(imageparams);
-		background.setScaleType(ScaleType.CENTER_CROP);
-		background.setImageResource(Method.resId(resource + "c"));
+		background.setScaleType(ScaleType.FIT_XY);
+
+		if(hasMonster)
+			background.setImageResource(R.drawable.monstercard);
+		else
+			background.setImageResource(R.drawable.spellcard);
+		
 		background.setAlpha((float) 0.5);
+
+		character = new ImageView(context);
+		LayoutParams charparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT);
+		character.setLayoutParams(charparams);
+		character.setScaleType(ScaleType.CENTER_CROP);
+		character.setImageResource(Method.resId(resource));
+		character.setAlpha((float) 0.5);
+
 		addView(background);
+		addView(character);
+
 		addView(nameview);
 		addView(descriptionview);
+	}
+
+	public void setHeight() {
+		params.height = nameview.getHeight() + descriptionview.getHeight();
 	}
 
 	@Override
 	public String toString() {
 		// "토템;;totem;0;0;0;1;1";
-		return name + ";" + description + ";" + resource + ";0;0;" + cost + ";"
-				+ attack + ";" + vital;
+		return string;
 	}
 
 	@Override

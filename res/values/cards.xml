@@ -30,10 +30,14 @@
         <item>강시;돌진;mchinese;1;0#3;3;3;1</item>
         <item>대형강시;돌진;bchinese;1;0#3;4;2;5</item>
         <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
-        
         <item>작은새;나올때 피해1 돼지를 던집니다.;sbird;1;0%100#-1#pig;1;1;1</item>
         <item>새;나올때 피해1 돼지를 던집니다.;mbird;1;0%100#-1#pig;3;2;2</item>
         <item>화난새;나올때 피해2 돼지를 던집니다.;bbird;1;0%100#-2#pig;5;4;2</item>
+        <item>이순신;공격할 수 없습니다.\n턴이 끝날때 적 하나에게 피해8 거북선을 돌진시킵니다.;sea;1;0%900#-8#tutle#LEGEND;8;8;8</item>
+        <item>논개;돌진\n적에게 1/1박쥐 두마리를 소환해줍니다.;nongae;1;0#3%910#0#LEGEND;4;6;2</item>
+        <item>버퍼;선택한 캐릭터에게 +1/+1을 부여합니다.;koreangirl;1;0%200#1=1#pig;3;3;2</item>
+        <item>성장돼지;매턴이 끝날때마다 +1/+1을 얻습니다.;pig;1;0%950#1=1#LEGEND;8;7;7</item>
+        <item>돼지;턴이 시작될때 적 하나에게 피해2 돼지를 던집니다.;pig;1;0%901#-2;3;1;4</item>
     </string-array>
     <string-array name="totem">
 
@@ -43,7 +47,9 @@
     <string-array name="magician">
 
         <!-- 법사 -->
+        <item>화르륵;모든 적 캐릭터에게 피해1 파이어볼을 날립니다.;fireball;0;0%50#-1;2;0;0</item>
         <item>멧돼지;피해6 돼지를 던집니다.;pig;0;0%100#-6#pig;4;0;0</item>
+        <item>화르르륵;모든 적 캐릭터에게 피해4 파이어볼를 날립니다.;fireball;0;0%50#-4;7;0;0</item>
         <item>돼지의왕;피해10 돼지를 던집니다.;pig;0;0%100#-10#pig;10;0;0</item>
     </string-array>
     <string-array name="heal">

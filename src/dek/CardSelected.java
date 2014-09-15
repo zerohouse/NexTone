@@ -17,7 +17,9 @@ public class CardSelected extends RelativeLayout implements
 	int cost, attack, vital, id;
 	String name, description, resource;
 
-	ImageView background;
+	boolean legend, hasMonster;
+
+	ImageView background, character;
 	Context context;
 	TextView nameview;
 
@@ -33,7 +35,13 @@ public class CardSelected extends RelativeLayout implements
 		this.context = context;
 		name = cardresource[0];
 		description = cardresource[1];
+		legend = false;
+		if (cardresource[4].contains("LEGEND"))
+			legend = true;
 
+		hasMonster = true;
+		if (Integer.parseInt(cardresource[3]) == 0)
+			hasMonster = false;
 		cost = Integer.parseInt(cardresource[5]);
 		attack = Integer.parseInt(cardresource[6]);
 		vital = Integer.parseInt(cardresource[7]);
@@ -54,17 +62,33 @@ public class CardSelected extends RelativeLayout implements
 		LayoutParams nameparams = Method.getParams();
 		nameview.setLayoutParams(nameparams);
 		nameparams.addRule(CENTER_VERTICAL);
-		nameparams.leftMargin = Method.dpToPx(20);
+		nameparams.leftMargin = Method.dpToPx(10);
 		setSize(size);
 
 		background = new ImageView(context);
 		LayoutParams imageparams = new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.MATCH_PARENT);
 		background.setLayoutParams(imageparams);
-		background.setScaleType(ScaleType.CENTER_CROP);
-		background.setImageResource(Method.resId(resource + "c"));
+		background.setScaleType(ScaleType.FIT_XY);
+
+		if (hasMonster)
+			background.setImageResource(R.drawable.monstercard);
+		else
+			background.setImageResource(R.drawable.spellcard);
+
 		background.setAlpha((float) 0.5);
+
+		character = new ImageView(context);
+		LayoutParams charparams = new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.MATCH_PARENT);
+		character.setLayoutParams(charparams);
+		character.setScaleType(ScaleType.CENTER_CROP);
+		character.setImageResource(Method.resId(resource));
+		character.setAlpha((float) 0.5);
+
 		addView(background);
+		addView(character);
+
 		addView(nameview);
 	}
 
@@ -99,7 +123,7 @@ public class CardSelected extends RelativeLayout implements
 	public CardSelected clone() {
 		CardSelected result = new CardSelected(context, toString(), id);
 		return result;
-	} 
+	}
 
 	public int getCost() {
 		return cost;
@@ -157,6 +181,10 @@ public class CardSelected extends RelativeLayout implements
 				return -1;
 		} else
 			return -1;
+	}
+
+	public boolean isLegend() {
+		return legend;
 	}
 
 }

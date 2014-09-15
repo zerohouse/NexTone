@@ -17,6 +17,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	Hero hero;
 	int attackable, maxvital;
+	final int defaultvital, defaultattack;
 	ViewBinder vital, damage, defense;
 	String resource;
 	RelativeLayout.LayoutParams params;
@@ -29,7 +30,8 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		this.hero = hero;
 		this.context = context;
 		this.resource = resource;
-
+		
+		
 		params = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -50,6 +52,9 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		damage = new ViewBinder(context, 0, this);
 		damage.setBackgroundResource(R.drawable.attack);
 		damage.setGravity(Gravity.CENTER);
+		
+		defaultvital = 30;
+		defaultattack = 0;
 
 		RelativeLayout.LayoutParams damageparams = damage.getParams();
 		damageparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -132,11 +137,24 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	@Override
 	public void vitalCheck() {
+		if (vital.Int() > defaultvital) {
+			vital.setTextColor(Color.GREEN);
+			return;
+		}
 		if (isAttacked()) {
 			vital.setTextColor(Color.RED);
 			return;
 		}
 		vital.setTextColor(Color.WHITE);
+	}
+
+	@Override
+	public void damageCheck() {
+		if (damage.Int() > defaultattack) {
+			damage.setTextColor(Color.GREEN);
+			return;
+		}
+		damage.setTextColor(Color.WHITE);
 	}
 
 	public boolean isAttacked() {
@@ -294,7 +312,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			Sender.S("16&" + hero.player.me + "#" + -1 + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
-		if(healeffect ==null)
+		if (healeffect == null)
 			healeffect = new Heal();
 		healeffect.HealEffect(from, this, sended, resource);
 
@@ -304,6 +322,35 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		}
 		defeatCheck();
 		vitalCheck();
+
+	}
+
+	@Override
+	public void abilityUp(String amount, boolean sended, Target from,
+			String resource) {
+		if (!sended)
+			Sender.S("160&" + hero.player.me + "#" + -1 + "," + amount + ","
+					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+
+		if (healeffect == null)
+			healeffect = new Heal();
+		healeffect.HealEffect(from, this, sended, resource);
+
+		String[] tmp = amount.split("=");
+
+		int attackamount = Integer.parseInt(tmp[0]);
+		int vitalamount = Integer.parseInt(tmp[1]);
+
+		damage.add(attackamount);
+		vital.add(vitalamount);
+		maxvital += vitalamount;
+
+		if (vital.Int() > maxvital) {
+			vital.setInt(maxvital);
+		}
+		defeatCheck();
+		vitalCheck();
+		damageCheck();
 
 	}
 

@@ -14,17 +14,15 @@ import android.widget.RelativeLayout;
 
 public class Heal {
 
-	static RelativeLayout container = null;
-	int thisid;
-	static int i = 0;
+	RelativeLayout container;
 
 	@SuppressLint("NewApi")
 	public void HealEffect(Target one, Target another, boolean isChecked,
-			String resource) {
+			String resource) { 
 
 		int x = (int) one.getX(one.isHero());
 		int toX = (int) another.getX(one.isHero());
-
+ 
 		int block = 0;
 		if (isChecked)
 			block = Method.dpToPx(110);
@@ -74,9 +72,6 @@ public class Heal {
 
 		int amounty = another.getTopY() - one.getTopY();
 
-		i++;
-		thisid = i;
-
 		TranslateAnimation translate = new TranslateAnimation(0, amountx, 0,
 				amounty);
 		translate.setInterpolator(new AccelerateInterpolator());
@@ -105,11 +100,10 @@ public class Heal {
 			@Override
 			public void onAnimationRepeat(Animation arg0) {
 			}
-
+ 
 			@Override
 			public void onAnimationEnd(Animation arg0) {
-				if (thisid == i)
-					container.removeAllViews();
+					object.setVisibility(View.INVISIBLE);
 			}
 		});
 
