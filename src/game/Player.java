@@ -11,6 +11,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -21,6 +23,7 @@ import com.mylikenews.nextoneandroid.DekList;
 
 import components.ImageButton;
 import dek.CardList;
+import effects.monster.excute.ExcuteEffect;
 
 public class Player {
 
@@ -36,11 +39,34 @@ public class Player {
 	Button change;
 	ImageButton usecard, heroabillity;
 	public ImageButton endturn;
-	int spellpower;
 	int idforMonster = 0;
 
-	public Hero hero;
+	final static int NEW_MONSTER = 0;
+	final static int DIE_MONSTER = 1;
+	ArrayList<ArrayList<ExcuteEffect>> events = new ArrayList<ArrayList<ExcuteEffect>>();
 
+	@SuppressLint("HandlerLeak")
+	public Handler listener = new Handler() {
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+			case 0:
+				if (events.get(NEW_MONSTER).size() == 0)
+					return;
+				for (ExcuteEffect ex : events.get(NEW_MONSTER)) {
+					ex.run();
+				}
+				break;
+
+			case 1:
+				break;
+
+			case 2:
+				break;
+			}
+		}
+	};
+
+	public Hero hero;
 	public Player enemy;
 	Game game;
 
@@ -48,6 +74,7 @@ public class Player {
 
 	public Player(Context context, String dekstring, String herostring, int me,
 			Game game, boolean first) {
+
 		this.me = me;
 		this.context = context;
 		this.dekstring = dekstring;
@@ -57,6 +84,20 @@ public class Player {
 		init();
 		makeDek();
 
+		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 추가시
+		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 죽을때
+		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 피해입을때
+		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 공격시
+		events.add(new ArrayList<ExcuteEffect>()); // 영웅 공격당할때
+
+	}
+
+	public void addNewMonsterEffect(ExcuteEffect effect) {
+		events.get(NEW_MONSTER).add(effect);
+	}
+
+	public void removeNewMonsterEffect(ExcuteEffect effect) {
+		events.get(NEW_MONSTER).remove(effect);
 	}
 
 	private void init() {
@@ -69,7 +110,6 @@ public class Player {
 		dummy = new Dummy();
 		dek = new ArrayList<Card>();
 		done = false;
-		spellpower = 0;
 
 		// 영웅 설정
 		hero = new Hero(context, this, herostring);
@@ -237,7 +277,7 @@ public class Player {
 		case -3:
 			return "치유토템;내 턴이 끝날때 내 캐릭터들의 체력을 1 회복합니다.;totemheal;1;0;0;0;2";
 		case -4:
-			return "주문토템;주문력+1;totemspell;1;0;0;0;2";
+			return "주문토템;주문력+1;totemspell;1;0#4;0;0;2";
 		case -5:
 			return "수호토템;방어;totemshield;1;0#1;0;0;2";
 		case -6:
@@ -319,11 +359,15 @@ public class Player {
 		if (!first) {
 			Sender.S("5&"); // IAMDONE (second)
 			hand.add(new Card(context, getCardStringById(-6), -1, -6));
-			//hand.add(new Card(context, "", -1, -6));
-			
-			//성장돼지;매턴이 끝날때마다 +1/+1을 얻습니다.;pig;1;0%950#1=1;8;7;7
+			// hand.add(new Card(
+			// context,
+			// "왕방맹이;공격력4/내구도2\n공격할때 체력을 2 회복합니다.;heroability3;0;0%520#4=2;0;4;2",
+			// -1, -6));
 		}
+
 	}
+
+	// 성장돼지;매턴이 끝날때마다 +1/+1을 얻습니다.;pig;1;0%950#1=1;8;7;7
 
 	public String dekToDummy() {
 		String ranorder = dummy.shffleAdd(dek, random);
@@ -368,6 +412,12 @@ public class Player {
 
 	public void sendHeroState() {
 		Sender.S("7&1@" + hero.toString());
+	}
+
+	public void newCard(int amount) {
+		for (int i = 0; i < amount; i++) {
+			newCard();
+		}
 	}
 
 	public void newCard() {
@@ -479,12 +529,8 @@ public class Player {
 
 	}
 
-	public void spellpowerAdd(int i) {
-		spellpower += i;
-	}
-
 	public int getSpellpower() {
-		return spellpower;
+		return field.getSpellpower();
 	}
 
 	public boolean getFirst() {

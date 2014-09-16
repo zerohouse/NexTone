@@ -6,11 +6,13 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import animation.Attack;
 import animation.Heal;
 
 import com.mylikenews.nextoneandroid.R;
+
 import components.ViewBinder;
 
 public class HeroCharacter extends RelativeLayout implements Target {
@@ -24,14 +26,15 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	Weapon weapon = null;
 	Context context;
 	Heal healeffect = null;
+	ImageView stunimage;
+	boolean stunned, wakeup = false;
 
 	public HeroCharacter(Context context, Hero hero, String resource) {
 		super(context);
 		this.hero = hero;
 		this.context = context;
-		this.resource = resource;
-		
-		
+		this.resource = resource; 
+
 		params = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -52,7 +55,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		damage = new ViewBinder(context, 0, this);
 		damage.setBackgroundResource(R.drawable.attack);
 		damage.setGravity(Gravity.CENTER);
-		
+
 		defaultvital = 30;
 		defaultattack = 0;
 
@@ -197,7 +200,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		Attack.AttackEffect(this, target, isChecked);
 
 		if (weapon != null)
-			weapon.use();
+			weapon.use(target);
 
 		target.attacked(damage.Int());
 		this.attacked(target.damage());
@@ -285,7 +288,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
 
-		Sender.S("11 -1"); // 선택한 것 알려주기
+		Sender.S("11&-1"); // 선택한 것 알려주기
 		setAttackBackground();
 
 		Static.attacker = (Target) v;
@@ -354,24 +357,74 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	}
 
+
+
+	@Override
+	public void setStun(boolean sended, Target from, String resource) {
+		if(isStunned())
+			return;
+		
+		if (!sended)
+			Sender.S("165&" + hero.player.me + "#" + -1 + ","
+					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+
+		if (healeffect == null)
+			healeffect = new Heal();
+		healeffect.HealEffect(from, this, sended, resource);
+
+		if (stunimage == null) {
+			stunimage = new ImageView(context);
+			stunimage.setBackgroundResource(R.drawable.stun);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			stunimage.setLayoutParams(lay);
+		}
+		addView(stunimage);
+		stunned = true;
+	}
+
+	@Override
+	public void wakeUp(boolean sended) {
+		if(!isStunned())
+			return;
+		if (!sended)
+			Sender.S("166&" + hero.player.me + "#" + -1);
+		wakeup = true;
+		stunned = false;
+	}
+
+	public boolean isStunned() {
+		return stunned;
+	}
+
 	@Override
 	public Player player() {
 		return hero.player;
 	}
 
 	public void newTurn() {
-
-		attackable = 1;
+		if (!isStunned()) {
+			attackable = 1; 
+			if (weapon != null) {
+				attackable = weapon.attackAble();
+			}
+		} else {
+			wakeUp(false);
+		}
 		if (weapon != null) {
-			attackable = weapon.attackAble();
 			damage.setInt(weapon.damage());
 		}
+		
 		attackReady();
 		attackCheck();
 
 	}
 
 	public void endTurn() {
+		if(wakeup){
+			removeView(stunimage);
+		}
 		setOnClickListener(null);
 		attackable = 0;
 		damage.setInt(0);

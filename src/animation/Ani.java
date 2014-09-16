@@ -2,11 +2,15 @@ package animation;
 
 public class Ani {
 	String resource, description, name, cost, vital, attack;
-	boolean hasmonster;
+	boolean hasmonster, legend;
 
 	public Ani(String cardstring) {
 
 		String[] tmp = cardstring.split(";");
+
+		legend = false;
+		if (tmp[4].contains("LEGEND"))
+			legend = true;
 
 		hasmonster = true;
 		if (Integer.parseInt(tmp[3]) == 0) {
@@ -51,6 +55,10 @@ public class Ani {
 
 	public boolean hasMonster() {
 		return hasmonster;
+	}
+
+	public boolean isLegend() {
+		return legend;
 	}
 
 }

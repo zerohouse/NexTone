@@ -1,6 +1,5 @@
 package effects.hero;
 
-import effects.monster.aura.AuraEffectFactory;
 import effects.monster.excute.ExcuteEffect;
 import effects.monster.excute.ExcuteEffectFactory;
 import game.Card;
@@ -78,7 +77,6 @@ public class SpawnRandomTotem implements HeroEffect {
 			card = new Card(player.context(), player.getCardStringById(-4),
 					index, -4);
 			monster = new Monster(player.context(), card, player.field, false);
-			monster.setAuraEffect(AuraEffectFactory.makeAuraEffect(1, monster)); // 주문능력부여
 			player.field.add(monster);
 			monster.setDeathEffect(new ExcuteEffect() {
 				@Override

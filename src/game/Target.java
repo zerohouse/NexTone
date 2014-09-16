@@ -40,7 +40,8 @@ public interface Target {
 
 	public abstract void setAttackBackground();
 
-	public abstract void heal(int amount, boolean sended, Target from, String resource);
+	public abstract void heal(int amount, boolean sended, Target from,
+			String resource);
 
 	public abstract void vitalCheck();
 
@@ -51,11 +52,11 @@ public interface Target {
 	public abstract void setByString(String set);
 
 	public abstract String toString();
-	
+
 	public abstract void setAlpha(float alpha);
 
 	public abstract boolean attackedable();
-	
+
 	public abstract int PlayerInfo();
 
 	public abstract int getHeight();
@@ -66,4 +67,11 @@ public interface Target {
 			String res);
 
 	void damageCheck();
+
+	public abstract void setStun(boolean b, Target target, String string);
+
+	public abstract boolean isStunned();
+
+	public abstract void wakeUp(boolean sended);
+
 }

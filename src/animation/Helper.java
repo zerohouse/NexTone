@@ -124,7 +124,9 @@ public class Helper {
 	public static void showInfo(Ani card) {
 		character.setBackgroundResource(Method.resId(card.getResource()));
 		helper.setVisibility(View.VISIBLE);
-		if (card.hasMonster()) {
+		if (card.isLegend()) {
+			helper.setBackgroundResource(R.drawable.legend);
+		} else if (card.hasMonster()) {
 			helper.setBackgroundResource(R.drawable.monstercard);
 		} else {
 			helper.setBackgroundResource(R.drawable.spellcard);

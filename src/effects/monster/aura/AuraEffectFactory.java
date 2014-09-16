@@ -5,16 +5,13 @@ import game.Monster;
 
 public class AuraEffectFactory {
 
+	public final static int ALL_ATTACK = 1;
 	
-	public static AuraEffect makeAuraEffect(int type, Monster monster) {
+	public static AuraEffect makeAuraEffect(int type, int amount, Monster monster) {
 
 		
 		AuraEffect result;
 		switch (type) {
-		
-		case 1:
-			result = new SpellPower(monster, 1); // 주문토템
-			return result;
 			
 		default:
 			result = null;

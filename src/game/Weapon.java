@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import com.mylikenews.nextoneandroid.R;
 
 import components.ViewBinder;
+import effects.monster.excute.ExcuteEffect;
 
 public class Weapon extends RelativeLayout {
 	int attackable;
@@ -18,6 +19,8 @@ public class Weapon extends RelativeLayout {
 	Context context;
 	String resource;
 	int maxvital;
+	ExcuteEffect deathEffect = null, attackEffect = null;
+	boolean legend = false;
 
 	Weapon(Context context, Hero hero, int damage, int vital, String resource) {
 		super(context);
@@ -25,7 +28,6 @@ public class Weapon extends RelativeLayout {
 		this.context = context;
 		this.hero = hero;
 
-		
 		setBackgroundResource(Method.resId(resource));
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -35,7 +37,7 @@ public class Weapon extends RelativeLayout {
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		params.bottomMargin = Method.dpToPx(12);
 		params.leftMargin = Method.dpToPx(4);
-		setLayoutParams(params); 
+		setLayoutParams(params);
 
 		attackable = 1;
 		this.damage = new ViewBinder(context, damage, this);
@@ -72,21 +74,52 @@ public class Weapon extends RelativeLayout {
 		return damage.Int();
 	}
 
-	public void use() {
+	public void use(Target target) {
+		if (attackEffect != null) {
+			attackEffect.run();
+		}
+		if (legend) {
+			legendUse(target);
+			return;
+		}
 		vital.add(-1);
 		weaponCheck();
-	} 
+	}
+
+	private void legendUse(Target target) {
+		if (!target.isHero())
+			damage.add(-1);
+		else
+			vital.add(-1);
+
+		weaponCheck();
+	}
+
+	public void legend() {
+		this.legend = true; 
+	}
 
 	private void weaponCheck() {
-		if(maxvital>vital.Int())
+		if (maxvital > vital.Int())
 			vital.setTextColor(Color.RED);
 		else
 			vital.setTextColor(Color.WHITE);
-		
-		if (vital.Int() < 1) {
+
+		if (vital.Int() < 1 || damage.Int() < 1) {
+			if (deathEffect != null) {
+				deathEffect.run();
+			}
 			hero.removeView(this);
 			hero.hero.weapon = null;
 		}
+	}
+
+	public void setDeathEffect(ExcuteEffect excuteEffect) {
+		deathEffect = excuteEffect;
+	}
+	
+	public void setAttackEffect(ExcuteEffect excuteEffect) {
+		attackEffect = excuteEffect;
 	}
 
 }

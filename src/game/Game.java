@@ -2,6 +2,7 @@ package game;
 
 import net.Sender;
 import android.content.Context;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -142,12 +143,14 @@ public class Game {
 					// 게임을 시작하고, 아니면 카드 바꾸기 아이템에
 					// 게임 시작 이벤트도 걸어준다.
 				if (player1.done()) {
+					Log.i("init", "시작함");
 					initView();
 					player1.newTurn();
-					Sender.S("6&");
+					Sender.S("6&"); 
 					return;
 				}
 
+				Log.i("init", "시작함");
 				player1.ChangeToStartTurn();
 				break;
 
@@ -258,6 +261,26 @@ public class Game {
 				}
 				healtarget.heal(healamount, true, from, heal[3]);
 				break;
+
+
+				
+			case 165:
+				String stun[] = response[1].split(",");
+				Target stuntarget = getByIndex(stun[0]);
+				Target stunfrom = getByIndex(stun[1]);
+				if (stun[2].equals("null")) {
+					stuntarget.setStun(true, stunfrom, null);
+					break;
+				}
+				stuntarget.setStun(true, stunfrom, stun[2]);
+				break;
+				
+			case 166:
+				Target wake = getByIndex(response[1]);
+				wake.wakeUp(true);
+				break;
+				
+
 				
 			case 160:
 				String ability[] = response[1].split(",");
@@ -272,7 +295,6 @@ public class Game {
 				}
 				abtarget.abilityUp(abamount, true, abfrom, ability[3]);
 				break;
-				
 
 			case 14:
 				String weapon[] = response[1].split(",");

@@ -27,9 +27,10 @@ public class Monster extends RelativeLayout implements Target {
 	int maxvital, defaulmaxvital;
 	int id;
 	int type;
+	int spellpower;
 	String effects;
-	boolean defenseMonster, shield = false; // 방패/보호막
-	ImageView charimage, foreimage;
+	boolean defenseMonster, shield, wakeup = false, stunned = false; // 방패/보호막/빙결
+	ImageView charimage, shieldimage = null, stunimage = null;
 	Card card;
 
 	Heal healeffect = null;
@@ -48,6 +49,7 @@ public class Monster extends RelativeLayout implements Target {
 		deFault(context, field, card.getMonsterindex());
 		defaultattack = card.attack();
 		defaultvital = card.vital();
+		spellpower = 0;
 		setDamageVital(card.attack(), card.vital());
 		this.resource = card.resource();
 		setBackgroundDefault();
@@ -64,7 +66,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	private void setDamageVital(int attack, int vital) {
-		
+
 		damage = new ViewBinder(context, attack, this);
 		damage.setBackgroundResource(R.drawable.attack);
 		RelativeLayout.LayoutParams damageparams = damage.getParams();
@@ -124,26 +126,27 @@ public class Monster extends RelativeLayout implements Target {
 		}
 	}
 
+	public static final int DEFENSE_MONSTER = 1;
+	public static final int HAS_SHIELD = 2;
+	public static final int ATTACK_READY = 3;
+	public static final int SPELLPOWER = 4;
+
 	private void setEffect(int effect) {
 		switch (effect) {
-		case 1:
+		case DEFENSE_MONSTER:
 			setBackgroundResource(R.drawable.vital);
 			field.setDefenseMonster();
 			defenseMonster = true;
 			break;
-		case 2:
-			foreimage = new ImageView(context);
-			foreimage.setBackgroundResource(R.drawable.shield);
-			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.MATCH_PARENT,
-					RelativeLayout.LayoutParams.MATCH_PARENT);
-			foreimage.setLayoutParams(lay);
-			addView(foreimage);
-			shield = true;
+		case HAS_SHIELD:
+			setShield();
 			break;
-		case 3:
+		case ATTACK_READY:
 			if (field.player.me() == 1)
 				newTurn();
+			break;
+		case SPELLPOWER:
+			spellpower--;
 			break;
 
 		}
@@ -275,18 +278,13 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public void attacked(int damage) {
 		if (shield && damage > 0) {
-			offShield();
+			unShield();
 			return;
 		}
 
 		vital.add(-damage);
 		removeCheck();
 		vitalCheck();
-	}
-
-	private void offShield() {
-		removeView(foreimage);
-		shield = false;
 	}
 
 	private void removeCheck() {
@@ -327,7 +325,6 @@ public class Monster extends RelativeLayout implements Target {
 	private boolean isAttacked() {
 		return vital.Int() < maxvital;
 	}
-
 
 	@SuppressLint("NewApi")
 	@Override
@@ -376,7 +373,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	ExcuteEffect newTurn, endTurn, death = null;
-	
+
 	public void setNewTurnEffect(ExcuteEffect effect) {
 		this.newTurn = effect;
 	}
@@ -397,20 +394,88 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public void endTurn() {
+		if (wakeup) {
+			removeView(stunimage);
+		}
 		setHelperShow();
 		attackdisAble();
 		if (endTurn != null) {
 			endTurn.run();
 		}
 	}
-	
+
 	public void newTurn() {
-		this.attackable = maxattackable;
+		if (!isStunned())
+			this.attackable = maxattackable;
+		else
+			wakeUp(false);
+
 		attackReady();
 		attackCheck();
 		if (newTurn != null) {
 			newTurn.run();
 		}
+	}
+
+	@Override
+	public void setStun(boolean sended, Target from, String resource) {
+		if (isStunned())
+			return;
+
+		if (!sended)
+			Sender.S("165&" + field.player.me + "#" + id + ","
+					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+
+		if (healeffect == null)
+			healeffect = new Heal();
+		healeffect.HealEffect(from, this, sended, resource);
+
+		if (stunimage == null) {
+			stunimage = new ImageView(context);
+			stunimage.setBackgroundResource(R.drawable.stun);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			stunimage.setLayoutParams(lay);
+		}
+		addView(stunimage);
+		stunned = true;
+	}
+
+	@Override
+	public void wakeUp(boolean sended) {
+		if (!isStunned())
+			return;
+		if (!sended)
+			Sender.S("166&" + field.player.me + "#" + id);
+		stunned = false;
+		wakeup = true;
+	}
+
+	public boolean isStunned() {
+		return stunned;
+	}
+
+	public void setShield() {
+		if (shieldimage == null) {
+			shieldimage = new ImageView(context);
+			shieldimage.setBackgroundResource(R.drawable.shield);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			shieldimage.setLayoutParams(lay);
+		}
+		addView(shieldimage);
+		shield = true;
+	}
+
+	public boolean isShield() {
+		return shield;
+	}
+
+	public void unShield() {
+		removeView(shieldimage);
+		shield = false;
 	}
 
 	public void setHelperShow() {
@@ -426,8 +491,8 @@ public class Monster extends RelativeLayout implements Target {
 		Monster monster = new Monster(context, card, field, true);
 		if (defenseMonster)
 			field.dieDefenseMonster();
-		if (shield)
-			monster.offShield();
+		if (isShield())
+			monster.unShield();
 		if (isAttacked()) {
 			monster.vital.setTextColor(Color.RED);
 		}
@@ -495,8 +560,8 @@ public class Monster extends RelativeLayout implements Target {
 			Sender.S("16&" + field.player.me + "#" + id + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
-		if (shield && amount < 0) {
-			offShield();
+		if (isShield() && amount < 0) {
+			unShield();
 			return;
 		}
 
@@ -539,7 +604,7 @@ public class Monster extends RelativeLayout implements Target {
 		return true;
 	}
 
-	public boolean shield() {
+	public boolean isDefenseMonster() {
 		return defenseMonster;
 	}
 
@@ -550,6 +615,10 @@ public class Monster extends RelativeLayout implements Target {
 
 	public Card card() {
 		return card;
+	}
+
+	public int getSpellpower() {
+		return spellpower;
 	}
 
 }

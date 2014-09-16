@@ -15,7 +15,7 @@ import com.mylikenews.nextoneandroid.R;
 public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 	int cost, attack, vital, id;
 	String name, description, resource, string;
-	boolean hasMonster;
+	boolean hasMonster, legend;
 
 	ImageView background, character;
 	Context context;
@@ -39,6 +39,10 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 		hasMonster = true;
 		if (Integer.parseInt(cardresource[3]) == 0)
 			hasMonster = false;
+		
+		legend = false;
+		if (cardresource[4].contains("LEGEND"))
+			legend = true;
 
 		cost = Integer.parseInt(cardresource[5]);
 		attack = Integer.parseInt(cardresource[6]);
@@ -78,7 +82,9 @@ public class CardinDek extends RelativeLayout implements Comparable<CardinDek> {
 		background.setLayoutParams(imageparams);
 		background.setScaleType(ScaleType.FIT_XY);
 
-		if(hasMonster)
+		if(legend)
+			background.setImageResource(R.drawable.legend);
+		else if(hasMonster)
 			background.setImageResource(R.drawable.monstercard);
 		else
 			background.setImageResource(R.drawable.spellcard);

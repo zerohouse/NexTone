@@ -41,7 +41,7 @@ public class Hero extends RelativeLayout {
 		String[] resourcesplit = res.split(",");
 		heroresource = resourcesplit[0];
 		herotype = Integer.parseInt(resourcesplit[1]);
-		
+
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -73,18 +73,18 @@ public class Hero extends RelativeLayout {
 
 		heroabilityuseable = 0;
 
-		ability = new ImageButton(context, Method.resId("heroability"+herotype),
-				Method.resId("heroability"+herotype+"pressed"), "2");
+		ability = new ImageButton(context, Method.resId("heroability"
+				+ herotype),
+				Method.resId("heroability" + herotype + "pressed"), "2");
 		ability.getParams().width = Method.dpToPx(50);
 		ability.getParams().height = Method.dpToPx(50);
 		ability.getParams().leftMargin = Method.dpToPx(210);
 		ability.getParams().topMargin = Method.dpToPx(50);
-		ability.setTextColor(Color.WHITE); 
+		ability.setTextColor(Color.WHITE);
 		addView(ability);
 
-		Log.i("tag",herotype+"");
-		effect = HeroEffectFactory.makeHeroEffect(herotype,
-				this.player);
+		Log.i("tag", herotype + "");
+		effect = HeroEffectFactory.makeHeroEffect(herotype, this.player);
 
 		herosability = new View.OnClickListener() {
 			@Override
@@ -92,7 +92,7 @@ public class Hero extends RelativeLayout {
 				if (heroabilityuseable == 0) {
 					Method.alert("영웅능력은 한턴에 한번만 사용할 수 있습니다.");
 					return;
-				} 
+				}
 
 				if (!manaCheck(2)) {
 					Method.alert("마나가 부족합니다.");
@@ -197,7 +197,7 @@ public class Hero extends RelativeLayout {
 		return hero;
 	}
 
-	public void getWeapon(int damage, int vital, String resource,
+	public Weapon getWeapon(int damage, int vital, String resource,
 			boolean sended, int manacost) {
 		Weapon weapon = new Weapon(context, this, damage, vital, resource);
 		hero.getWepon(weapon);
@@ -205,7 +205,10 @@ public class Hero extends RelativeLayout {
 		this.addView(weapon);
 		if (!sended)
 			Sender.S("14&" + damage + "," + vital + "," + resource);
+
+		return weapon;
 	}
+
 
 	public void getDefense(int defense, boolean Sended, int manacost) {
 		mana.Add(-manacost, Sended);
@@ -227,6 +230,5 @@ public class Hero extends RelativeLayout {
 	public int getHeroType() {
 		return herotype;
 	}
-
 
 }

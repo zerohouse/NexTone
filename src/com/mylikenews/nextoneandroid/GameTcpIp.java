@@ -33,7 +33,7 @@ public class GameTcpIp extends Activity {
 		super.onCreate(savedInstanceState);
 
 		// 서버의 아이피와 포트를 지정한다.
-		ip = "192.168.0.17";
+		ip = "10.73.43.222";
 		port = 13333;
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);

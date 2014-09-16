@@ -71,7 +71,9 @@ public class CardSelected extends RelativeLayout implements
 		background.setLayoutParams(imageparams);
 		background.setScaleType(ScaleType.FIT_XY);
 
-		if (hasMonster)
+		if(legend)
+			background.setImageResource(R.drawable.legend);
+		else if (hasMonster)
 			background.setImageResource(R.drawable.monstercard);
 		else
 			background.setImageResource(R.drawable.spellcard);

@@ -38,6 +38,14 @@
         <item>버퍼;선택한 캐릭터에게 +1/+1을 부여합니다.;koreangirl;1;0%200#1=1#pig;3;3;2</item>
         <item>성장돼지;매턴이 끝날때마다 +1/+1을 얻습니다.;pig;1;0%950#1=1#LEGEND;8;7;7</item>
         <item>돼지;턴이 시작될때 적 하나에게 피해2 돼지를 던집니다.;pig;1;0%901#-2;3;1;4</item>
+        <item>카드새;나올때 카드를 한장 뽑습니다.;sbird;1;0%60#1;2;1;1</item>
+        <item>카드새;나올때 카드를 한장 뽑습니다.;sbird;1;0%60#1;4;2;4</item>
+        <item>카드새;주문공격력+1\n나올때 카드를 한장 뽑습니다.;bbird;1;0#4%60#1;5;4;4</item>
+        <item>주문새;주문공격력+1;bbird;1;0#4;4;4;4</item>
+        <item>주문새;주문공격력+5;bbird;1;0#4#4#4#4#4%0#0#LEGEND;9;4;12</item>
+        <item>주문새;주문공격력+1;bbird;1;0#4;6;4;7</item>
+        <item>주문새;주문공격력+1;bbird;1;0#4;2;2;2</item>
+        <item>마취새;나오며 캐릭터 하나를 기절시킵니다.;mbird;1;0%300#0;6;5;5</item>
     </string-array>
     <string-array name="totem">
 
@@ -47,26 +55,35 @@
     <string-array name="magician">
 
         <!-- 법사 -->
+        <item>돌진;적 캐릭터들에게 피해1 돼지를 3마리 보냅니다.;pig;0;0%902#3;1;0;0</item>
         <item>화르륵;모든 적 캐릭터에게 피해1 파이어볼을 날립니다.;fireball;0;0%50#-1;2;0;0</item>
         <item>멧돼지;피해6 돼지를 던집니다.;pig;0;0%100#-6#pig;4;0;0</item>
         <item>화르르륵;모든 적 캐릭터에게 피해4 파이어볼를 날립니다.;fireball;0;0%50#-4;7;0;0</item>
         <item>돼지의왕;피해10 돼지를 던집니다.;pig;0;0%100#-10#pig;10;0;0</item>
+        <item>마취;캐릭터를 기절시킵니다. 이미 기절상태이면 4의 피해를 입힙니다.;bullet;0;0%310#0;1;0;0</item>
+        <item>마취총;캐릭터를 기절시킵니다. 3의 피해를 입힙니다.;bullet;0;0%315#-2;2;0;0</item>
+        <item>마취난사;적 하수인을 모두 기절시킵니다.;bullet;0;0%320#0;3;0;0</item>
+        <item>마취총난사;적 하수인을 모두 기절시키고 2의 피해를 입힙니다.;bullet;0;0%325#-2;6;0;0</item>
+        <item>내놔;카드를 두장 뽑습니다.;bullet;0;0%400#2;3;0;0</item>
     </string-array>
     <string-array name="heal">
 
         <!-- 사제 -->
         <item>돼지;피해2 돼지를 던집니다.;pig;0;0%100#-2#pig;1;0;0</item>
-        <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
     </string-array>
     <string-array name="thief">
 
         <!-- 도적 -->
-        <item>사또;방어;saddo;1;0#1;4;3;5</item>
+        <item>방맹이;공격력3/내구도4;heroability3;0;0%500#3=4;0;3;4</item>
     </string-array>
     <string-array name="defense">
 
         <!-- 전사 -->
-        <item>새끼강시;돌진;schinese;1;0#3;1;1;1</item>
+        <item>전강시;돌진;mchinese;1;0#3;4;4;3</item>
+        <item>방맹이;공격력5/내구도2;heroability3;0;0%500#5=2;5;5;2</item>
+        <item>방맹이;공격력3/내구도2;heroability3;0;0%500#3=2;0;3;2</item>
+        <item>귓방맹이;공격력4/내구도2\n터질때 모든 하수인에게 데미지1의 싸다구를 날립니다.;heroability3;0;0%510#4=2;0;4;2</item>
+        <item>왕방맹이;공격력7/내구도1\n하수인을 공격할때 내구도 대신 공격력이 감소합니다.;heroability3;0;0%520#7=1;0;7;1</item>
     </string-array>
     <string-array name="drawcard">
 
@@ -76,7 +93,10 @@
     <string-array name="bat">
 
         <!-- 성기사 직업카드 -->
-        <item>박쥐;;bat;1;0;0;1;1</item>
+        <item>돌진;적 캐릭터들에게 피해1 돼지를 8마리 보냅니다.;pig;0;0%902#8;6;0;0</item>
+        <item>방맹이;공격력1/내구도4;heroability3;0;0%500#1=4;0;1;4</item>
+        <item>왕방맹이;공격력1/내구도5\n하수인을 소환하면 +1/+1을 부여하고 내구도를 1 잃습니다.;heroability3;0;0%540#1=5;3;1;5</item>
+        <item>왕방맹이;공격력4/내구도2\n공격할때 체력을 2 회복합니다.;heroability3;0;0%520#4=2;4;4;2</item>
     </string-array>
     <string-array name="hunter">
 

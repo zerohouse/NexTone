@@ -48,6 +48,7 @@ public class Field extends LinearLayout {
 	}
 
 	public void remove(Monster monster) {
+		player.listener.sendEmptyMessage(1);
 		items.remove(monster);
 		removeView(monster);
 	}
@@ -55,6 +56,7 @@ public class Field extends LinearLayout {
 	public void add(Monster monster) {
 		items.add(monster);
 		addView(monster);
+		player.listener.sendEmptyMessage(0);
 	}
 
 	public void addByCard(Card card, boolean sended) {
@@ -181,6 +183,21 @@ public class Field extends LinearLayout {
 		for (int i = items.size() - 1; i > -1; i--) {
 			items.get(i).heal(amount, sended, from, resource);
 		}
+	}
+
+	public int getSpellpower() {
+		int power = 0;
+		for (Monster mon : items) {
+			power += mon.getSpellpower();
+		}
+		return power;
+	}
+
+	public void Stun(boolean sended, Target from, String resource) {
+		for(Monster mon : items){
+			mon.setStun(sended, from, resource);
+		}
+		
 	}
 
 }
