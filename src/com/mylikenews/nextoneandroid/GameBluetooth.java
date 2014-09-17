@@ -132,10 +132,9 @@ public class GameBluetooth extends Activity implements
 						dialog.cancel();
 					}
 				});
-
+		
 		areyousure.show();
 	}
-
 	@SuppressLint("HandlerLeak")
 	Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {

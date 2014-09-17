@@ -14,8 +14,8 @@ import animation.Heal;
 import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
-
 import components.ViewBinder;
+
 import effects.monster.aura.AuraEffect;
 import effects.monster.excute.ExcuteEffect;
 
@@ -29,8 +29,10 @@ public class Monster extends RelativeLayout implements Target {
 	int type;
 	int spellpower;
 	String effects;
-	boolean defenseMonster, shield, wakeup = false, stunned = false; // 방패/보호막/빙결
-	ImageView charimage, shieldimage = null, stunimage = null;
+	boolean defenseMonster, shield, wakeup = false, stunned = false,
+			hide = false, killer = false; // 방패/보호막/빙결
+	ImageView charimage, shieldimage = null, stunimage = null,
+			doubleimage = null, hideimage = null, killerimage = null;
 	Card card;
 
 	Heal healeffect = null;
@@ -130,25 +132,41 @@ public class Monster extends RelativeLayout implements Target {
 	public static final int HAS_SHIELD = 2;
 	public static final int ATTACK_READY = 3;
 	public static final int SPELLPOWER = 4;
+	public static final int DOUBLE = 5;
+	public static final int KILLER = 6;
+	public static final int HIDE = 7;
 
 	private void setEffect(int effect) {
 		switch (effect) {
 		case DEFENSE_MONSTER:
 			setBackgroundResource(R.drawable.vital);
-			field.setDefenseMonster();
 			defenseMonster = true;
 			break;
+
 		case HAS_SHIELD:
 			setShield();
 			break;
+
 		case ATTACK_READY:
 			if (field.player.me() == 1)
 				newTurn();
 			break;
+
 		case SPELLPOWER:
 			spellpower--;
 			break;
 
+		case DOUBLE:
+			setDouble();
+			break;
+
+		case KILLER:
+			setKiller();
+			break;
+
+		case HIDE:
+			setHide();
+			break;
 		}
 	}
 
@@ -276,28 +294,37 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	@Override
-	public void attacked(int damage) {
-		if (shield && damage > 0) {
+	public void attacked(Target target) {
+		if (shield && target.damage() > 0) {
 			unShield();
 			return;
 		}
-
-		vital.add(-damage);
+		vital.add(-target.damage());
 		removeCheck();
 		vitalCheck();
+		if (target.isHero())
+			return;
+		Monster t = (Monster) target;
+		if (t.isKiller()) {
+			if (death != null)
+				death.run();
+			die();
+		}
 	}
 
 	private void removeCheck() {
 		if (vital.Int() < 1) {
 			if (death != null)
 				death.run();
-			if (state != null)
-				state.effectEnd();
-
-			if (defenseMonster)
-				field.dieDefenseMonster();
-			field.remove(this);
+			die();
 		}
+	}
+
+	@Override
+	public void die() {
+		if (state != null)
+			state.effectEnd();
+		field.remove(this);
 	}
 
 	@Override
@@ -345,6 +372,8 @@ public class Monster extends RelativeLayout implements Target {
 		} else {
 			setBackgroundDefault();
 		}
+		if (isHide())
+			unHide();
 
 		Static.attacker = null;
 
@@ -352,8 +381,8 @@ public class Monster extends RelativeLayout implements Target {
 		attackCheck();
 		Attack.AttackEffect(this, target, isChecked);
 
-		target.attacked(damage.Int());
-		this.attacked(target.damage());
+		target.attacked(this);
+		this.attacked(target);
 		int playerindex = index();
 		// 상대입장에서 봐야 되니까 뒤집어짐.
 		int enemyindex = target.index();
@@ -361,6 +390,7 @@ public class Monster extends RelativeLayout implements Target {
 		Static.Cancel(field.player, false);
 		if (!isChecked)
 			Sender.S("9&" + enemyindex + "," + playerindex);
+
 	}
 
 	public int index() {
@@ -372,7 +402,7 @@ public class Monster extends RelativeLayout implements Target {
 		return damage.Int();
 	}
 
-	ExcuteEffect newTurn, endTurn, death = null;
+	ExcuteEffect newTurn = null, endTurn = null, death = null;
 
 	public void setNewTurnEffect(ExcuteEffect effect) {
 		this.newTurn = effect;
@@ -456,6 +486,28 @@ public class Monster extends RelativeLayout implements Target {
 		return stunned;
 	}
 
+	public boolean isDouble() {
+		return maxattackable == 2;
+	}
+
+	public void unDouble() {
+		removeView(doubleimage);
+		maxattackable = 1;
+	}
+
+	public void setDouble() {
+		if (doubleimage == null) {
+			doubleimage = new ImageView(context);
+			doubleimage.setBackgroundResource(R.drawable.doubleattack);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			doubleimage.setLayoutParams(lay);
+		}
+		addView(doubleimage);
+		maxattackable = 2;
+	}
+
 	public void setShield() {
 		if (shieldimage == null) {
 			shieldimage = new ImageView(context);
@@ -478,6 +530,50 @@ public class Monster extends RelativeLayout implements Target {
 		shield = false;
 	}
 
+	public void setHide() {
+		if (hideimage == null) {
+			hideimage = new ImageView(context);
+			hideimage.setBackgroundResource(R.drawable.hide);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			hideimage.setLayoutParams(lay);
+		}
+		addView(hideimage);
+		hide = true;
+	}
+
+	public boolean isHide() {
+		return hide;
+	}
+
+	public void unHide() {
+		removeView(hideimage);
+		hide = false;
+	}
+
+	public void setKiller() {
+		if (killerimage == null) {
+			killerimage = new ImageView(context);
+			killerimage.setBackgroundResource(R.drawable.killer);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			killerimage.setLayoutParams(lay);
+		}
+		addView(killerimage);
+		killer = true;
+	}
+
+	public boolean isKiller() {
+		return killer;
+	}
+
+	public void unKiller() {
+		removeView(killerimage);
+		killer = false;
+	}
+
 	public void setHelperShow() {
 		setOnClickListener(showHelper);
 	}
@@ -489,8 +585,6 @@ public class Monster extends RelativeLayout implements Target {
 
 	public Monster cloneForAnimate() {
 		Monster monster = new Monster(context, card, field, true);
-		if (defenseMonster)
-			field.dieDefenseMonster();
 		if (isShield())
 			monster.unShield();
 		if (isAttacked()) {

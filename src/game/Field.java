@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -15,7 +16,6 @@ public class Field extends LinearLayout {
 
 	HorizontalScrollView scroll;
 	ArrayList<Monster> items;
-	int defenseMonster;
 	Context context;
 	Player player;
 	public Hero hero;
@@ -33,7 +33,6 @@ public class Field extends LinearLayout {
 		this.context = context;
 		this.player = player;
 		items = new ArrayList<Monster>();
-		defenseMonster = 0;
 
 		scroll = new HorizontalScrollView(context);
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
@@ -54,6 +53,9 @@ public class Field extends LinearLayout {
 	}
 
 	public void add(Monster monster) {
+		if (items.size() > 6) {
+			return;
+		}
 		items.add(monster);
 		addView(monster);
 		player.listener.sendEmptyMessage(0);
@@ -61,12 +63,10 @@ public class Field extends LinearLayout {
 
 	public void addByCard(Card card, boolean sended) {
 		Monster monster = new Monster(context, card, this, sended);
-
 		add(monster);
 	}
 
 	public void newTurn() {
-
 		for (Monster monster : items) {
 			monster.newTurn();
 		}
@@ -74,7 +74,15 @@ public class Field extends LinearLayout {
 
 	public void setListener() {
 		for (Monster monster : items) {
-			monster.setOnClickListener(Listeners.listener);
+			if (monster.isHide()) {
+				monster.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Method.alert("숨었쪙!");
+					}
+				});
+			} else
+				monster.setOnClickListener(Listeners.listener);
 		}
 	}
 
@@ -164,15 +172,12 @@ public class Field extends LinearLayout {
 		return items;
 	}
 
-	public void setDefenseMonster() {
-		defenseMonster++;
-	}
-
-	public void dieDefenseMonster() {
-		defenseMonster--;
-	}
-
 	public boolean defenseMonsterInField() {
+		int defenseMonster = 0;
+		for (Monster mon : items) {
+			if (mon.defenseMonster)
+				defenseMonster++;
+		}
 		Log.i("shield", defenseMonster + "");
 		if (defenseMonster > 0)
 			return true;
@@ -194,10 +199,10 @@ public class Field extends LinearLayout {
 	}
 
 	public void Stun(boolean sended, Target from, String resource) {
-		for(Monster mon : items){
+		for (Monster mon : items) {
 			mon.setStun(sended, from, resource);
 		}
-		
+
 	}
 
 }

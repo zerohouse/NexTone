@@ -13,8 +13,8 @@ import animation.Ani;
 import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
-
 import components.ViewBinder;
+
 import effects.monster.excute.ExcuteEffect;
 
 public class Card extends RelativeLayout {
@@ -232,41 +232,97 @@ public class Card extends RelativeLayout {
 		removeCardFromHand(player);
 	}
 
+	private Monster addMonster(Player player) {
+		Monster monster = new Monster(context, this, player.field, false);
+		player.field.add(monster);
+		return monster;
+	}
+
+	public String name() {
+		return name;
+	}
+
+	public String description() {
+		return description;
+	}
+
+	public static void stateChange() {
+		stateChange = true;
+	}
+
+	public String toString() {
+		return cardinfo;
+	}
+
+	public Ani getAni() {
+		return ani;
+	}
+
+	public String getMonstereffects() {
+		return monstereffects;
+	}
+
+	public int getMonsterindex() {
+		return idforMonster;
+	}
+
 	private void removeCardFromHand(Player player) {
 		Sender.S("80&" + player.me + "@" + -1 + "@" + cardid); // send effect
+		player.listener.sendEmptyMessage(1);
 		player.hand.remove(this); // remove card
 		player.hero.mana.Add(-cost.Int(), false); // consume mana
 	}
 
 	public final static int MANA_ADD = 0;
+	public final static int SPAWN = 1;
 	public final static int MASSIVE_ATTACK = 50;
 	public final static int SPELLPOWER = 55;
+
+	public final static int ONTHEFIELD_HEAL = 100;
+
+	public final static int ABILITY_UP = 200;
+
+	public final static int STUN = 300;
+	public final static int STUN_GUN = 310;
+	public final static int STUN_DAMAGE_GUN = 315;
+	public final static int STUN_MASSIVE = 320;
+	public final static int STUN_MASSIVE_DAMAGE = 325;
+
+	public final static int DRAW_CARD = 400;
 	public final static int DRAWCARD_ONTHEFIELD = 60;
 	public final static int DRAWCARD_TURNSTART = 61;
 	public final static int DRAWCARD_TRUNEND = 62;
 	public final static int DRAWCARD_DIE = 63;
-	public final static int HEAL_ONTHEFIELD = 100;
-	public final static int ABILITY_UP = 200;
-	public final static int STUN = 300;
-	public final static int STUN_GUN = 310;
-	public final static int STUN_DAMAGE_GUN = 315;
-	public final static int MASSIVE_STUN = 320;
-	public final static int MASSIVE_STUN_DAMAGE = 325;
-	public final static int DRAW_CARD = 400;
+
 	public final static int GET_WEAPON = 500;
 	public final static int GET_WEAPON_DEATH_EFFECT = 510;
 	public final static int GET_WEAPON_LEGEND = 520;
 	public final static int GET_WEAPON_HEAL = 530;
 	public final static int GET_WEAPON_BUFF = 540;
+
+	public final static int DEATH_EFFECT = 600;
+	public final static int DEATH_EFFECT_HEAL = 601;
+	public final static int DEATH_EFFECT_SPAWN = 602;
+	public final static int DEATH_EFFECT_GET_WEAPON = 603;
+	public final static int DEATH_EFFECT_DRAWCARD = 604;
+	public final static int DEATH_EFFECT_GETWEAPON = 605;
+
+	public final static int THISTURNONLY_ABILITY = 700;
+
+	public final static int USEDCARD_DAMAGE = 800;
+	public final static int USEDCARD_DAMAGEUP = 801;
+	public final static int USEDCARD_SPAWN = 802;
+	public final static int USEDCARD_NEXTTURNBACK = 803;
+	public final static int USEDCARD_ABILITYUP = 804;
+
 	public final static int ATTACK_TURNEND = 900;
 	public final static int ATTACK_TURNSTART = 901;
 	public final static int RANDOM_ATTACK = 902;
-	public final static int ADD_TWO_BATS = 910;
 	public final static int ABILITYUP_EVERYTURN = 950;
 
 	String res;
 
-	private void runEffects(final Player player, String effects) {
+	public void runEffects(final Player player, String effects) {
 		final String[] effect = effects.split("#");
 		int type = Integer.parseInt(effect[0]);
 		final String amount = effect[1];
@@ -274,9 +330,228 @@ public class Card extends RelativeLayout {
 		if (effect.length == 3) {
 			res = effect[2];
 		}
+
 		final Monster mon;
-		String[] tmp;
+		final String[] tmp;
+		final Field field;
+		final Player effectedPlayer;
 		switch (type) {
+
+		// "쇼군;방어 보호막 돌진 공격X2;sabu;1;0#1#2#5#3;8;3;5"
+		// "쇼군;공격X2;sabu;1;0#5;6;4;5"
+		// "쇼군;공격X2;sabu;1;0#5;3;2;3"
+		// "쇼군;공격X2;sabu;1;0#5;1;1;1"
+
+		case SPAWN:
+			removeCardFromHand(player);
+			if (monster > 0)
+				addMonster(player);
+			tmp = amount.split("="); // amount양식 : 필드=인덱스=몇마리
+			field = Integer.parseInt(tmp[0]) == 0 ? player.field
+					: player.enemy.field;
+			for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
+				field.add(new Monster(context, new Card(context, player
+						.getCardStringById(Integer.parseInt(tmp[1])), Static
+						.index(), Integer.parseInt(tmp[1])), field, false));
+			break;
+
+		case USEDCARD_DAMAGE:
+			final int damage;
+			tmp = amount.split("=");
+			damage = player.usedcardsize == 0 ? Integer.parseInt(tmp[0])
+					: Integer.parseInt(tmp[1]);
+			if (damage == 0 && monster > 0) {
+				removeCardFromHand(player);
+				addMonster(player);
+				return;
+			}
+			Method.alert("대상을 선택하세요.");
+			OnClickListener heal = new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					int spellpower = 0;
+					if (monster > 0) {
+						addMonster(player);
+					} else {
+						spellpower += player.getSpellpower();
+					}
+					removeCardFromHand(player);
+					Target selected = (Target) v;
+					Static.Cancel(player, false);
+					String res = null;
+					if (effect.length == 3) {
+						res = effect[2];
+					}
+					selected.heal(damage + spellpower, false,
+							player.hero.hero(), res);
+				}
+			};
+
+			Listeners.setListener(heal);
+
+			player.endturn.setText("    취소");
+			player.endturn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Static.Cancel(player, true);
+
+				}
+
+			});
+
+			player.field.setListener();
+			player.hero.setListener();
+			player.enemy.field.setListener();
+			player.enemy.hero.setListener();
+			break;
+
+		case USEDCARD_DAMAGEUP:
+
+			final String am = player.usedcardsize == 0 ? "2=0" : "4=0";
+			Method.alert("대상을 선택하세요.");
+
+			OnClickListener abilityup = new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					removeCardFromHand(player);
+					Target selected = (Target) v;
+					Static.Cancel(player, false);
+					String res = null;
+					if (effect.length == 3) {
+						res = effect[2];
+					}
+					selected.abilityUp(am, false, player.hero.hero(), res);
+
+				}
+
+			};
+
+			Listeners.setListener(abilityup);
+
+			player.endturn.setText("    취소");
+			player.endturn.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Static.Cancel(player, true);
+
+				}
+
+			});
+
+			player.field.setListener();
+			break;
+
+		case USEDCARD_SPAWN:
+			removeCardFromHand(player);
+			if (monster > 0)
+				addMonster(player);
+			if (player.usedcardsize == 0)
+				return;
+			player.field.add(new Monster(context, new Card(context, player
+					.getCardStringById(-7), Static.index(), -7), player.field, false));
+			break;
+
+		case USEDCARD_NEXTTURNBACK:
+			removeCardFromHand(player);
+			player.enemy.hero.hero().heal(-2, false, player.hero.hero(), res);
+			final Card back = this;
+			player.addNewTurnEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					player.newCard(back);
+				}
+			});
+			break;
+
+		case USEDCARD_ABILITYUP:
+			removeCardFromHand(player);
+			mon = addMonster(player);
+			int up = player.usedcardsize * 2;
+			mon.abilityUp(up + "=" + up, false, mon, res);
+			break;
+
+		case DEATH_EFFECT_GETWEAPON: // player=dam=dura
+			removeCardFromHand(player);
+			tmp = amount.split("=");
+			effectedPlayer = Integer.parseInt(tmp[0]) == 0 ? player
+					: player.enemy;
+
+			addMonster(player).setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					player.hero.getWeapon(Integer.parseInt(tmp[2]),
+							Integer.parseInt(tmp[3]), res, false, 0);
+				}
+			});
+			break;
+
+		case DEATH_EFFECT_SPAWN: // field=cardid=size
+			removeCardFromHand(player);
+			tmp = amount.split("=");
+			field = Integer.parseInt(tmp[0]) == 0 ? player.field
+					: player.enemy.field;
+
+			addMonster(player).setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
+						field.add(new Monster(context, new Card(context, player
+								.getCardStringById(Integer.parseInt(tmp[1])),
+								Static.index(), Integer.parseInt(tmp[1])),
+								field, false));
+				}
+			});
+			break;
+
+		case DEATH_EFFECT_DRAWCARD: // player=amount
+			removeCardFromHand(player);
+			tmp = amount.split("=");
+			effectedPlayer = Integer.parseInt(tmp[0]) == 0 ? player
+					: player.enemy;
+
+			addMonster(player).setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
+						effectedPlayer.newCard(Integer.parseInt(tmp[1]));
+				}
+			});
+			break;
+
+		case DEATH_EFFECT_HEAL:
+			removeCardFromHand(player);
+			tmp = amount.split("=");
+			mon = addMonster(player);
+			mon.setDeathEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					switch (Integer.parseInt(tmp[0])) {
+					case 0:
+						player.hero.hero().heal(Integer.parseInt(tmp[1]),
+								false, mon, res);
+						break;
+					case 1:
+						player.enemy.hero.hero().heal(Integer.parseInt(tmp[1]),
+								false, mon, res);
+						break;
+					case 2:
+						player.enemy.field.heal(Integer.parseInt(tmp[1]),
+								false, mon, res);
+						player.field.heal(Integer.parseInt(tmp[1]), false, mon,
+								res);
+						break;
+					case 3:
+						player.heal(Integer.parseInt(tmp[1]), false, mon, res);
+						player.enemy.heal(Integer.parseInt(tmp[1]), false, mon,
+								res);
+						break;
+					case 4:
+						player.heal(Integer.parseInt(tmp[1]), false, mon, res);
+						break;
+					}
+				}
+			});
+			break;
 
 		case GET_WEAPON:
 			tmp = amount.split("=");
@@ -288,8 +563,9 @@ public class Card extends RelativeLayout {
 		case GET_WEAPON_BUFF:
 			tmp = amount.split("=");
 			removeCardFromHand(player);
-			final Weapon buffw = player.hero.getWeapon(Integer.parseInt(tmp[0]),
-					Integer.parseInt(tmp[1]), res, false, 0);
+			final Weapon buffw = player.hero.getWeapon(
+					Integer.parseInt(tmp[0]), Integer.parseInt(tmp[1]), res,
+					false, 0);
 			final ExcuteEffect buff = new ExcuteEffect() {
 				@Override
 				public void run() {
@@ -300,14 +576,13 @@ public class Card extends RelativeLayout {
 			};
 			player.addNewMonsterEffect(buff);
 			buffw.setDeathEffect(new ExcuteEffect() {
-				
+
 				@Override
 				public void run() {
 					player.removeNewMonsterEffect(buff);
 				}
 			});
-			
-			
+
 			break;
 
 		case GET_WEAPON_HEAL:
@@ -348,7 +623,7 @@ public class Card extends RelativeLayout {
 					.legend();
 			break;
 
-		case MASSIVE_STUN_DAMAGE:
+		case STUN_MASSIVE_DAMAGE:
 			removeCardFromHand(player);
 			res = "bullet";
 			if (effect.length == 3) {
@@ -435,6 +710,7 @@ public class Card extends RelativeLayout {
 		case STUN_GUN:
 			Method.alert("대상을 선택하세요.");
 			OnClickListener stungun = new View.OnClickListener() {
+
 				@Override
 				public void onClick(View v) {
 					removeCardFromHand(player);
@@ -466,7 +742,7 @@ public class Card extends RelativeLayout {
 			player.enemy.hero.setListener();
 			break;
 
-		case MASSIVE_STUN:
+		case STUN_MASSIVE:
 			removeCardFromHand(player);
 			player.enemy.field.Stun(false, player.hero.hero(), "bullet");
 			break;
@@ -493,9 +769,9 @@ public class Card extends RelativeLayout {
 			player.newCard(Integer.parseInt(amount));
 			break;
 
-		case HEAL_ONTHEFIELD: // 전장에 나오며 공격 / 혹은 치료
+		case ONTHEFIELD_HEAL: // 전장에 나오며 공격 / 혹은 치료
 			Method.alert("대상을 선택하세요.");
-			OnClickListener heal = new View.OnClickListener() {
+			OnClickListener he = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					int spellpower = 0;
@@ -516,7 +792,7 @@ public class Card extends RelativeLayout {
 				}
 			};
 
-			Listeners.setListener(heal);
+			Listeners.setListener(he);
 
 			player.endturn.setText("    취소");
 			player.endturn.setOnClickListener(new View.OnClickListener() {
@@ -543,7 +819,7 @@ public class Card extends RelativeLayout {
 
 			Method.alert("대상을 선택하세요.");
 
-			OnClickListener abilityup = new View.OnClickListener() {
+			OnClickListener abup = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
 
@@ -564,7 +840,7 @@ public class Card extends RelativeLayout {
 
 			};
 
-			Listeners.setListener(abilityup);
+			Listeners.setListener(abup);
 
 			player.endturn.setText("    취소");
 			player.endturn.setOnClickListener(new View.OnClickListener() {
@@ -660,52 +936,6 @@ public class Card extends RelativeLayout {
 
 			break;
 
-		case ADD_TWO_BATS: // 논개
-			removeCardFromHand(player);
-			Monster tmp1 = new Monster(context, new Card(context,
-					"박쥐;;bat;1;0;0;1;1", Static.index(), -1),
-					player.enemy.field, false);
-			Monster tmp2 = new Monster(context, new Card(context,
-					"박쥐;;bat;1;0;0;1;1", Static.index(), -1),
-					player.enemy.field, false);
-			player.enemy.field.add(tmp1);
-			player.enemy.field.add(tmp2);
-			addMonster(player);
-			break;
 		}
-	}
-
-	private Monster addMonster(Player player) {
-		Monster monster = new Monster(context, this, player.field, false);
-		player.field.add(monster);
-		return monster;
-	}
-
-	public String name() {
-		return name;
-	}
-
-	public String description() {
-		return description;
-	}
-
-	public static void stateChange() {
-		stateChange = true;
-	}
-
-	public String toString() {
-		return cardinfo;
-	}
-
-	public Ani getAni() {
-		return ani;
-	}
-
-	public String getMonstereffects() {
-		return monstereffects;
-	}
-
-	public int getMonsterindex() {
-		return idforMonster;
 	}
 }

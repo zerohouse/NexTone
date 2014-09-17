@@ -118,13 +118,11 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	}
 
 	@Override
-	public void attacked(int damage) {
-		defense.add(-damage);
-
+	public void attacked(Target target) {
+		defense.add(-target.damage());
 		vital.add(defenseCheck());
 		defeatCheck();
 		vitalCheck();
-
 	}
 
 	private int defenseCheck() {
@@ -167,10 +165,15 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	void defeatCheck() {
 		if (vital.Int() < 1) {
 			if (hero.player.me() == 2) {
-				hero.player.gameEnd(0);
+				die();
 				return;
 			}
 		}
+	}
+
+	@Override
+	public void die() {
+		hero.player.gameEnd(0);
 	}
 
 	@SuppressLint("NewApi")
@@ -202,8 +205,8 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		if (weapon != null)
 			weapon.use(target);
 
-		target.attacked(damage.Int());
-		this.attacked(target.damage());
+		target.attacked(this);
+		this.attacked(target);
 		int playerindex = index();
 		// 상대입장에서 봐야 되니까 뒤집어짐.
 		int enemyindex = target.index();

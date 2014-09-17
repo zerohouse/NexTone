@@ -8,7 +8,7 @@ public interface Target {
 
 	public abstract int damage();
 
-	public abstract void attacked(int damage);
+	public abstract void attacked(Target target);
 
 	public abstract void attack(Target target, boolean isChecked);
 
@@ -73,5 +73,7 @@ public interface Target {
 	public abstract boolean isStunned();
 
 	public abstract void wakeUp(boolean sended);
+
+	public abstract void die();
 
 }

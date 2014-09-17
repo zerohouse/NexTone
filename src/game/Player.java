@@ -41,8 +41,13 @@ public class Player {
 	public ImageButton endturn;
 	int idforMonster = 0;
 
-	final static int NEW_MONSTER = 0;
-	final static int DIE_MONSTER = 1;
+	public int usedcardsize = 0;
+
+	public final static int NEW_MONSTER = 0;
+	public final static int DIE_MONSTER = 1;
+	public final static int NEWTURN = 2;
+	public final static int ENDTURN = 3;
+	public final static int USECARD = 4;
 	ArrayList<ArrayList<ExcuteEffect>> events = new ArrayList<ArrayList<ExcuteEffect>>();
 
 	@SuppressLint("HandlerLeak")
@@ -58,6 +63,12 @@ public class Player {
 				break;
 
 			case 1:
+				usedcardsize++;
+				if (events.get(USECARD).size() == 0)
+					return;
+				for (ExcuteEffect ex : events.get(USECARD)) {
+					ex.run();
+				}
 				break;
 
 			case 2:
@@ -84,11 +95,13 @@ public class Player {
 		init();
 		makeDek();
 
-		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 추가시
-		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 죽을때
-		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 피해입을때
-		events.add(new ArrayList<ExcuteEffect>()); // 몬스터 공격시
-		events.add(new ArrayList<ExcuteEffect>()); // 영웅 공격당할때
+		events.add(new ArrayList<ExcuteEffect>());
+		events.add(new ArrayList<ExcuteEffect>());
+		events.add(new ArrayList<ExcuteEffect>());
+		events.add(new ArrayList<ExcuteEffect>());
+		events.add(new ArrayList<ExcuteEffect>());
+		events.add(new ArrayList<ExcuteEffect>());
+		events.add(new ArrayList<ExcuteEffect>());
 
 	}
 
@@ -98,6 +111,14 @@ public class Player {
 
 	public void removeNewMonsterEffect(ExcuteEffect effect) {
 		events.get(NEW_MONSTER).remove(effect);
+	}
+
+	public void addNewTurnEffect(ExcuteEffect effect) { // 한번실행
+		events.get(NEWTURN).add(effect);
+	}
+
+	public void addEndTurnEffect(ExcuteEffect effect) { // 한번실행
+		events.get(ENDTURN).add(effect);
 	}
 
 	private void init() {
@@ -171,53 +192,39 @@ public class Player {
 	}
 
 	private void useCard(View v) {
-		ArrayList<Card> selected = hand.selectedCards();
-		if (field.size() + monsterSum(selected) > 7) {
+		Card selected = hand.selectedCard();
+		if (selected == null) {
+			Method.alert("선택된 카드가 없습니다.");
+			return;
+		}
+		if (field.size() + selected.monster > 7) {
 			Method.alert("하수인은 7명까지 소환 가능합니다.");
 			return;
 		}
-		int manacost = costSum(selected);
+		int manacost = selected.cost();
 		if (manacost > hero.mana.mana()) {
 			Method.alert("마나가 부족합니다.");
 			return;
 		}
-
-		for (Card card : selected) {
-			card.use(this, false);
-		}
+		selected.use(this, false);
 		cardStateUpdate();
-	}
-
-	private int costSum(ArrayList<Card> selected) {
-		int cost = 0;
-		for (Card card : selected) {
-			cost += card.cost();
-		}
-		return cost;
-	}
-
-	private int monsterSum(ArrayList<Card> selected) {
-		int monster = 0;
-		for (Card card : selected) {
-			monster += card.monster();
-		}
-		return monster;
 	}
 
 	@SuppressLint("NewApi")
 	void endTurn() {
+		usedcardsize = 0;
 		hero.removeView(usecard);
 		hero.removeView(endturn);
-
+		int size = events.get(ENDTURN).size();
+		if (size != 0) {
+			for (int i = 0; i < size; i++) {
+				events.get(ENDTURN).get(0).run();
+				events.get(ENDTURN).remove(0);
+			}
+		}
 		field.endTurn();
 		hero.endTurn();
 		sendHeroState();
-		try {
-			Thread.sleep(500);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		Sender.S("4&"); // 4 = 턴넘기기
 	}
 
@@ -268,6 +275,16 @@ public class Player {
 
 	}
 
+	public static final int BAT = -1;
+	public static final int TOTEM = -2;
+	public static final int TOTEM_HEAL = -3;
+	public static final int TOTEM_SPELL = -4;
+	public static final int TOTEM_SHIELD = -5;
+	public static final int MANAPLUS = -6;
+	public static final int LITTLE_DRAGON = -7;
+	public static final int JONGJA = -8;
+	public static final int PINKLE = -9;
+
 	public String getCardStringById(int id) {
 		switch (id) {
 		case -1:
@@ -282,6 +299,18 @@ public class Player {
 			return "수호토템;방어;totemshield;1;0#1;0;0;2";
 		case -6:
 			return "마나+;마나를 1 획득합니다.;manaplus;0;0%0#1;0;0;0";
+		case -7:
+			return "토템;;totem;1;0;1;2;1";
+		case -8:
+			return "토템;;totem;1;0;0;2;2";
+		case -9:
+			return "토템;;totem;1;0;0;3;3";
+		case -10:
+			return "토템;;totem;1;0;0;4;4";
+		case -11:
+			return "수호토템;방어;totemshield;1;0#1;0;1;2";
+		case -12:
+			return "수호토템;방어;totemshield;1;0;4;4;5";
 
 		}
 		if (id > 999) {
@@ -359,15 +388,13 @@ public class Player {
 		if (!first) {
 			Sender.S("5&"); // IAMDONE (second)
 			hand.add(new Card(context, getCardStringById(-6), -1, -6));
-			// hand.add(new Card(
-			// context,
-			// "왕방맹이;공격력4/내구도2\n공격할때 체력을 2 회복합니다.;heroability3;0;0%520#4=2;0;4;2",
-			// -1, -6));
+
+		//			"쇼군;상대영웅에게 피해를 2줍니다.\n연계:다음턴이 시작할때 이 카드를 다시 얻습니다.;sabu;0;0%803#0;3;0;0",
+
+			// hand.add(new Card(context, , -1, -6));
 		}
 
 	}
-
-	// 성장돼지;매턴이 끝날때마다 +1/+1을 얻습니다.;pig;1;0%950#1=1;8;7;7
 
 	public String dekToDummy() {
 		String ranorder = dummy.shffleAdd(dek, random);
@@ -403,8 +430,17 @@ public class Player {
 		hero.newTurn(); // 히어로 뉴턴에서 에러
 		hero.addView(usecard);
 		hero.addView(endturn);
-
 		field.newTurn();
+
+		usedcardsize = 0;
+
+		int size = events.get(NEWTURN).size();
+		if (size != 0) {
+			for (int i = 0; i < size; i++) {
+				events.get(NEWTURN).get(0).run();
+				events.get(NEWTURN).remove(0);
+			}
+		}
 		enemy.field.endTurn();
 		sendHeroState();
 
@@ -540,5 +576,9 @@ public class Player {
 	public void heal(int amount, boolean sended, Target from, String resource) {
 		field.heal(amount, sended, from, resource);
 		hero.hero().heal(amount, sended, from, resource);
+	}
+
+	public void newCard(Card card) {
+		hand.add(card);
 	}
 }

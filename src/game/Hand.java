@@ -3,6 +3,7 @@ package game;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +100,7 @@ public class Hand extends LinearLayout {
 	public ArrayList<Card> selectedCards() {
 		ArrayList<Card> selected = new ArrayList<Card>();
 		for (Card card : items) {
-			if (card.selected() == true) {
+			if (card.selected()) {
 				selected.add(card);
 			}
 		}
@@ -108,6 +109,16 @@ public class Hand extends LinearLayout {
 
 	public View ScrollView() {
 		return scroll;
+	}
+
+	public Card selectedCard() {
+		for (Card card : items) {
+			if (card.selected()) {
+				return card;
+			}
+		}
+		Log.i("null","선택된 카드 없음");
+		return null;
 	}
 
 
