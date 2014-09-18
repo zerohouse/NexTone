@@ -18,7 +18,7 @@ public class Hero extends RelativeLayout {
 	HeroEffect effect;
 	int emptyDummy, herotype;
 	ViewBinder dummysize;
-	HeroCharacter hero;
+	public HeroCharacter hero;
 	public ManaStone mana;
 	String name;
 	Context context;
@@ -196,6 +196,8 @@ public class Hero extends RelativeLayout {
 
 	public Weapon getWeapon(int damage, int vital, String resource,
 			boolean sended, int manacost) {
+		if (hero.weapon != null)
+			hero.weapon.die();
 		Weapon weapon = new Weapon(context, this, damage, vital, resource);
 		hero.getWepon(weapon);
 		mana.Add(-manacost, sended);
@@ -205,7 +207,6 @@ public class Hero extends RelativeLayout {
 
 		return weapon;
 	}
-
 
 	public void getDefense(int defense, boolean Sended, int manacost) {
 		mana.Add(-manacost, Sended);

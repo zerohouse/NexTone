@@ -76,11 +76,11 @@ public class Heal {
 				amounty);
 		translate.setInterpolator(new AccelerateInterpolator());
 
-		translate.setDuration(600); // duartion in ms
+		translate.setDuration(1000); // duartion in ms
 		translate.setFillAfter(false);
 
 		AlphaAnimation alpha = new AlphaAnimation(1.0f, 0.3f);
-		alpha.setDuration(600);
+		alpha.setDuration(1000);
 		// animation1.setStartOffset(5000);
 		alpha.setFillAfter(false);
 

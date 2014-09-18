@@ -304,19 +304,20 @@ public class Player {
 		case -8:
 			return "토템;;totem;1;0;0;2;2";
 		case -9:
-			return "토템;;totem;1;0;0;3;3";
+			return "막내아들;;maknae;1;0;0;3;3";
 		case -10:
 			return "토템;;totem;1;0;0;4;4";
 		case -11:
-			return "수호토템;방어;totemshield;1;0#1;0;1;2";
+			return "문재인;방어;moonj;1;0#1;0;1;2";
 		case -12:
-			return "수호토템;방어;totemshield;1;0;4;4;5";
+			return "피닉제;(부활함);pinix;1;0;4;4;5";
 		case -13:
 			return "수호토템;방어;totemshield;1;0#1;1;2;3";
-
+		case -14:
+			return "개;;dog;1;0;0;1;1";
 		}
 		if (id > 999) {
-			int resid = id % 1000;
+			int resid = id % 1000; 
 			if (me == 1)
 				return Card.herocards.get(resid);
 			return Card.enemycards.get(resid);
@@ -468,7 +469,7 @@ public class Player {
 			hero.emptyDummy();
 			Method.alert("덱에 카드가 없습니다");
 			cardStateUpdate();
-			return; 
+			return;
 		}
 		Card newcard = dummy.pop();
 		if (hand.size() < 10) {

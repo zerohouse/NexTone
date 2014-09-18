@@ -31,7 +31,7 @@ public class Monster extends RelativeLayout implements Target {
 	boolean defenseMonster, shield, wakeup = false, stunned = false,
 			hide = false, killer = false, die = false; // 방패/보호막/빙결
 	ImageView charimage, shieldimage = null, stunimage = null,
-			doubleimage = null, hideimage = null, killerimage = null;
+			doubleimage = null, hideimage = null, killerimage = null, atable = null, attackready = null;
 	Card card;
 
 	Heal healeffect = null;
@@ -41,20 +41,20 @@ public class Monster extends RelativeLayout implements Target {
 	ViewBinder damage, vital;
 	String resource;
 	RelativeLayout.LayoutParams params;
-	boolean uped = false;
-
+	boolean uped = false; 
+ 
 	public Monster(Context context, Card card, Field field, boolean sended) {
 		super(context);
 		this.card = card;
 		this.effects = card.getMonstereffects();
+		this.resource = card.resource();
 		deFault(context, field, card.getMonsterindex());
 		defaultattack = card.attack();
 		defaultvital = card.vital();
 		spellpower = 0;
 		setDamageVital(card.attack(), card.vital());
-		this.resource = card.resource();
 		setBackgroundDefault();
-		setHelperShow();
+		setHelperShow(); 
 		setEffects();
 
 		if (!sended) {
@@ -63,7 +63,10 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public void setBackgroundDefault() {
-		charimage.setBackgroundResource(Method.resId(resource));
+		if(attackready!=null)
+			attackready.setVisibility(View.INVISIBLE);
+		if(atable!=null)
+			atable.setVisibility(View.INVISIBLE);
 	}
 
 	private void setDamageVital(int attack, int vital) {
@@ -174,21 +177,26 @@ public class Monster extends RelativeLayout implements Target {
 			attackAble();
 			return;
 		}
-		attackdisAble();
-	}
-
-	public void attackAble() {
-		charimage.setBackgroundResource(Method.resId(resource + "attackable"));
-	}
-
-	public void attackdisAble() {
-		attackable = 0;
 		setBackgroundDefault();
 	}
 
+	public void attackAble() {
+		if(atable==null){
+			atable = new ImageView(context);
+			atable.setBackgroundResource(R.drawable.attackable);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			atable.setLayoutParams(lay);
+			addView(atable,0);
+		}
+		atable.setVisibility(View.VISIBLE);
+	}
+
+
+
 	@SuppressLint("NewApi")
 	private void deFault(Context context, Field field, int index) {
-
 		setY(-10);
 		setY(10);
 		this.context = context;
@@ -210,6 +218,7 @@ public class Monster extends RelativeLayout implements Target {
 				RelativeLayout.LayoutParams.MATCH_PARENT,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		charimage.setLayoutParams(lay);
+		charimage.setBackgroundResource(Method.resId(resource));
 		addView(charimage);
 
 		showHelper = new OnClickListener() {
@@ -265,7 +274,16 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public void setAttackBackground() {
-		charimage.setBackgroundResource(Method.resId(resource + "attack"));
+		if(attackready==null){
+			attackready = new ImageView(context);
+			attackready.setBackgroundResource(R.drawable.attackready);
+			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
+					RelativeLayout.LayoutParams.MATCH_PARENT,
+					RelativeLayout.LayoutParams.MATCH_PARENT);
+			attackready.setLayoutParams(lay);
+			addView(attackready,0);
+		}
+		attackready.setVisibility(View.VISIBLE);
 	}
 
 	@Override
@@ -432,7 +450,7 @@ public class Monster extends RelativeLayout implements Target {
 			removeView(stunimage);
 		}
 		setHelperShow();
-		attackdisAble();
+		setBackgroundDefault();
 		if (endTurn != null) {
 			endTurn.run();
 		}

@@ -96,7 +96,7 @@ public class Weapon extends RelativeLayout {
 	}
 
 	public void legend() {
-		this.legend = true; 
+		this.legend = true;
 	}
 
 	private void weaponCheck() {
@@ -106,18 +106,22 @@ public class Weapon extends RelativeLayout {
 			vital.setTextColor(Color.WHITE);
 
 		if (vital.Int() < 1 || damage.Int() < 1) {
-			if (deathEffect != null) {
-				deathEffect.run();
-			}
-			hero.removeView(this);
-			hero.hero.weapon = null;
+			die();
 		}
+	}
+
+	public void die() {
+		if (deathEffect != null) {
+			deathEffect.run();
+		}
+		hero.removeView(this);
+		hero.hero.weapon = null;
 	}
 
 	public void setDeathEffect(ExcuteEffect excuteEffect) {
 		deathEffect = excuteEffect;
 	}
-	
+
 	public void setAttackEffect(ExcuteEffect excuteEffect) {
 		attackEffect = excuteEffect;
 	}

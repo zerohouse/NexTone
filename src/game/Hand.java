@@ -145,7 +145,7 @@ public class Hand extends LinearLayout {
 			removeView(items.get(0));
 			items.remove(0);
 		}
-		marginCheck();
+		marginCheck(); 
 	}
 
 }

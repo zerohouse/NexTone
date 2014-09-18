@@ -304,6 +304,7 @@ public class Card extends RelativeLayout {
 	public final static int STUN_MASSIVE_DAMAGE = 325;
 
 	public final static int DRAW_CARD = 400;
+	public final static int DRAW_CARD_50 = 401;
 	public final static int DRAWCARD_ONTHEFIELD = 60;
 	public final static int DRAWCARD_TURNSTART = 61;
 	public final static int DRAWCARD_TRUNEND = 62;
@@ -342,7 +343,7 @@ public class Card extends RelativeLayout {
 		int type = Integer.parseInt(effect[0]);
 		final String amount = effect[1];
 		res = "pig";
-		if (effect.length == 3) {
+		if (effect.length > 2) {
 			res = effect[2];
 		}
 
@@ -500,8 +501,8 @@ public class Card extends RelativeLayout {
 			addMonster(player).setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
-					player.hero.getWeapon(Integer.parseInt(tmp[2]),
-							Integer.parseInt(tmp[3]), res, false, 0);
+					effectedPlayer.hero.getWeapon(Integer.parseInt(tmp[1]),
+							Integer.parseInt(tmp[2]), res, false, 0);
 				}
 			});
 			break;
@@ -783,6 +784,19 @@ public class Card extends RelativeLayout {
 			player.enemy.field.heal(
 					Integer.parseInt(amount) + player.getSpellpower(), false,
 					player.hero.hero(), re);
+			break;
+			
+		case DRAW_CARD_50:
+			removeCardFromHand(player);
+			mon = addMonster(player);
+			mon.setNewTurnEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					Random r = new Random();
+					if(r.nextInt(2)==1)
+						player.newCard();
+				}
+			});
 			break;
 
 		case DRAWCARD_ONTHEFIELD:

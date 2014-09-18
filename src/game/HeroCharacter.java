@@ -22,7 +22,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	ViewBinder vital, damage, defense;
 	String resource;
 	RelativeLayout.LayoutParams params;
-	Weapon weapon = null;
+	public Weapon weapon = null;
 	Context context;
 	Heal healeffect = null;
 	ImageView stunimage;
