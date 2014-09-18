@@ -3,17 +3,20 @@ package game;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import animation.Ani;
+import animation.Attack;
 import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
-import components.ViewBinder;
 
+import components.ViewBinder;
 import effects.monster.excute.ExcuteEffect;
 
 public class Card extends RelativeLayout {
@@ -34,26 +37,28 @@ public class Card extends RelativeLayout {
 	ViewBinder cost, attack, vital;
 	String resource, name, description, monstereffects, cardeffect = "";
 	int idforMonster, cardid;
-	LinearLayout.LayoutParams params;
+	RelativeLayout.LayoutParams params;
+	int dX, dY, firstX, firstY;
+	Player player;
+	float rotate;
 
 	boolean selected;
 
-	public Card(Context context, String eachcard, int idforMonster, int cardid) {
+	@SuppressLint("ClickableViewAccessibility")
+	public Card(Context context, String eachcard, int idforMonster, int cardid,
+			Player player) {
 		super(context);
+		this.player = player;
 		this.context = context;
 		this.cardid = cardid;
 		this.cardinfo = eachcard;
 		this.ani = new Ani(eachcard);
-		params = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT);
+		params = new RelativeLayout.LayoutParams(
+				RelativeLayout.LayoutParams.WRAP_CONTENT,
+				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		params.width = Method.dpToPx(70);
 		params.height = Method.dpToPx(90);
-		params.leftMargin = 5;
-		params.rightMargin = 5;
 		setLayoutParams(params);
-		params.setMargins(Method.dpToPx(4), Method.dpToPx(1), Method.dpToPx(4),
-				Method.dpToPx(1));
 
 		selected = false;
 
@@ -86,7 +91,7 @@ public class Card extends RelativeLayout {
 
 		monster = Integer.parseInt(cardinfo[3]);
 
-		cardBackground();
+		normalBackground();
 		ImageView image = new ImageView(context);
 		image.setImageResource(Method.resId(resource));
 		addView(image, 0);
@@ -110,21 +115,59 @@ public class Card extends RelativeLayout {
 
 		this.idforMonster = idforMonster;
 
-		setOnClickListener(new View.OnClickListener() {
+		setOnTouchListener(new OnTouchListener() {
+			@SuppressLint("NewApi")
 			@Override
-			public void onClick(View v) {
-				if (stateChange) {
-					toggleMultipleSelect();
-					return;
+			public boolean onTouch(View view, MotionEvent event) {
+				final int X = (int) event.getRawX();
+				final int Y = (int) event.getRawY();
+				switch (event.getAction() & MotionEvent.ACTION_MASK) {
+				case MotionEvent.ACTION_DOWN:
+					if (stateChange)
+						toggleMultipleSelect();
+					else
+						SingleSelect();
+					setRotation(0);
+					Helper.showInfo(ani);
+					firstX = params.leftMargin;
+					firstY = params.topMargin;
+					RelativeLayout.LayoutParams lParams = (RelativeLayout.LayoutParams) view
+							.getLayoutParams();
+					dX = X - lParams.leftMargin;
+					dY = Y - lParams.topMargin;
+
+					break;
+				case MotionEvent.ACTION_UP:
+					params.leftMargin = firstX;
+					params.topMargin = firstY;
+					setRotation(rotate);
+					if ((Y - dY) < 730)
+						useCard();
+					break;
+				case MotionEvent.ACTION_POINTER_DOWN:
+					break;
+				case MotionEvent.ACTION_POINTER_UP:
+					params.leftMargin = firstX;
+					params.topMargin = firstY;
+					setRotation(rotate);
+					break;
+				case MotionEvent.ACTION_MOVE:
+					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
+							.getLayoutParams();
+					layoutParams.leftMargin = X - dX;
+					layoutParams.topMargin = Y - dY;
+					Log.i("y", "" + (Y - dY));
+					view.setLayoutParams(layoutParams);
+					break;
 				}
-				toggleSingleSelect();
-
+				Attack.container.invalidate();
+				return true;
 			}
-		});
 
+		});
 	}
 
-	private void cardBackground() {
+	public void normalBackground() {
 		if (legend) {
 			setBackgroundResource(R.drawable.legend);
 			return;
@@ -137,7 +180,7 @@ public class Card extends RelativeLayout {
 
 	}
 
-	private void clickBackground() {
+	public void greenBackground() {
 		if (legend) {
 			setBackgroundResource(R.drawable.legendclicked);
 			return;
@@ -151,45 +194,31 @@ public class Card extends RelativeLayout {
 	}
 
 	public void toggleMultipleSelect() {
-
 		if (selected == false) {
-			up();
+			selected = true;
+			greenBackground();
 		} else {
-			down();
+			selected = false;
+			normalBackground();
 		}
 	}
 
-	public void toggleSingleSelect() {
-		if (select == this) {
-			down();
-			select = null;
-			Helper.hideInfo();
+	public void SingleSelect() {
+		/*if (select == this) {
+			down();*/
+			select = this;
+			selected = true;
+/*			Helper.hideInfo();
 			return;
 		}
 		if (select != null)
 			select.down();
 		select = this;
 		Helper.showInfo(ani);
-		up();
+		up();*/
 	}
 
-	public void down() {
-		cardBackground();
-		selected = false;
-		params.bottomMargin = 0;
-		setLayoutParams(params);
-	}
 
-	private void up() {
-		clickBackground();
-		params.bottomMargin = Method.dpToPx(10);
-		setLayoutParams(params);
-		selected = true;
-	}
-
-	public void deSelect() {
-		up();
-	}
 
 	public boolean selected() {
 		return selected;
@@ -218,12 +247,33 @@ public class Card extends RelativeLayout {
 	public int monster() {
 		return monster;
 	}
-
-	public void use(Player player, boolean sended) {
+	
+	public void useCard() {
+		
+		if (!player.myturn) {
+			Method.alert("상대방의 차례입니다.");
+			return;
+		}
+		if (player.field.size() + monster > 7) {
+			Method.alert("하수인은 7명까지 소환 가능합니다.");
+			return;
+		}
+		
+		if (cost() > player.mana()) {
+			Method.alert("마나가 부족합니다.");
+			return;
+		}
+		
+		use(false);
+		player.cardStateUpdate();
+	
+	}
+	
+	public void use(boolean sended) {
 		Helper.hideInfo();
 
 		if (haseffect) {
-			runEffects(player, cardeffect);
+			runEffects(cardeffect);
 			return;
 		}
 
@@ -338,7 +388,7 @@ public class Card extends RelativeLayout {
 
 	String res;
 
-	public void runEffects(final Player player, String effects) {
+	public void runEffects(String effects) {
 		final String[] effect = effects.split("#");
 		int type = Integer.parseInt(effect[0]);
 		final String amount = effect[1];
@@ -373,7 +423,7 @@ public class Card extends RelativeLayout {
 			for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
 				field.add(new Monster(context, new Card(context, player
 						.getCardStringById(Integer.parseInt(tmp[1])), Static
-						.index(), Integer.parseInt(tmp[1])), field, false));
+						.index(), Integer.parseInt(tmp[1]), player), field, false));
 			break;
 
 		case USEDCARD_DAMAGE:
@@ -469,7 +519,7 @@ public class Card extends RelativeLayout {
 			if (player.usedcardsize == 0)
 				return;
 			player.field.add(new Monster(context, new Card(context, player
-					.getCardStringById(-7), Static.index(), -7), player.field,
+					.getCardStringById(-7), Static.index(), -7, player), player.field,
 					false));
 			break;
 
@@ -519,7 +569,7 @@ public class Card extends RelativeLayout {
 					for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
 						field.add(new Monster(context, new Card(context, player
 								.getCardStringById(Integer.parseInt(tmp[1])),
-								Static.index(), Integer.parseInt(tmp[1])),
+								Static.index(), Integer.parseInt(tmp[1]), player),
 								field, false));
 				}
 			});
@@ -785,7 +835,7 @@ public class Card extends RelativeLayout {
 					Integer.parseInt(amount) + player.getSpellpower(), false,
 					player.hero.hero(), re);
 			break;
-			
+
 		case DRAW_CARD_50:
 			removeCardFromHand(player);
 			mon = addMonster(player);
@@ -793,7 +843,7 @@ public class Card extends RelativeLayout {
 				@Override
 				public void run() {
 					Random r = new Random();
-					if(r.nextInt(2)==1)
+					if (r.nextInt(2) == 1)
 						player.newCard();
 				}
 			});
@@ -974,4 +1024,5 @@ public class Card extends RelativeLayout {
 
 		}
 	}
+
 }

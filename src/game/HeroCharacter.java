@@ -32,7 +32,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		super(context);
 		this.hero = hero;
 		this.context = context;
-		this.resource = resource; 
+		this.resource = resource;
 
 		params = new RelativeLayout.LayoutParams(
 				RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -252,10 +252,9 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	@Override
 	public int getMarginY() {
 		if (hero.player.me == 1) {
-			return hero.player.hand.getHeight();
+			return Method.dpToPx(100);
 		} else {
-			return hero.player.field.getHeight() * 2 + this.getHeight()
-					+ hero.player.hand.getHeight();
+			return hero.player.field.getHeight() * 2 + this.getHeight();
 		}
 	}
 
@@ -314,8 +313,9 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	@Override
 	public void heal(int amount, boolean sended, Target from, String resource) {
 		if (!sended)
-			Game.sender.S("16&" + hero.player.me + "#" + -1 + "," + amount + ","
-					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+			Game.sender.S("16&" + hero.player.me + "#" + -1 + "," + amount
+					+ "," + from.PlayerInfo() + "#" + from.index() + ","
+					+ resource);
 
 		if (healeffect == null)
 			healeffect = new Heal();
@@ -334,8 +334,9 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	public void abilityUp(String amount, boolean sended, Target from,
 			String resource) {
 		if (!sended)
-			Game.sender.S("160&" + hero.player.me + "#" + -1 + "," + amount + ","
-					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+			Game.sender.S("160&" + hero.player.me + "#" + -1 + "," + amount
+					+ "," + from.PlayerInfo() + "#" + from.index() + ","
+					+ resource);
 
 		if (healeffect == null)
 			healeffect = new Heal();
@@ -359,13 +360,11 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	}
 
-
-
 	@Override
 	public void setStun(boolean sended, Target from, String resource) {
-		if(isStunned())
+		if (isStunned())
 			return;
-		
+
 		if (!sended)
 			Game.sender.S("165&" + hero.player.me + "#" + -1 + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
@@ -388,7 +387,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	@Override
 	public void wakeUp(boolean sended) {
-		if(!isStunned())
+		if (!isStunned())
 			return;
 		if (!sended)
 			Game.sender.S("166&" + hero.player.me + "#" + -1);
@@ -407,7 +406,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 	public void newTurn() {
 		if (!isStunned()) {
-			attackable = 1; 
+			attackable = 1;
 			if (weapon != null) {
 				attackable = weapon.attackAble();
 			}
@@ -417,14 +416,14 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		if (weapon != null) {
 			damage.setInt(weapon.damage());
 		}
-		
+
 		attackReady();
 		attackCheck();
 
 	}
 
 	public void endTurn() {
-		if(wakeup){
+		if (wakeup) {
 			removeView(stunimage);
 		}
 		setOnClickListener(null);

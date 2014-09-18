@@ -16,8 +16,12 @@ public class Helper {
 
 	static Context context;
 	static RelativeLayout helper;
-	static RelativeLayout.LayoutParams params, costparams, vitalparams,
-			attackparams, descriptionparams, nameparams;
+	public static RelativeLayout.LayoutParams params;
+	static RelativeLayout.LayoutParams costparams;
+	static RelativeLayout.LayoutParams vitalparams;
+	static RelativeLayout.LayoutParams attackparams;
+	static RelativeLayout.LayoutParams descriptionparams;
+	static RelativeLayout.LayoutParams nameparams;
 	static TextView cost, vital, attack, description, name;
 	static ImageView character;
 	static Handler handler = new Handler();
@@ -33,7 +37,8 @@ public class Helper {
 		helper = new RelativeLayout(con);
 		params = Method.getParams();
 		helper.setLayoutParams(params);
-		params.addRule(RelativeLayout.CENTER_IN_PARENT);
+		params.topMargin = Method.dpToPx(30);
+		params.addRule(RelativeLayout.CENTER_HORIZONTAL);
 		params.width = Method.dpToPx(140);
 		params.height = Method.dpToPx(180);
 

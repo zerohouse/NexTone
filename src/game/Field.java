@@ -89,8 +89,7 @@ public class Field extends LinearLayout {
 	public void add(Hero hero, int me) {
 		this.hero = hero;
 		if (me == 1) {
-			player.game.container().addView(hero,
-					player.game.container().getChildCount() - 1);
+			player.game.container().addView(hero);
 			return;
 		}
 		player.game.container().addView(hero, 0);

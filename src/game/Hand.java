@@ -3,39 +3,42 @@ package game;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Point;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
+import android.view.Display;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import animation.HideAndShow;
 
-public class Hand extends LinearLayout {
+@SuppressLint("ClickableViewAccessibility")
+public class Hand extends RelativeLayout {
 	ArrayList<Card> items; // 통일성을 위해 아이템스로.
 	Context context;
-	HorizontalScrollView scroll;
-	LinearLayout.LayoutParams params;
+	RelativeLayout.LayoutParams params;
+	boolean center = true;
+	final int windowWidth, windowHeight;
 
+	@SuppressLint("NewApi")
 	public Hand(Context context) {
 		super(context);
 		this.context = context;
-		params = new LinearLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT,
+		params = new RelativeLayout.LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 		setLayoutParams(params);
-		setOrientation(HORIZONTAL);
-		setGravity(Gravity.BOTTOM);
 		items = new ArrayList<Card>();
 
-		scroll = new HorizontalScrollView(context);
-		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-				LayoutParams.WRAP_CONTENT, 0f);
-		params.height = Method.dpToPx(100);
-		scroll.setLayoutParams(params);
-		scroll.addView(this);
-		scroll.setSmoothScrollingEnabled(true);
+		WindowManager wm = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		windowWidth = size.x;
+		windowHeight = size.y;
+		marginCheck();
 
 		// 애니메이션 세팅
 		HideAndShow hideshow = new HideAndShow(this);
@@ -50,22 +53,51 @@ public class Hand extends LinearLayout {
 
 	}
 
-	private void marginCheck() {
-		if (items.size() < 5) {
-			for (Card card : items) {
-				card.params.leftMargin = 5;
-				card.params.rightMargin = 5;
-				card.params.width = Method.dpToPx(70);
+	@SuppressLint("NewApi")
+	void marginCheck() {
+		int size = items.size();
+		if (size == 0)
+			return;
+		int block;
+		float degree;
+		if (size == 1)
+			degree = 0;
+		else
+			degree = 40 / (size - 1);
+		if (size == 0)
+			return;
+		int width = Method.dpToPx(70);
+		int startposition = (windowWidth - size * width) / 2;
+
+		int itemwidth = Method.dpToPx(70) - (size - 5) * 2;
+
+		if (width * size > windowWidth) {
+			block = windowWidth / size;
+
+			for (int i = 0; i < items.size(); i++) {
+				items.get(i).params.width = itemwidth;
+				items.get(i).params.leftMargin = i * block;
+				items.get(i).params.topMargin = windowHeight
+						- Method.dpToPx(105) + Math.abs(size / 2 - i) * 15;
+				items.get(i).setRotation(degree * i - 20);
+				items.get(i).rotate = degree * i - 20;
+
 			}
 			return;
 		}
-		for (Card card : items) {
-			card.params.leftMargin = (int) (4 - (items.size() * 0.5 - 2)
-					* Method.dpToPx(3));
-			card.params.rightMargin = (int) (4 - (items.size() * 0.5 - 2)
-					* Method.dpToPx(3));
-			card.params.width = (int) (Method.dpToPx(70) - (items.size() * 0.5 - 2)
-					* Method.dpToPx(3));
+
+		for (int i = 0; i < items.size(); i++) {
+			items.get(i).params.leftMargin = startposition - (size - 1) * 5 + i
+					* (width + 5);
+			if (items.get(0).getWidth() == 0)
+				items.get(i).params.topMargin = windowHeight / 2
+						- Method.dpToPx(15);
+			else {
+				items.get(i).params.topMargin = windowHeight
+						- Method.dpToPx(105) + Math.abs(size / 2 - i) * 15;
+				items.get(i).setRotation(degree * i - 20);
+				items.get(i).rotate = degree * i - 20;
+			}
 		}
 
 	}
@@ -115,10 +147,6 @@ public class Hand extends LinearLayout {
 		return selected;
 	}
 
-	public View ScrollView() {
-		return scroll;
-	}
-
 	public Card selectedCard() {
 		for (Card card : items) {
 			if (card.selected()) {
@@ -145,7 +173,7 @@ public class Hand extends LinearLayout {
 			removeView(items.get(0));
 			items.remove(0);
 		}
-		marginCheck(); 
+		marginCheck();
 	}
 
 }

@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import animation.Helper;
 
 import com.mylikenews.nextoneandroid.DekList;
 
@@ -34,10 +33,10 @@ public class Player {
 	Random random;
 	Dummy dummy;
 	public Field field;
-	boolean first, done, gameend;
+	boolean first, done, gameend, myturn = false;
 	public int me;
 	Button change;
-	ImageButton usecard, heroabillity;
+	ImageButton heroabillity;
 	public ImageButton endturn;
 	int idforMonster = 0;
 
@@ -136,23 +135,10 @@ public class Player {
 		hero = new Hero(context, this, herostring);
 
 		// 버튼 선언부
-		usecard = new ImageButton(context, Method.resId("card"),
-				Method.resId("cardpressed"), "     카드내기");
-		usecard.getParams().addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		usecard.setId(1);
-
-		usecard.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				useCard(v);
-
-			}
-		});
 
 		endturn = new ImageButton(context, Method.resId("done"),
 				Method.resId("donepressed"), "     턴넘기기");
 		endturn.getParams().addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		endturn.getParams().addRule(RelativeLayout.BELOW, usecard.getId());
 
 		endturn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -160,20 +146,6 @@ public class Player {
 				endTurn();
 			}
 		});
-
-		OnClickListener downy = new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (Card.select != null) {
-					Card.select.down();
-					Helper.hideInfo();
-				}
-
-			}
-		};
-
-		field.setOnClickListener(downy);
-		hero.setOnClickListener(downy);
 
 	}
 
@@ -191,29 +163,14 @@ public class Player {
 		field.add(hero, me);
 	}
 
-	private void useCard(View v) {
-		Card selected = hand.selectedCard();
-		if (selected == null) {
-			Method.alert("선택된 카드가 없습니다.");
-			return;
-		}
-		if (field.size() + selected.monster > 7) {
-			Method.alert("하수인은 7명까지 소환 가능합니다.");
-			return;
-		}
-		int manacost = selected.cost();
-		if (manacost > hero.mana.mana()) {
-			Method.alert("마나가 부족합니다.");
-			return;
-		}
-		selected.use(this, false);
-		cardStateUpdate();
-	}
-
 	@SuppressLint("NewApi")
 	void endTurn() {
 		usedcardsize = 0;
-		hero.removeView(usecard);
+
+		for (Card card : hand.items) {
+			card.normalBackground();
+		}
+		myturn = false;
 		hero.removeView(endturn);
 		int size = events.get(ENDTURN).size();
 		if (size != 0) {
@@ -267,7 +224,7 @@ public class Player {
 			howmany = Integer.parseInt(cardhowmany[1]);
 
 			for (int i = 0; i < howmany; i++) {
-				card = new Card(context, eachcard, idforMonster, cardid);
+				card = new Card(context, eachcard, idforMonster, cardid, this);
 				idforMonster++;
 				dek.add(card);
 			}
@@ -317,7 +274,7 @@ public class Player {
 			return "개;;dog;1;0;0;1;1";
 		}
 		if (id > 999) {
-			int resid = id % 1000; 
+			int resid = id % 1000;
 			if (me == 1)
 				return Card.herocards.get(resid);
 			return Card.enemycards.get(resid);
@@ -390,7 +347,7 @@ public class Player {
 
 		if (!first) {
 			Game.sender.S("5&"); // IAMDONE (second)
-			hand.add(new Card(context, getCardStringById(-6), -1, -6));
+			hand.add(new Card(context, getCardStringById(-6), -1, -6, this));
 
 			// "쇼군;상대영웅에게 피해를 2줍니다.\n연계:다음턴이 시작할때 이 카드를 다시 얻습니다.;sabu;0;0%803#0;3;0;0",
 
@@ -412,10 +369,6 @@ public class Player {
 		first = false;
 	}
 
-	public View hand() {
-		return hand.ScrollView();
-	}
-
 	public View field() {
 		return field.scroll;
 	}
@@ -431,9 +384,9 @@ public class Player {
 		newCard();
 
 		hero.newTurn(); // 히어로 뉴턴에서 에러
-		hero.addView(usecard);
 		hero.addView(endturn);
 		field.newTurn();
+		myturn = true;
 
 		usedcardsize = 0;
 
@@ -445,7 +398,7 @@ public class Player {
 			}
 		}
 		enemy.field.endTurn();
-		sendHeroState();
+		cardStateUpdate();
 
 	}
 
@@ -482,6 +435,13 @@ public class Player {
 	}
 
 	public void cardStateUpdate() {
+		for (Card card : hand.items) {
+			if (card.cost() > mana())
+				card.normalBackground();
+			else
+				card.greenBackground();
+		}
+
 		hero.dummysize.setText(" Cards: " + hand.size() + "/" + dummy.size());
 		sendHeroState();
 	}
@@ -589,5 +549,9 @@ public class Player {
 
 	public void newCard(Card card) {
 		hand.add(card);
+	}
+
+	public int mana() {
+		return hero.mana.mana();
 	}
 }

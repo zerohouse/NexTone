@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
+        android:layout_marginBottom="100dp"
         tools:context="com.mylikenews.nextoneandroid.NetWorkGame" >
     </LinearLayout>
 

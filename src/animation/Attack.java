@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 
 public class Attack {
 
-	static RelativeLayout container;
+	public static RelativeLayout container;
 	static Target onesave;
 
 	@SuppressLint("NewApi")
@@ -72,7 +72,6 @@ public class Attack {
 
 	public static void setAnimate(RelativeLayout animate) {
 		container = animate;
-		
 	}
 
 	@SuppressLint("NewApi")

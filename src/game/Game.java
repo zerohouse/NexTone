@@ -107,11 +107,13 @@ public class Game {
 
 		player2.addHero();
 		player1.addHero();
+		
+		Helper.params.addRule(RelativeLayout.CENTER_IN_PARENT);
 	}
 
 	private void addPlayerCard(int size) {
 		player1.firstSetting(size);
-		container.addView(player1.hand());
+		animate.addView(player1.hand);
 	}
 
 	public void Do(String resString) {
@@ -186,14 +188,14 @@ public class Game {
 					cardstring = player2.getCardStringById(Integer
 							.parseInt(mon[2]));
 					card = new Card(context, cardstring, 
-							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]));
+							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]), player2);
 					player2.field.addByCard(card, true); 
 					return;
 				}
 				cardstring = player1
 						.getCardStringById(Integer.parseInt(mon[2]));
 				card = new Card(context, cardstring, Integer.parseInt(mon[1]),
-						Integer.parseInt(mon[2]));
+						Integer.parseInt(mon[2]), player1);
 				player1.field.addByCard(card, true);
 				break;
 

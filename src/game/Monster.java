@@ -31,7 +31,8 @@ public class Monster extends RelativeLayout implements Target {
 	boolean defenseMonster, shield, wakeup = false, stunned = false,
 			hide = false, killer = false, die = false; // 방패/보호막/빙결
 	ImageView charimage, shieldimage = null, stunimage = null,
-			doubleimage = null, hideimage = null, killerimage = null, atable = null, attackready = null;
+			doubleimage = null, hideimage = null, killerimage = null,
+			atable = null, attackready = null;
 	Card card;
 
 	Heal healeffect = null;
@@ -41,8 +42,8 @@ public class Monster extends RelativeLayout implements Target {
 	ViewBinder damage, vital;
 	String resource;
 	RelativeLayout.LayoutParams params;
-	boolean uped = false; 
- 
+	boolean uped = false;
+
 	public Monster(Context context, Card card, Field field, boolean sended) {
 		super(context);
 		this.card = card;
@@ -54,18 +55,19 @@ public class Monster extends RelativeLayout implements Target {
 		spellpower = 0;
 		setDamageVital(card.attack(), card.vital());
 		setBackgroundDefault();
-		setHelperShow(); 
+		setHelperShow();
 		setEffects();
 
 		if (!sended) {
-			Game.sender.S("8&" + field.player.me + "@" + id + "@" + card.index());
+			Game.sender.S("8&" + field.player.me + "@" + id + "@"
+					+ card.index());
 		}
 	}
 
 	public void setBackgroundDefault() {
-		if(attackready!=null)
+		if (attackready != null)
 			attackready.setVisibility(View.INVISIBLE);
-		if(atable!=null)
+		if (atable != null)
 			atable.setVisibility(View.INVISIBLE);
 	}
 
@@ -181,19 +183,17 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public void attackAble() {
-		if(atable==null){
+		if (atable == null) {
 			atable = new ImageView(context);
 			atable.setBackgroundResource(R.drawable.attackable);
 			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.MATCH_PARENT,
 					RelativeLayout.LayoutParams.MATCH_PARENT);
 			atable.setLayoutParams(lay);
-			addView(atable,0);
+			addView(atable, 0);
 		}
 		atable.setVisibility(View.VISIBLE);
 	}
-
-
 
 	@SuppressLint("NewApi")
 	private void deFault(Context context, Field field, int index) {
@@ -274,14 +274,14 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public void setAttackBackground() {
-		if(attackready==null){
+		if (attackready == null) {
 			attackready = new ImageView(context);
 			attackready.setBackgroundResource(R.drawable.attackready);
 			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.MATCH_PARENT,
 					RelativeLayout.LayoutParams.MATCH_PARENT);
 			attackready.setLayoutParams(lay);
-			addView(attackready,0);
+			addView(attackready, 0);
 		}
 		attackready.setVisibility(View.VISIBLE);
 	}
@@ -340,7 +340,7 @@ public class Monster extends RelativeLayout implements Target {
 
 	@Override
 	public void die() {
-		if(die)
+		if (die)
 			return;
 		die = true;
 		field.remove(this);
@@ -409,7 +409,7 @@ public class Monster extends RelativeLayout implements Target {
 		int enemyindex = target.index();
 
 		Static.Cancel(field.player, false);
-		
+
 		if (!isChecked)
 			Game.sender.S("9&" + enemyindex + "," + playerindex);
 
@@ -623,8 +623,7 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public int getMarginY() { // 블럭들의 마진을 계산해서 넘겨줌.. 지저분하지만...
 		if (field.player.me == 1) {
-			return field.player.hand.getHeight()
-					+ field.player.hero.getHeight();
+			return field.getHeight() + field.player.hero.getHeight()-Method.dpToPx(35);
 		} else {
 			return field.player.hand.getHeight()
 					+ field.player.hero.getHeight() * 2;
@@ -644,7 +643,6 @@ public class Monster extends RelativeLayout implements Target {
 	public void abilityUp(String amount, boolean sended, Target from,
 			String resource) {
 
-		
 		if (healeffect == null)
 			healeffect = new Heal();
 		healeffect.HealEffect(from, this, sended, resource);
@@ -664,18 +662,20 @@ public class Monster extends RelativeLayout implements Target {
 		removeCheck();
 		vitalCheck();
 		damageCheck();
-		
+
 		if (!sended)
-			Game.sender.S("160&" + field.player.me + "#" + id + "," + amount + ","
-					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+			Game.sender.S("160&" + field.player.me + "#" + id + "," + amount
+					+ "," + from.PlayerInfo() + "#" + from.index() + ","
+					+ resource);
 
 	}
 
 	@Override
 	public void heal(int amount, boolean sended, Target from, String resource) {
 		if (!sended)
-			Game.sender.S("16&" + field.player.me + "#" + id + "," + amount + ","
-					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
+			Game.sender.S("16&" + field.player.me + "#" + id + "," + amount
+					+ "," + from.PlayerInfo() + "#" + from.index() + ","
+					+ resource);
 
 		if (isShield() && amount < 0) {
 			unShield();
