@@ -1,6 +1,5 @@
 package game;
 
-import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -213,7 +212,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 		Static.Cancel(hero.player, false);
 		if (!isChecked)
-			Sender.S("9&" + enemyindex + "," + playerindex);
+			Game.sender.S("9&" + enemyindex + "," + playerindex);
 	}
 
 	private void setBackgroundDefault() {
@@ -291,7 +290,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
 
-		Sender.S("11&-1"); // 선택한 것 알려주기
+		Game.sender.S("11&-1"); // 선택한 것 알려주기
 		setAttackBackground();
 
 		Static.attacker = (Target) v;
@@ -315,7 +314,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	@Override
 	public void heal(int amount, boolean sended, Target from, String resource) {
 		if (!sended)
-			Sender.S("16&" + hero.player.me + "#" + -1 + "," + amount + ","
+			Game.sender.S("16&" + hero.player.me + "#" + -1 + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
 		if (healeffect == null)
@@ -335,7 +334,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 	public void abilityUp(String amount, boolean sended, Target from,
 			String resource) {
 		if (!sended)
-			Sender.S("160&" + hero.player.me + "#" + -1 + "," + amount + ","
+			Game.sender.S("160&" + hero.player.me + "#" + -1 + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
 		if (healeffect == null)
@@ -368,7 +367,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 			return;
 		
 		if (!sended)
-			Sender.S("165&" + hero.player.me + "#" + -1 + ","
+			Game.sender.S("165&" + hero.player.me + "#" + -1 + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
 		if (healeffect == null)
@@ -392,7 +391,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 		if(!isStunned())
 			return;
 		if (!sended)
-			Sender.S("166&" + hero.player.me + "#" + -1);
+			Game.sender.S("166&" + hero.player.me + "#" + -1);
 		wakeup = true;
 		stunned = false;
 	}

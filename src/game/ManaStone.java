@@ -2,7 +2,6 @@ package game;
 
 import java.util.ArrayList;
 
-import net.Sender;
 import android.content.Context;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -76,7 +75,7 @@ public class ManaStone extends LinearLayout {
 
 	public void Add(int amount, boolean sended) {
 		if(!sended)
-			Sender.S("13&"+ hero.player.me + ","+ amount);
+			Game.sender.S("13&"+ hero.player.me + ","+ amount);
 		mana += amount;
 		drawMana();
 	}

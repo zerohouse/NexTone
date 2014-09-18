@@ -1,5 +1,8 @@
 package game;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import net.Sender;
 import android.content.Context;
 import android.util.Log;
@@ -19,6 +22,7 @@ import com.mylikenews.nextoneandroid.R;
 
 public class Game {
 
+	public static Sender sender;
 	Player player1, player2;
 	Context context;
 	LinearLayout container;
@@ -26,6 +30,7 @@ public class Game {
 	boolean first;
 	static boolean isgameStart = false;
 	RelativeLayout animate;
+	private Queue<String> todo = new LinkedList<String>();
 
 	public Game(Context context, LinearLayout container,
 			RelativeLayout animate, String dekstring, String herostring) {
@@ -34,9 +39,8 @@ public class Game {
 		this.animate = animate;
 		player1dek = dekstring;
 		player1hero = herostring;
-
 	}
-
+	
 	public void player1Setting(boolean first) {
 
 		isgameStart = true;
@@ -57,7 +61,7 @@ public class Game {
 		}
 		this.first = first;
 
-		Sender.S("7&1@" + player1.heroString());
+		Game.sender.S("7&1@" + player1.heroString());
 	}
 
 	public void player2Setting() {
@@ -133,6 +137,10 @@ public class Game {
 				player2hero = dekhero[1];
 				player2Setting();
 				break;
+ 
+			case 30: // 카드뽑아라.
+				player1.newCard();
+				break;
 
 			case 4: // 4번이 넘어오면 턴을 넘긴다.
 				player2.endTurnByNet();
@@ -146,7 +154,7 @@ public class Game {
 					Log.i("init", "시작함");
 					initView();
 					player1.newTurn();
-					Sender.S("6&"); 
+					Game.sender.S("6&");
 					return;
 				}
 
@@ -177,9 +185,9 @@ public class Game {
 				if (mon[0].equals("1")) {
 					cardstring = player2.getCardStringById(Integer
 							.parseInt(mon[2]));
-					card = new Card(context, cardstring,
+					card = new Card(context, cardstring, 
 							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]));
-					player2.field.addByCard(card, true);
+					player2.field.addByCard(card, true); 
 					return;
 				}
 				cardstring = player1
@@ -262,8 +270,6 @@ public class Game {
 				healtarget.heal(healamount, true, from, heal[3]);
 				break;
 
-
-				
 			case 165:
 				String stun[] = response[1].split(",");
 				Target stuntarget = getByIndex(stun[0]);
@@ -274,14 +280,12 @@ public class Game {
 				}
 				stuntarget.setStun(true, stunfrom, stun[2]);
 				break;
-				
+
 			case 166:
 				Target wake = getByIndex(response[1]);
 				wake.wakeUp(true);
 				break;
-				
 
-				
 			case 160:
 				String ability[] = response[1].split(",");
 				String abamount = ability[1];
@@ -325,7 +329,7 @@ public class Game {
 
 			case 100:
 				player1.gameEnd(1); // 패배
-				Sender.S("550&");
+				Game.sender.S("550&");
 				break;
 
 			case 101:
@@ -337,8 +341,10 @@ public class Game {
 				break;
 
 			case 550: // 게임 엔드.
-				Sender.close();
+				Game.sender.close();
 				break;
+				
+
 			}
 
 		} catch (Exception e) {
@@ -386,6 +392,25 @@ public class Game {
 		text.setTextAppearance(context, R.style.myText);
 		text.setText("상대가 덱을 고르고 있습니다.");
 		container.addView(text);
+	}
+
+	public Queue<String> getTodo() {
+		return todo;
+	}
+
+	public void setTodo(Queue<String> todo) {
+		this.todo = todo;
+	}
+
+	public void doAll() {
+		while (true) {
+			String s = todo.poll();
+			if (s != null) {
+				Do(s);
+			} else {
+				return;
+			}
+		}
 	}
 
 }

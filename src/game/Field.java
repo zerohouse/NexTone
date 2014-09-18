@@ -185,7 +185,11 @@ public class Field extends LinearLayout {
 	}
 
 	public void heal(int amount, boolean sended, Target from, String resource) {
-		for (int i = items.size() - 1; i > -1; i--) {
+		int size = items.size() - 1;
+		if (size == -1) {
+			return;
+		}
+		for (int i = size; i > -1; i--) {
 			items.get(i).heal(amount, sended, from, resource);
 		}
 	}

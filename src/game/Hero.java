@@ -1,6 +1,5 @@
 package game;
 
-import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -8,10 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import components.ImageButton;
 import components.ViewBinder;
-
 import effects.hero.HeroEffect;
 import effects.hero.HeroEffectFactory;
 
@@ -204,7 +201,7 @@ public class Hero extends RelativeLayout {
 		mana.Add(-manacost, sended);
 		this.addView(weapon);
 		if (!sended)
-			Sender.S("14&" + damage + "," + vital + "," + resource);
+			Game.sender.S("14&" + damage + "," + vital + "," + resource);
 
 		return weapon;
 	}
@@ -214,13 +211,13 @@ public class Hero extends RelativeLayout {
 		mana.Add(-manacost, Sended);
 		hero.getDefense(defense);
 		if (!Sended)
-			Sender.S("15&" + player.me + "," + defense);
+			Game.sender.S("15&" + player.me + "," + defense);
 	}
 
 	public void setDamage(int damage, boolean sended) {
 		hero.damage.setInt(damage);
 		if (!sended)
-			Sender.S("18&" + player.me + "," + damage);
+			Game.sender.S("18&" + player.me + "," + damage);
 	}
 
 	public void heroNewTurn() {

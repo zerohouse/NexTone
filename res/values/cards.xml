@@ -78,7 +78,13 @@
     <string-array name="totem">
 
         <!-- 주수리 -->
+        <item>방맹이;과부하1\n공격력2/내구도3;heroability3;0;0%500#2=3#OVERMANA1;2;2;3</item>
+        <item>핑크;과부하3\n방어;pink;1;0#1%0#0#OVERMANA3;5;7;8</item>
+        <item>쇼군;과부하2\n공격X2;sabu;1;0#5%0#0#OVERMANA2;1;3;1</item>
         <item>쇼군;방어 보호막 돌진 공격X2;sabu;1;0#1#2#5#3%0#0#LEGEND;8;3;5</item>
+        <item>강령술;과부하2\n2/3 방어몹을 2마리 소환합니다.;sabu;0;0%1#0=-13=2#OVERMANA2;2;0;0</item>
+        <item>돼지;과부하1\n피해3 돼지를 던집니다.;pig;0;0%100#-3#pig#OVERMANA1;1;0;0</item>
+        <item>돼지;과부하2\n피해5 돼지를 던집니다.;pig;0;0%100#-5#pig#OVERMANA2;3;0;0</item>
     </string-array>
     <string-array name="magician">
 
@@ -126,7 +132,9 @@
     <string-array name="drawcard">
 
         <!-- 흑마 -->
-        <item>베인;돌진,보호막;vein;1;0#2#3;6;4;2</item>
+        <item>뽜이아;피해4 파이어볼을 던집니다. 카드를 한장 버립니다.;fireball;0;0%100#-4#fireball#LOSTCARD1;0;0;0</item>
+        <item>전강시;돌진\n나올때 무작위 카드를 두장 버립니다.;mchinese;1;0#3%0#0#LOSTCARD2;5;5;7</item>
+        <item>박쥐;피해를 4무작위 카드를 한장 버립니다.;bat;1;0%0#0#LOSTCARD1;2;4;3</item>
     </string-array>
     <string-array name="bat">
 
@@ -148,7 +156,7 @@
 
         <!-- 드루 직업카드 -->
         <item>뽜이아;피해1 파이어볼을 던집니다.;fireball;0;0%100#-1#fireball;0;0;0</item>
-        <item>마나++;마나를 2 획득합니다.;manaplus;0;0%0#2;0;0;0</item>
+        <item>마나++;마나를 2 획득합니다.;manaplus;0;0%2#2;0;0;0</item>
     </string-array>
 
 </resources>

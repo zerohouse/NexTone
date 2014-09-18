@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import net.Sender;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -225,7 +225,7 @@ public class Player {
 		field.endTurn();
 		hero.endTurn();
 		sendHeroState();
-		Sender.S("4&"); // 4 = 턴넘기기
+		Game.sender.S("4&"); // 4 = 턴넘기기
 	}
 
 	public void endTurnByNet() {
@@ -298,7 +298,7 @@ public class Player {
 		case -5:
 			return "수호토템;방어;totemshield;1;0#1;0;0;2";
 		case -6:
-			return "마나+;마나를 1 획득합니다.;manaplus;0;0%0#1;0;0;0";
+			return "마나+;마나를 1 획득합니다.;manaplus;0;0%2#1;0;0;0";
 		case -7:
 			return "토템;;totem;1;0;1;2;1";
 		case -8:
@@ -311,6 +311,8 @@ public class Player {
 			return "수호토템;방어;totemshield;1;0#1;0;1;2";
 		case -12:
 			return "수호토템;방어;totemshield;1;0;4;4;5";
+		case -13:
+			return "수호토템;방어;totemshield;1;0#1;1;2;3";
 
 		}
 		if (id > 999) {
@@ -350,7 +352,7 @@ public class Player {
 				game.container().removeView(v);
 				game.initView();
 				newTurn();
-				Sender.S("6&");
+				Game.sender.S("6&");
 			}
 		});
 	}
@@ -375,7 +377,7 @@ public class Player {
 		int removed = hand.removeAndReturnToDek(dek);
 		dekToHand(removed);
 		dekToDummy();
-		Sender.S("3&" + dekstring + ";" + herostring);
+		Game.sender.S("3&" + dekstring + ";" + herostring);
 		done = true;
 		Card.stateChange = false;
 
@@ -386,10 +388,10 @@ public class Player {
 		}
 
 		if (!first) {
-			Sender.S("5&"); // IAMDONE (second)
+			Game.sender.S("5&"); // IAMDONE (second)
 			hand.add(new Card(context, getCardStringById(-6), -1, -6));
 
-		//			"쇼군;상대영웅에게 피해를 2줍니다.\n연계:다음턴이 시작할때 이 카드를 다시 얻습니다.;sabu;0;0%803#0;3;0;0",
+			// "쇼군;상대영웅에게 피해를 2줍니다.\n연계:다음턴이 시작할때 이 카드를 다시 얻습니다.;sabu;0;0%803#0;3;0;0",
 
 			// hand.add(new Card(context, , -1, -6));
 		}
@@ -424,7 +426,7 @@ public class Player {
 	@SuppressLint("NewApi")
 	public void newTurn() {
 		Method.alert("나의 턴");
-		Sender.S("10&");
+		Game.sender.S("10&");
 		newCard();
 
 		hero.newTurn(); // 히어로 뉴턴에서 에러
@@ -447,7 +449,7 @@ public class Player {
 	}
 
 	public void sendHeroState() {
-		Sender.S("7&1@" + hero.toString());
+		Game.sender.S("7&1@" + hero.toString());
 	}
 
 	public void newCard(int amount) {
@@ -457,11 +459,16 @@ public class Player {
 	}
 
 	public void newCard() {
+		if (me != 1) {
+			Game.sender.S("30&");
+			Log.i("카드뽑기", "보냄");
+			return;
+		}
 		if (dummy.isEmpty()) {
 			hero.emptyDummy();
 			Method.alert("덱에 카드가 없습니다");
 			cardStateUpdate();
-			return;
+			return; 
 		}
 		Card newcard = dummy.pop();
 		if (hand.size() < 10) {
@@ -530,7 +537,7 @@ public class Player {
 		switch (type) {
 		case 0:
 			areyousure.setTitle("게임에서 승리하였습니다.");
-			Sender.S("100&");
+			Game.sender.S("100&");
 			break;
 		case 1:
 			areyousure.setTitle("게임에서 패배하였습니다.");
@@ -574,6 +581,7 @@ public class Player {
 	}
 
 	public void heal(int amount, boolean sended, Target from, String resource) {
+
 		field.heal(amount, sended, from, resource);
 		hero.hero().heal(amount, sended, from, resource);
 	}

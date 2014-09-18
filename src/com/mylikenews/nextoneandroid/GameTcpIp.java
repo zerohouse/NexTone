@@ -2,8 +2,7 @@ package com.mylikenews.nextoneandroid;
 
 import game.Game;
 import game.Method;
-import net.NetGame;
-import net.Sender;
+import net.NetReciever;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,7 +15,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import animation.HideAndShow;
+import animation.HideAndShow; 
 import dek.Data;
 
 public class GameTcpIp extends Activity {
@@ -33,7 +32,7 @@ public class GameTcpIp extends Activity {
 		super.onCreate(savedInstanceState);
 
 		// 서버의 아이피와 포트를 지정한다.
-		ip = "10.73.43.222";
+		ip = "192.168.0.4";
 		port = 13333;
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -94,7 +93,7 @@ public class GameTcpIp extends Activity {
 				game = new Game(GameTcpIp.this, container, animate,
 						dekstring, herostring);
 				
-				NetGame ngame = new NetGame(ip, port, game);
+				NetReciever ngame = new NetReciever(ip, port, game);
 				ngame.execute();
 				container.addView(status);
 				return;
@@ -116,8 +115,8 @@ public class GameTcpIp extends Activity {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						Sender.S("101&"); // 항복
-						Sender.close();
+						Game.sender.S("101&"); // 항복
+						Game.sender.close();
 						finish();
 					}
 				});

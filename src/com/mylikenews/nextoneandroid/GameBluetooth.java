@@ -121,7 +121,7 @@ public class GameBluetooth extends Activity implements
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						Sender.S("101&"); // 항복
+						Game.sender.S("101&"); // 항복
 						finish();
 					}
 				});
@@ -143,7 +143,7 @@ public class GameBluetooth extends Activity implements
 				if (response.contains("done"))
 					done = true;
 				if (start)
-					game.Do(response);
+					game.doAll();
 				break;
 
 			case 1:
@@ -197,7 +197,7 @@ public class GameBluetooth extends Activity implements
 				game.waitForDekSelect();
 				start = true;
 
-				Sender.S("done");
+				Game.sender.S("done");
 				if (!done)
 					return;
 
@@ -214,11 +214,11 @@ public class GameBluetooth extends Activity implements
 		int order = r.nextInt(2);
 		if (order == 0) {
 			game.Do("0&1");
-			Sender.S("0&0");
+			Game.sender.S("0&0");
 			return;
 		}
 		game.Do("0&0");
-		Sender.S("0&1");
+		Game.sender.S("0&1");
 	}
 
 	// 블루투스 사용 가능상태 판단
@@ -475,8 +475,8 @@ public class GameBluetooth extends Activity implements
 		private InputStream mmInStream; // 입력 스트림
 
 		public SocketThread(BluetoothSocket socket) {
-			Sender.setBluetoothSocket(socket);
-
+			Sender sender = new Sender(socket);
+			Game.sender = sender;
 			// 입력 스트림과 출력 스트림을 구한다
 			try {
 				mmInStream = socket.getInputStream();
@@ -495,6 +495,7 @@ public class GameBluetooth extends Activity implements
 					// 입력 스트림에서 데이터를 읽는다
 					bytes = mmInStream.read(buffer);
 					response = new String(buffer, 0, bytes);
+					game.getTodo().add(response);
 					mHandler.sendEmptyMessage(0);
 					SystemClock.sleep(1);
 				} catch (IOException e) {

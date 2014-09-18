@@ -1,6 +1,5 @@
 package game;
 
-import net.Sender;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -14,8 +13,8 @@ import animation.Heal;
 import animation.Helper;
 
 import com.mylikenews.nextoneandroid.R;
-import components.ViewBinder;
 
+import components.ViewBinder;
 import effects.monster.aura.AuraEffect;
 import effects.monster.excute.ExcuteEffect;
 
@@ -30,7 +29,7 @@ public class Monster extends RelativeLayout implements Target {
 	int spellpower;
 	String effects;
 	boolean defenseMonster, shield, wakeup = false, stunned = false,
-			hide = false, killer = false; // 방패/보호막/빙결
+			hide = false, killer = false, die = false; // 방패/보호막/빙결
 	ImageView charimage, shieldimage = null, stunimage = null,
 			doubleimage = null, hideimage = null, killerimage = null;
 	Card card;
@@ -59,7 +58,7 @@ public class Monster extends RelativeLayout implements Target {
 		setEffects();
 
 		if (!sended) {
-			Sender.S("8&" + field.player.me + "@" + id + "@" + card.index());
+			Game.sender.S("8&" + field.player.me + "@" + id + "@" + card.index());
 		}
 	}
 
@@ -244,7 +243,7 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
 		field.attackCheckUpedMonster();
-		Sender.S("11&" + id); // 선택한 것 알려주기
+		Game.sender.S("11&" + id); // 선택한 것 알려주기
 		setAttackBackground();
 		v.setY(-10);
 		this.uped = true;
@@ -306,25 +305,29 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 		Monster t = (Monster) target;
 		if (t.isKiller()) {
+			die();
 			if (death != null)
 				death.run();
-			die();
 		}
 	}
 
 	private void removeCheck() {
 		if (vital.Int() < 1) {
+			die();
 			if (death != null)
 				death.run();
-			die();
+
 		}
 	}
 
 	@Override
 	public void die() {
+		if(die)
+			return;
+		die = true;
+		field.remove(this);
 		if (state != null)
 			state.effectEnd();
-		field.remove(this);
 	}
 
 	@Override
@@ -388,8 +391,9 @@ public class Monster extends RelativeLayout implements Target {
 		int enemyindex = target.index();
 
 		Static.Cancel(field.player, false);
+		
 		if (!isChecked)
-			Sender.S("9&" + enemyindex + "," + playerindex);
+			Game.sender.S("9&" + enemyindex + "," + playerindex);
 
 	}
 
@@ -453,7 +457,7 @@ public class Monster extends RelativeLayout implements Target {
 			return;
 
 		if (!sended)
-			Sender.S("165&" + field.player.me + "#" + id + ","
+			Game.sender.S("165&" + field.player.me + "#" + id + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
 		if (healeffect == null)
@@ -477,7 +481,7 @@ public class Monster extends RelativeLayout implements Target {
 		if (!isStunned())
 			return;
 		if (!sended)
-			Sender.S("166&" + field.player.me + "#" + id);
+			Game.sender.S("166&" + field.player.me + "#" + id);
 		stunned = false;
 		wakeup = true;
 	}
@@ -622,10 +626,7 @@ public class Monster extends RelativeLayout implements Target {
 	public void abilityUp(String amount, boolean sended, Target from,
 			String resource) {
 
-		if (!sended)
-			Sender.S("160&" + field.player.me + "#" + id + "," + amount + ","
-					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
-
+		
 		if (healeffect == null)
 			healeffect = new Heal();
 		healeffect.HealEffect(from, this, sended, resource);
@@ -645,13 +646,17 @@ public class Monster extends RelativeLayout implements Target {
 		removeCheck();
 		vitalCheck();
 		damageCheck();
+		
+		if (!sended)
+			Game.sender.S("160&" + field.player.me + "#" + id + "," + amount + ","
+					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
 	}
 
 	@Override
 	public void heal(int amount, boolean sended, Target from, String resource) {
 		if (!sended)
-			Sender.S("16&" + field.player.me + "#" + id + "," + amount + ","
+			Game.sender.S("16&" + field.player.me + "#" + id + "," + amount + ","
 					+ from.PlayerInfo() + "#" + from.index() + "," + resource);
 
 		if (isShield() && amount < 0) {

@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.Stack;
 
 import effects.hero.HeroEffect;
-import net.Sender;
 
 public class Static {
 	static Target attacker = null;
@@ -22,11 +21,11 @@ public class Static {
 	public void runEndTurnEffects() {
 		if (endTurn.size() == 0)
 			return;
-
+ 
 		for (HeroEffect effect : endTurn) {
 			effect.run(0);
 		}
-	}
+	} 
 
 	public void runStartTurnEffects() {
 		if (startTurn.size() == 0)
@@ -68,7 +67,7 @@ public class Static {
 
 		player.enemy.listenerHelper();
 		if (sendToAnother) {
-			Sender.S("12&");
+			Game.sender.S("12&");
 		}
 	}
 	

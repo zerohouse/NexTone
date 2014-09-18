@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.content.Context;
 import android.util.Log;
@@ -71,8 +72,15 @@ public class Hand extends LinearLayout {
 
 	public void remove(Card card) {
 		items.remove(card);
-		marginCheck();
 		removeView(card);
+		marginCheck();
+	}
+
+	public void remove(int i) {
+		removeView(items.get(i));
+		items.remove(i);
+		marginCheck();
+
 	}
 
 	public int removeAndReturnToDek(ArrayList<Card> clonedek) {
@@ -117,10 +125,27 @@ public class Hand extends LinearLayout {
 				return card;
 			}
 		}
-		Log.i("null","선택된 카드 없음");
+		Log.i("null", "선택된 카드 없음");
 		return null;
 	}
 
+	public void lostCards(int card) {
 
+		if (items.size() > card) {
+			Random r = new Random();
+			for (int i = 0; i < card; i++)
+				remove(r.nextInt(items.size()));
+			return;
+		}
+		lostAllCards();
+	}
+
+	public void lostAllCards() {
+		while (items.size() != 0) {
+			removeView(items.get(0));
+			items.remove(0);
+		}
+		marginCheck();
+	}
 
 }

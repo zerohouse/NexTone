@@ -3,7 +3,6 @@ package game;
 import java.util.ArrayList;
 import java.util.Random;
 
-import net.Sender;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
@@ -33,7 +32,7 @@ public class Card extends RelativeLayout {
 	Ani ani;
 
 	ViewBinder cost, attack, vital;
-	String resource, name, description, monstereffects, cardeffect;
+	String resource, name, description, monstereffects, cardeffect = "";
 	int idforMonster, cardid;
 	LinearLayout.LayoutParams params;
 
@@ -266,14 +265,30 @@ public class Card extends RelativeLayout {
 		return idforMonster;
 	}
 
-	private void removeCardFromHand(Player player) {
-		Sender.S("80&" + player.me + "@" + -1 + "@" + cardid); // send effect
+	private void removeCardFromHand(final Player player) {
+		Game.sender.S("80&" + player.me + "@" + -1 + "@" + cardid); // send
+																	// effect
+		if (cardeffect.contains("OVERMANA")) {
+			final int overmana = Integer
+					.parseInt(cardeffect.split("OVERMANA")[1]);
+			player.addNewTurnEffect(new ExcuteEffect() {
+				@Override
+				public void run() {
+					player.hero.mana.Add(-overmana, false);
+				}
+			});
+		}
+		if (cardeffect.contains("LOSTCARD")) {
+			int card = Integer.parseInt(cardeffect.split("LOSTCARD")[1]);
+			player.hand.lostCards(card);
+		}
 		player.listener.sendEmptyMessage(1);
 		player.hand.remove(this); // remove card
 		player.hero.mana.Add(-cost.Int(), false); // consume mana
 	}
 
-	public final static int MANA_ADD = 0;
+	public final static int NOEFFECT = 0;
+	public final static int MANA_ADD = 2;
 	public final static int SPAWN = 1;
 	public final static int MASSIVE_ATTACK = 50;
 	public final static int SPELLPOWER = 55;
@@ -341,6 +356,11 @@ public class Card extends RelativeLayout {
 		// "쇼군;공격X2;sabu;1;0#5;6;4;5"
 		// "쇼군;공격X2;sabu;1;0#5;3;2;3"
 		// "쇼군;공격X2;sabu;1;0#5;1;1;1"
+
+		case NOEFFECT:
+			addMonster(player);
+			removeCardFromHand(player);
+			break;
 
 		case SPAWN:
 			removeCardFromHand(player);
@@ -448,7 +468,8 @@ public class Card extends RelativeLayout {
 			if (player.usedcardsize == 0)
 				return;
 			player.field.add(new Monster(context, new Card(context, player
-					.getCardStringById(-7), Static.index(), -7), player.field, false));
+					.getCardStringById(-7), Static.index(), -7), player.field,
+					false));
 			break;
 
 		case USEDCARD_NEXTTURNBACK:
@@ -512,8 +533,7 @@ public class Card extends RelativeLayout {
 			addMonster(player).setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
-					for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
-						effectedPlayer.newCard(Integer.parseInt(tmp[1]));
+					effectedPlayer.newCard(Integer.parseInt(tmp[1]));
 				}
 			});
 			break;
@@ -528,25 +548,27 @@ public class Card extends RelativeLayout {
 					switch (Integer.parseInt(tmp[0])) {
 					case 0:
 						player.hero.hero().heal(Integer.parseInt(tmp[1]),
-								false, mon, res);
+								false, player.hero.hero(), res);
 						break;
 					case 1:
 						player.enemy.hero.hero().heal(Integer.parseInt(tmp[1]),
-								false, mon, res);
+								false, player.hero.hero(), res);
 						break;
 					case 2:
 						player.enemy.field.heal(Integer.parseInt(tmp[1]),
-								false, mon, res);
-						player.field.heal(Integer.parseInt(tmp[1]), false, mon,
-								res);
+								false, player.hero.hero(), res);
+						player.field.heal(Integer.parseInt(tmp[1]), false,
+								player.hero.hero(), res);
 						break;
 					case 3:
-						player.heal(Integer.parseInt(tmp[1]), false, mon, res);
-						player.enemy.heal(Integer.parseInt(tmp[1]), false, mon,
-								res);
+						player.heal(Integer.parseInt(tmp[1]), false,
+								player.hero.hero(), res);
+						player.enemy.heal(Integer.parseInt(tmp[1]), false,
+								player.hero.hero(), res);
 						break;
 					case 4:
-						player.heal(Integer.parseInt(tmp[1]), false, mon, res);
+						player.heal(Integer.parseInt(tmp[1]), false,
+								player.hero.hero(), res);
 						break;
 					}
 				}
