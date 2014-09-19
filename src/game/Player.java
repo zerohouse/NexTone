@@ -284,7 +284,7 @@ public class Player {
 
 	public void firstSetting(int size) {
 
-		dekToHand(size);
+		
 
 		change = new Button(context);
 		change.setText("선택한 카드 바꾸기");
@@ -300,6 +300,7 @@ public class Player {
 		});
 		game.container().addView(change);
 		Method.alert("바꿀카드를 선택해 주세요.");
+		dekToHand(size);
 	}
 
 	public void ChangeToStartTurn() {
@@ -370,7 +371,7 @@ public class Player {
 	}
 
 	public View field() {
-		return field.scroll;
+		return field;
 	}
 
 	public void setEnemy(Player enemy) {
@@ -444,6 +445,7 @@ public class Player {
 
 		hero.dummysize.setText(" Cards: " + hand.size() + "/" + dummy.size());
 		sendHeroState();
+		hand.marginCheck();
 	}
 
 	public boolean done() {

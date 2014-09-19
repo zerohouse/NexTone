@@ -20,6 +20,8 @@ import effects.monster.excute.ExcuteEffect;
 
 public class Monster extends RelativeLayout implements Target {
 
+	public static Monster tmpmonster = null;
+	
 	Field field;
 	final int defaultattack, defaultvital;
 	int attackable, maxattackable;
@@ -27,6 +29,7 @@ public class Monster extends RelativeLayout implements Target {
 	int id;
 	int type;
 	int spellpower;
+	int position = -1;
 	String effects;
 	boolean defenseMonster, shield, wakeup = false, stunned = false,
 			hide = false, killer = false, die = false; // 방패/보호막/빙결
@@ -42,9 +45,8 @@ public class Monster extends RelativeLayout implements Target {
 	ViewBinder damage, vital;
 	String resource;
 	RelativeLayout.LayoutParams params;
-	boolean uped = false;
 
-	public Monster(Context context, Card card, Field field, boolean sended) {
+	public Monster(Context context, Card card, Field field) {
 		super(context);
 		this.card = card;
 		this.effects = card.getMonstereffects();
@@ -57,11 +59,6 @@ public class Monster extends RelativeLayout implements Target {
 		setBackgroundDefault();
 		setHelperShow();
 		setEffects();
-
-		if (!sended) {
-			Game.sender.S("8&" + field.player.me + "@" + id + "@"
-					+ card.index());
-		}
 	}
 
 	public void setBackgroundDefault() {
@@ -193,12 +190,13 @@ public class Monster extends RelativeLayout implements Target {
 			addView(atable, 0);
 		}
 		atable.setVisibility(View.VISIBLE);
+		if (attackready != null)
+			attackready.setVisibility(View.INVISIBLE);
+
 	}
 
 	@SuppressLint("NewApi")
 	private void deFault(Context context, Field field, int index) {
-		setY(-10);
-		setY(10);
 		this.context = context;
 		this.field = field;
 		this.id = index;
@@ -210,7 +208,7 @@ public class Monster extends RelativeLayout implements Target {
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		params.width = Method.dpToPx(90);
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		params.height = field.scrollHeight();
+		params.height = field.getHeight();
 		setLayoutParams(params);
 
 		charimage = new ImageView(context);
@@ -251,11 +249,9 @@ public class Monster extends RelativeLayout implements Target {
 		if (damage.Int() == 0 || attackable == 0)
 			return;
 		Method.alert("공격할 대상을 선택해 주세요.");
-		field.attackCheckUpedMonster();
 		Game.sender.S("11&" + id); // 선택한 것 알려주기
 		setAttackBackground();
-		v.setY(-10);
-		this.uped = true;
+
 		Static.attacker = (Target) v;
 
 		Listeners.setAttacked();
@@ -277,13 +273,14 @@ public class Monster extends RelativeLayout implements Target {
 		if (attackready == null) {
 			attackready = new ImageView(context);
 			attackready.setBackgroundResource(R.drawable.attackready);
-			RelativeLayout.LayoutParams lay = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.MATCH_PARENT,
-					RelativeLayout.LayoutParams.MATCH_PARENT);
-			attackready.setLayoutParams(lay);
-			addView(attackready, 0);
+			if (player().me == 1)
+				addView(attackready, 1);
+			else
+				addView(attackready, 0);
 		}
+		field.attackCheck();
 		attackready.setVisibility(View.VISIBLE);
+
 	}
 
 	@Override
@@ -398,7 +395,6 @@ public class Monster extends RelativeLayout implements Target {
 
 		Static.attacker = null;
 
-		setY(10);
 		attackCheck();
 		Attack.AttackEffect(this, target, isChecked);
 
@@ -606,7 +602,7 @@ public class Monster extends RelativeLayout implements Target {
 	}
 
 	public Monster cloneForAnimate() {
-		Monster monster = new Monster(context, card, field, true);
+		Monster monster = new Monster(context, card, field);
 		if (isShield())
 			monster.unShield();
 		if (isAttacked()) {
@@ -623,7 +619,8 @@ public class Monster extends RelativeLayout implements Target {
 	@Override
 	public int getMarginY() { // 블럭들의 마진을 계산해서 넘겨줌.. 지저분하지만...
 		if (field.player.me == 1) {
-			return field.getHeight() + field.player.hero.getHeight()-Method.dpToPx(35);
+			return field.getHeight() + field.player.hero.getHeight()
+					- Method.dpToPx(35);
 		} else {
 			return field.player.hand.getHeight()
 					+ field.player.hero.getHeight() * 2;
@@ -736,6 +733,15 @@ public class Monster extends RelativeLayout implements Target {
 
 	public int getSpellpower() {
 		return spellpower;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public void sendInfo() {
+		Game.sender.S("8&" + field.player.me + "@" + id + "@"
+				+ card.index() + "@" + position);
 	}
 
 }

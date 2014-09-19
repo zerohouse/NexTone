@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import net.BluetoothSender;
 import net.Sender;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,7 +29,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -60,7 +60,7 @@ public class GameBluetooth extends Activity implements
 	String response = "";
 	boolean server, start, done;
 
-	Game game;
+	Game game = null;
 	String herostring, dekstring;
 
 	@Override
@@ -132,9 +132,10 @@ public class GameBluetooth extends Activity implements
 						dialog.cancel();
 					}
 				});
-		
+
 		areyousure.show();
 	}
+
 	@SuppressLint("HandlerLeak")
 	Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
@@ -143,7 +144,7 @@ public class GameBluetooth extends Activity implements
 				if (response.contains("done"))
 					done = true;
 				if (start)
-					game.doAll();
+					game.Do(response);
 				break;
 
 			case 1:
@@ -179,15 +180,7 @@ public class GameBluetooth extends Activity implements
 			if (resultCode == RESULT_OK) {
 
 				RelativeLayout animate = (RelativeLayout) findViewById(R.id.blueanimate);
-				LinearLayout container = new LinearLayout(this);
-
-				LinearLayout.LayoutParams conparams = new LinearLayout.LayoutParams(
-						LinearLayout.LayoutParams.MATCH_PARENT,
-						LinearLayout.LayoutParams.MATCH_PARENT);
-				container.setGravity(Gravity.CENTER);
-				container.setLayoutParams(conparams);
-				container.setOrientation(LinearLayout.VERTICAL);
- 
+				LinearLayout container = (LinearLayout) findViewById(R.id.container);
 				Data data = (Data) intent.getSerializableExtra("selected");
 				dekstring = data.getDekstring();
 				herostring = data.getHerostring();
@@ -475,7 +468,7 @@ public class GameBluetooth extends Activity implements
 		private InputStream mmInStream; // 입력 스트림
 
 		public SocketThread(BluetoothSocket socket) {
-			Sender sender = new Sender(socket);
+			Sender sender = new BluetoothSender(socket);
 			Game.sender = sender;
 			// 입력 스트림과 출력 스트림을 구한다
 			try {
@@ -495,7 +488,6 @@ public class GameBluetooth extends Activity implements
 					// 입력 스트림에서 데이터를 읽는다
 					bytes = mmInStream.read(buffer);
 					response = new String(buffer, 0, bytes);
-					game.getTodo().add(response);
 					mHandler.sendEmptyMessage(0);
 					SystemClock.sleep(1);
 				} catch (IOException e) {
@@ -506,6 +498,7 @@ public class GameBluetooth extends Activity implements
 		}
 
 	}
+
 
 	// 앱이 종료될 때 디바이스 검색 중지
 	public void onDestroy() {

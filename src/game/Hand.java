@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -42,7 +43,7 @@ public class Hand extends RelativeLayout {
 
 		// 애니메이션 세팅
 		HideAndShow hideshow = new HideAndShow(this);
-		hideshow.animate();
+		hideshow.animate(false);
 
 	}
 
@@ -60,9 +61,13 @@ public class Hand extends RelativeLayout {
 			return;
 		int block;
 		float degree;
-		if (size == 1)
-			degree = 0;
-		else
+		if (size == 1) {
+			items.get(0).params.width = Method.dpToPx(70);
+			items.get(0).params.leftMargin = windowWidth / 2
+					- Method.dpToPx(35);
+			items.get(0).params.topMargin = windowHeight - Method.dpToPx(105);
+			return;
+		} else
 			degree = 40 / (size - 1);
 		if (size == 0)
 			return;
@@ -72,7 +77,7 @@ public class Hand extends RelativeLayout {
 		int itemwidth = Method.dpToPx(70) - (size - 5) * 2;
 
 		if (width * size > windowWidth) {
-			block = windowWidth / size;
+			block = (windowWidth - itemwidth) / (size - 1);
 
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).params.width = itemwidth;
@@ -81,12 +86,12 @@ public class Hand extends RelativeLayout {
 						- Method.dpToPx(105) + Math.abs(size / 2 - i) * 15;
 				items.get(i).setRotation(degree * i - 20);
 				items.get(i).rotate = degree * i - 20;
-
 			}
 			return;
 		}
 
 		for (int i = 0; i < items.size(); i++) {
+			Log.i("card", "update" + i);
 			items.get(i).params.leftMargin = startposition - (size - 1) * 5 + i
 					* (width + 5);
 			if (items.get(0).getWidth() == 0)
@@ -99,20 +104,12 @@ public class Hand extends RelativeLayout {
 				items.get(i).rotate = degree * i - 20;
 			}
 		}
-
 	}
 
 	public void remove(Card card) {
-		items.remove(card);
-		removeView(card);
+		items.remove(card); // remove card
+		card.setVisibility(View.GONE);
 		marginCheck();
-	}
-
-	public void remove(int i) {
-		removeView(items.get(i));
-		items.remove(i);
-		marginCheck();
-
 	}
 
 	public int removeAndReturnToDek(ArrayList<Card> clonedek) {
@@ -158,11 +155,16 @@ public class Hand extends RelativeLayout {
 	}
 
 	public void lostCards(int card) {
-
+		int x;
 		if (items.size() > card) {
 			Random r = new Random();
-			for (int i = 0; i < card; i++)
-				remove(r.nextInt(items.size()));
+			for (int i = 0; i < card; i++) {
+				x = r.nextInt(items.size());
+				removeView(items.get(x));
+				items.remove(x);
+			}
+			marginCheck();
+
 			return;
 		}
 		lostAllCards();

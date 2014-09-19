@@ -1,7 +1,6 @@
 package game;
 
-import java.util.LinkedList;
-import java.util.Queue;
+
 
 import net.Sender;
 import android.content.Context;
@@ -30,7 +29,6 @@ public class Game {
 	boolean first;
 	static boolean isgameStart = false;
 	RelativeLayout animate;
-	private Queue<String> todo = new LinkedList<String>();
 
 	public Game(Context context, LinearLayout container,
 			RelativeLayout animate, String dekstring, String herostring) {
@@ -109,6 +107,7 @@ public class Game {
 		player1.addHero();
 		
 		Helper.params.addRule(RelativeLayout.CENTER_IN_PARENT);
+
 	}
 
 	private void addPlayerCard(int size) {
@@ -189,14 +188,14 @@ public class Game {
 							.parseInt(mon[2]));
 					card = new Card(context, cardstring, 
 							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]), player2);
-					player2.field.addByCard(card, true); 
+					player2.field.addByCard(card, true, Integer.parseInt(mon[3])); 
 					return;
 				}
 				cardstring = player1
 						.getCardStringById(Integer.parseInt(mon[2]));
 				card = new Card(context, cardstring, Integer.parseInt(mon[1]),
 						Integer.parseInt(mon[2]), player1);
-				player1.field.addByCard(card, true);
+				player1.field.addByCard(card, true, Integer.parseInt(mon[3]));
 				break;
 
 			case 80:
@@ -224,21 +223,21 @@ public class Game {
 
 			case 10:
 				Method.alert("상대방의 턴입니다."); // 턴알림
-				break;
+				break; 
 
 			case 11:
 				Target attacker;
 				int resint = Integer.parseInt(response[1]);
 
 				player2.hero.deSelect();
-				player2.field.othersNotAttack(); // 상대방의 필드에서 선택되면 attack이미지로 변경
+				player2.field.attackCheck(); 
 
 				if (resint == -1)
 					attacker = player2.hero.hero();
 				else
 					attacker = player2.field.getByIndex(resint);
 
-				attacker.setAttackBackground();
+				attacker.setAttackBackground();// 상대방의 필드에서 선택되면 attack이미지로 변경
 
 				break;
 
@@ -396,23 +395,6 @@ public class Game {
 		container.addView(text);
 	}
 
-	public Queue<String> getTodo() {
-		return todo;
-	}
 
-	public void setTodo(Queue<String> todo) {
-		this.todo = todo;
-	}
-
-	public void doAll() {
-		while (true) {
-			String s = todo.poll();
-			if (s != null) {
-				Do(s);
-			} else {
-				return;
-			}
-		}
-	}
 
 }

@@ -44,29 +44,28 @@ public class HideAndShow extends Activity {
 		this.container = container;
 	}
 
-
-	public void animate() {
+	public void animate(boolean flip) {
 		resetTransition();
 
 		long duration;
 		mTransitioner.setStagger(LayoutTransition.CHANGE_APPEARING, 30);
 		mTransitioner.setStagger(LayoutTransition.CHANGE_DISAPPEARING, 30);
-		setupCustomAnimations();  // 플립애니메이션
+		if (flip)
+			setupCustomAnimations(); // 플립애니메이션
 		duration = 500;
 		mTransitioner.setDuration(duration);
 	}
-	
+
 	public void animateForHelper() {
 		resetTransition();
 
 		long duration;
 		mTransitioner.setStagger(LayoutTransition.CHANGE_APPEARING, 30);
 		mTransitioner.setStagger(LayoutTransition.CHANGE_DISAPPEARING, 30);
-		setupCustomAnimations();  // 플립애니메이션
+		setupCustomAnimations(); // 플립애니메이션
 		duration = 200;
 		mTransitioner.setDuration(duration);
 	}
-	
 
 	public void resetTransition() {
 		mTransitioner = new LayoutTransition();

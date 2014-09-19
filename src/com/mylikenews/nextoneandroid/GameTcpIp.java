@@ -48,7 +48,7 @@ public class GameTcpIp extends Activity {
 		animate = (RelativeLayout) findViewById(R.id.animate);
 
 		HideAndShow hideshow = new HideAndShow(container);
-		hideshow.animate();
+		hideshow.animate(true);
 		
 		Intent intent = new Intent(GameTcpIp.this, SelectDek.class);
 		startActivityForResult(intent, 0);

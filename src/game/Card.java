@@ -23,14 +23,13 @@ public class Card extends RelativeLayout {
 
 	static boolean stateChange = true;
 	public static boolean use = false;
-	public static Card select = null;
 	public static ArrayList<String> defaultcards = null;
 	public static ArrayList<String> herocards = null;
 	public static ArrayList<String> enemycards = null;
 
-	boolean haseffect, legend;
+	boolean haseffect, legend, hasmonster;
 	Context context;
-	int monster;
+	Monster monster = null;
 	String cardinfo;
 	Ani ani;
 
@@ -38,15 +37,15 @@ public class Card extends RelativeLayout {
 	String resource, name, description, monstereffects, cardeffect = "";
 	int idforMonster, cardid;
 	RelativeLayout.LayoutParams params;
-	int dX, dY, firstX, firstY;
+	int dX, dY, firstX, firstY, position;
 	Player player;
 	float rotate;
 
 	boolean selected;
 
 	@SuppressLint("ClickableViewAccessibility")
-	public Card(Context context, String eachcard, int idforMonster, int cardid,
-			Player player) {
+	public Card(final Context context, String eachcard, int idforMonster,
+			int cardid, final Player player) {
 		super(context);
 		this.player = player;
 		this.context = context;
@@ -71,7 +70,6 @@ public class Card extends RelativeLayout {
 		int cost = Integer.parseInt(cardinfo[5]);
 		this.cost = new ViewBinder(context, cost, this);
 		RelativeLayout.LayoutParams costparam = this.cost.getParams();
-		// costparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		costparam.setMargins(Method.dpToPx(6), Method.dpToPx(1), 0, 0);
 
 		legend = false;
@@ -89,14 +87,13 @@ public class Card extends RelativeLayout {
 			haseffect = true;
 		}
 
-		monster = Integer.parseInt(cardinfo[3]);
-
-		normalBackground();
 		ImageView image = new ImageView(context);
 		image.setImageResource(Method.resId(resource));
 		addView(image, 0);
 
-		if (monster != 0) {
+		if (Integer.parseInt(cardinfo[3]) != 0) {
+			hasmonster = true;
+
 			int attack = Integer.parseInt(cardinfo[6]);
 			int defense = Integer.parseInt(cardinfo[7]);
 
@@ -111,12 +108,18 @@ public class Card extends RelativeLayout {
 			vitalparam.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			vitalparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			vitalparam.setMargins(0, 0, Method.dpToPx(6), Method.dpToPx(1));
+
 		}
 
 		this.idforMonster = idforMonster;
+		normalBackground();
+		touchInit();
+	}
 
+	@SuppressLint("ClickableViewAccessibility")
+	private void touchInit() {
 		setOnTouchListener(new OnTouchListener() {
-			@SuppressLint("NewApi")
+			@SuppressLint({ "NewApi", "ClickableViewAccessibility" })
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
 				final int X = (int) event.getRawX();
@@ -136,15 +139,35 @@ public class Card extends RelativeLayout {
 					dX = X - lParams.leftMargin;
 					dY = Y - lParams.topMargin;
 
+					if (hasmonster && monster == null)
+						monster = new Monster(context, new Card(context,
+								cardinfo, idforMonster, cardid, player),
+								player.field);
+
 					break;
 				case MotionEvent.ACTION_UP:
 					params.leftMargin = firstX;
 					params.topMargin = firstY;
 					setRotation(rotate);
 					if ((Y - dY) < 730)
-						useCard();
+						useCard(position);
+					else
+						player.field.checkEnd(monster);
+
 					break;
+				case MotionEvent.ACTION_CANCEL:
+					params.leftMargin = firstX;
+					params.topMargin = firstY;
+					setRotation(rotate);
+					if ((Y - dY) < 730)
+						useCard(position);
+					else
+						player.field.checkEnd(monster);
+
+					break;
+
 				case MotionEvent.ACTION_POINTER_DOWN:
+
 					break;
 				case MotionEvent.ACTION_POINTER_UP:
 					params.leftMargin = firstX;
@@ -152,11 +175,22 @@ public class Card extends RelativeLayout {
 					setRotation(rotate);
 					break;
 				case MotionEvent.ACTION_MOVE:
+					if (player.myturn && hasmonster && (Y - dY) < 730
+							&& cost() <= player.mana()
+							&& player.field.size() + 1 <= 7) {
+						position = player.field
+								.checkPosition((X - dX), monster);
+						Monster.tmpmonster = monster;
+						monster.setPosition(position);
+						Log.i("x", "" + position);
+					}
+					if ((Y - dY) > 730 && hasmonster) {
+						player.field.checkEnd(monster);
+					}
 					RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view
 							.getLayoutParams();
 					layoutParams.leftMargin = X - dX;
 					layoutParams.topMargin = Y - dY;
-					Log.i("y", "" + (Y - dY));
 					view.setLayoutParams(layoutParams);
 					break;
 				}
@@ -172,7 +206,7 @@ public class Card extends RelativeLayout {
 			setBackgroundResource(R.drawable.legend);
 			return;
 		}
-		if (monster != 0) {
+		if (hasmonster) {
 			setBackgroundResource(R.drawable.monstercard);
 			return;
 		}
@@ -185,7 +219,7 @@ public class Card extends RelativeLayout {
 			setBackgroundResource(R.drawable.legendclicked);
 			return;
 		}
-		if (monster != 0) {
+		if (hasmonster) {
 			setBackgroundResource(R.drawable.monstercardclicked);
 			return;
 		}
@@ -204,21 +238,8 @@ public class Card extends RelativeLayout {
 	}
 
 	public void SingleSelect() {
-		/*if (select == this) {
-			down();*/
-			select = this;
-			selected = true;
-/*			Helper.hideInfo();
-			return;
-		}
-		if (select != null)
-			select.down();
-		select = this;
-		Helper.showInfo(ani);
-		up();*/
+		selected = true;
 	}
-
-
 
 	public boolean selected() {
 		return selected;
@@ -244,47 +265,36 @@ public class Card extends RelativeLayout {
 		return vital.Int();
 	}
 
-	public int monster() {
-		return monster;
-	}
-	
-	public void useCard() {
-		
+	public void useCard(int i) {
+
 		if (!player.myturn) {
 			Method.alert("상대방의 차례입니다.");
 			return;
 		}
-		if (player.field.size() + monster > 7) {
+		if (player.field.size() > 6) {
 			Method.alert("하수인은 7명까지 소환 가능합니다.");
 			return;
 		}
-		
+
 		if (cost() > player.mana()) {
 			Method.alert("마나가 부족합니다.");
 			return;
 		}
-		
-		use(false);
+
+		use(false, i);
 		player.cardStateUpdate();
-	
+
 	}
-	
-	public void use(boolean sended) {
+
+	public void use(boolean sended, int i) {
 		Helper.hideInfo();
 
 		if (haseffect) {
-			runEffects(cardeffect);
+			runEffects(cardeffect, i);
 			return;
 		}
 
-		addMonster(player);
 		removeCardFromHand(player);
-	}
-
-	private Monster addMonster(Player player) {
-		Monster monster = new Monster(context, this, player.field, false);
-		player.field.add(monster);
-		return monster;
 	}
 
 	public String name() {
@@ -333,7 +343,13 @@ public class Card extends RelativeLayout {
 			player.hand.lostCards(card);
 		}
 		player.listener.sendEmptyMessage(1);
-		player.hand.remove(this); // remove card
+
+		player.hand.remove(this);
+		
+		if (hasmonster) {
+			monster.sendInfo();
+			Monster.tmpmonster = null;
+		}
 		player.hero.mana.Add(-cost.Int(), false); // consume mana
 	}
 
@@ -388,7 +404,7 @@ public class Card extends RelativeLayout {
 
 	String res;
 
-	public void runEffects(String effects) {
+	public void runEffects(String effects, final int position) {
 		final String[] effect = effects.split("#");
 		int type = Integer.parseInt(effect[0]);
 		final String amount = effect[1];
@@ -397,7 +413,6 @@ public class Card extends RelativeLayout {
 			res = effect[2];
 		}
 
-		final Monster mon;
 		final String[] tmp;
 		final Field field;
 		final Player effectedPlayer;
@@ -409,21 +424,20 @@ public class Card extends RelativeLayout {
 		// "쇼군;공격X2;sabu;1;0#5;1;1;1"
 
 		case NOEFFECT:
-			addMonster(player);
 			removeCardFromHand(player);
 			break;
 
 		case SPAWN:
 			removeCardFromHand(player);
-			if (monster > 0)
-				addMonster(player);
 			tmp = amount.split("="); // amount양식 : 필드=인덱스=몇마리
 			field = Integer.parseInt(tmp[0]) == 0 ? player.field
 					: player.enemy.field;
 			for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
-				field.add(new Monster(context, new Card(context, player
-						.getCardStringById(Integer.parseInt(tmp[1])), Static
-						.index(), Integer.parseInt(tmp[1]), player), field, false));
+				field.add(
+						new Monster(context, new Card(context, player
+								.getCardStringById(Integer.parseInt(tmp[1])),
+								Static.index(), Integer.parseInt(tmp[1]),
+								player), field), -1, false);
 			break;
 
 		case USEDCARD_DAMAGE:
@@ -431,9 +445,8 @@ public class Card extends RelativeLayout {
 			tmp = amount.split("=");
 			damage = player.usedcardsize == 0 ? Integer.parseInt(tmp[0])
 					: Integer.parseInt(tmp[1]);
-			if (damage == 0 && monster > 0) {
+			if (damage == 0) {
 				removeCardFromHand(player);
-				addMonster(player);
 				return;
 			}
 			Method.alert("대상을 선택하세요.");
@@ -441,11 +454,9 @@ public class Card extends RelativeLayout {
 				@Override
 				public void onClick(View v) {
 					int spellpower = 0;
-					if (monster > 0) {
-						addMonster(player);
-					} else {
+					if (monster == null)
 						spellpower += player.getSpellpower();
-					}
+
 					removeCardFromHand(player);
 					Target selected = (Target) v;
 					Static.Cancel(player, false);
@@ -460,15 +471,7 @@ public class Card extends RelativeLayout {
 
 			Listeners.setListener(heal);
 
-			player.endturn.setText("    취소");
-			player.endturn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Static.Cancel(player, true);
-
-				}
-
-			});
+			endTurnChangeToCancel();
 
 			player.field.setListener();
 			player.hero.setListener();
@@ -499,28 +502,20 @@ public class Card extends RelativeLayout {
 
 			Listeners.setListener(abilityup);
 
-			player.endturn.setText("    취소");
-			player.endturn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Static.Cancel(player, true);
-
-				}
-
-			});
+			endTurnChangeToCancel();
 
 			player.field.setListener();
 			break;
 
 		case USEDCARD_SPAWN:
 			removeCardFromHand(player);
-			if (monster > 0)
-				addMonster(player);
 			if (player.usedcardsize == 0)
 				return;
-			player.field.add(new Monster(context, new Card(context, player
-					.getCardStringById(-7), Static.index(), -7, player), player.field,
-					false));
+			player.field.add(
+					new Monster(context,
+							new Card(context, player.getCardStringById(-7),
+									Static.index(), -7, player), player.field),
+					-1, false);
 			break;
 
 		case USEDCARD_NEXTTURNBACK:
@@ -537,9 +532,8 @@ public class Card extends RelativeLayout {
 
 		case USEDCARD_ABILITYUP:
 			removeCardFromHand(player);
-			mon = addMonster(player);
 			int up = player.usedcardsize * 2;
-			mon.abilityUp(up + "=" + up, false, mon, res);
+			monster.abilityUp(up + "=" + up, false, monster, res);
 			break;
 
 		case DEATH_EFFECT_GETWEAPON: // player=dam=dura
@@ -548,7 +542,7 @@ public class Card extends RelativeLayout {
 			effectedPlayer = Integer.parseInt(tmp[0]) == 0 ? player
 					: player.enemy;
 
-			addMonster(player).setDeathEffect(new ExcuteEffect() {
+			monster.setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
 					effectedPlayer.hero.getWeapon(Integer.parseInt(tmp[1]),
@@ -563,14 +557,16 @@ public class Card extends RelativeLayout {
 			field = Integer.parseInt(tmp[0]) == 0 ? player.field
 					: player.enemy.field;
 
-			addMonster(player).setDeathEffect(new ExcuteEffect() {
+			monster.setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
 					for (int i = 0; i < Integer.parseInt(tmp[2]); i++)
-						field.add(new Monster(context, new Card(context, player
-								.getCardStringById(Integer.parseInt(tmp[1])),
-								Static.index(), Integer.parseInt(tmp[1]), player),
-								field, false));
+						field.add(
+								new Monster(context, new Card(context, player
+										.getCardStringById(Integer
+												.parseInt(tmp[1])), Static
+										.index(), Integer.parseInt(tmp[1]),
+										player), field), -1, false);
 				}
 			});
 			break;
@@ -581,7 +577,7 @@ public class Card extends RelativeLayout {
 			effectedPlayer = Integer.parseInt(tmp[0]) == 0 ? player
 					: player.enemy;
 
-			addMonster(player).setDeathEffect(new ExcuteEffect() {
+			monster.setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
 					effectedPlayer.newCard(Integer.parseInt(tmp[1]));
@@ -592,8 +588,7 @@ public class Card extends RelativeLayout {
 		case DEATH_EFFECT_HEAL:
 			removeCardFromHand(player);
 			tmp = amount.split("=");
-			mon = addMonster(player);
-			mon.setDeathEffect(new ExcuteEffect() {
+			monster.setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
 					switch (Integer.parseInt(tmp[0])) {
@@ -719,10 +714,6 @@ public class Card extends RelativeLayout {
 				@Override
 				public void onClick(View v) {
 					removeCardFromHand(player);
-					if (monster > 0) {
-						addMonster(player);
-					}
-					removeCardFromHand(player);
 					Target selected = (Target) v;
 					Static.Cancel(player, false);
 					selected.setStun(false, player.hero.hero(), "bullet");
@@ -731,15 +722,7 @@ public class Card extends RelativeLayout {
 
 			Listeners.setListener(stun);
 
-			player.endturn.setText("    취소");
-			player.endturn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Static.Cancel(player, true);
-
-				}
-
-			});
+			endTurnChangeToCancel();
 
 			player.field.setListener();
 			player.hero.setListener();
@@ -764,15 +747,7 @@ public class Card extends RelativeLayout {
 
 			Listeners.setListener(stundgun);
 
-			player.endturn.setText("    취소");
-			player.endturn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Static.Cancel(player, true);
-
-				}
-
-			});
+			endTurnChangeToCancel();
 
 			player.field.setListener();
 			player.hero.setListener();
@@ -799,15 +774,7 @@ public class Card extends RelativeLayout {
 
 			Listeners.setListener(stungun);
 
-			player.endturn.setText("    취소");
-			player.endturn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Static.Cancel(player, true);
-
-				}
-
-			});
+			endTurnChangeToCancel();
 
 			player.field.setListener();
 			player.hero.setListener();
@@ -838,20 +805,22 @@ public class Card extends RelativeLayout {
 
 		case DRAW_CARD_50:
 			removeCardFromHand(player);
-			mon = addMonster(player);
-			mon.setNewTurnEffect(new ExcuteEffect() {
+			monster.setNewTurnEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
 					Random r = new Random();
-					if (r.nextInt(2) == 1)
+					if (r.nextInt(2) == 1) {
 						player.newCard();
+						Method.alert("뽑았으");
+						return;
+					}
+					Method.alert("못뽑음ㅜ");
 				}
 			});
 			break;
 
 		case DRAWCARD_ONTHEFIELD:
 			removeCardFromHand(player);
-			mon = addMonster(player);
 			player.newCard(Integer.parseInt(amount));
 			break;
 
@@ -861,11 +830,9 @@ public class Card extends RelativeLayout {
 				@Override
 				public void onClick(View v) {
 					int spellpower = 0;
-					if (monster > 0) {
-						addMonster(player);
-					} else {
+					if (monster == null)
 						spellpower += player.getSpellpower();
-					}
+
 					removeCardFromHand(player);
 					Target selected = (Target) v;
 					Static.Cancel(player, false);
@@ -880,15 +847,7 @@ public class Card extends RelativeLayout {
 
 			Listeners.setListener(he);
 
-			player.endturn.setText("    취소");
-			player.endturn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Static.Cancel(player, true);
-
-				}
-
-			});
+			endTurnChangeToCancel();
 
 			player.field.setListener();
 			player.hero.setListener();
@@ -899,7 +858,6 @@ public class Card extends RelativeLayout {
 		case ABILITY_UP: // 능력치 올림 amount 공격력=방어력의 형태로 정의
 			if (player.field.size() == 0) {
 				removeCardFromHand(player);
-				addMonster(player);
 				return;
 			}
 
@@ -908,10 +866,6 @@ public class Card extends RelativeLayout {
 			OnClickListener abup = new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-
-					if (monster > 0) {
-						addMonster(player);
-					}
 
 					removeCardFromHand(player);
 					Target selected = (Target) v;
@@ -928,25 +882,15 @@ public class Card extends RelativeLayout {
 
 			Listeners.setListener(abup);
 
-			player.endturn.setText("    취소");
-			player.endturn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Static.Cancel(player, true);
-
-				}
-
-			});
+			endTurnChangeToCancel();
 
 			player.field.setListener();
 			break;
 
 		case ATTACK_TURNEND: // 이순신
 			removeCardFromHand(player);
-			mon = new Monster(context, this, player.field, false);
-			player.field.add(mon);
-			mon.maxattackable = 0;
-			mon.setEndTurnEffect(new ExcuteEffect() {
+			monster.maxattackable = 0;
+			monster.setEndTurnEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
 					Random r = new Random();
@@ -957,7 +901,8 @@ public class Card extends RelativeLayout {
 					else {
 						target = player.enemy.field.get(t);
 					}
-					target.heal(Integer.parseInt(amount), false, mon, "tutle");
+					target.heal(Integer.parseInt(amount), false, monster,
+							"tutle");
 				}
 			});
 
@@ -982,9 +927,7 @@ public class Card extends RelativeLayout {
 
 		case ATTACK_TURNSTART: // 파괴전차
 			removeCardFromHand(player);
-			mon = new Monster(context, this, player.field, false);
-			player.field.add(mon);
-			mon.setNewTurnEffect(new ExcuteEffect() {
+			monster.setNewTurnEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
 					Random r = new Random();
@@ -995,7 +938,7 @@ public class Card extends RelativeLayout {
 					else {
 						target = player.enemy.field.get(t);
 					}
-					target.heal(Integer.parseInt(amount), false, mon, "pig");
+					target.heal(Integer.parseInt(amount), false, monster, "pig");
 				}
 			});
 
@@ -1003,26 +946,37 @@ public class Card extends RelativeLayout {
 
 		case ABILITYUP_EVERYTURN: // 그롤
 			removeCardFromHand(player);
-			mon = new Monster(context, this, player.field, false);
-			player.field.add(mon);
-
-			mon.setNewTurnEffect(new ExcuteEffect() {
+			monster.setNewTurnEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
-					mon.abilityUp(amount, false, mon, "pig");
+					monster.abilityUp(amount, false, monster, "pig");
 				}
 			});
 
-			mon.setEndTurnEffect(new ExcuteEffect() {
+			monster.setEndTurnEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
-					mon.abilityUp(amount, false, mon, "pig");
+					monster.abilityUp(amount, false, monster, "pig");
 				}
 			});
 
 			break;
 
 		}
+	}
+
+	private void endTurnChangeToCancel() {
+		player.endturn.setText("    취소");
+		player.endturn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (hasmonster)
+					player.field.checkEnd(monster);
+				Static.Cancel(player, true);
+
+			}
+
+		});
 	}
 
 }

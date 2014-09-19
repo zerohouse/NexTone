@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-
+import java.util.LinkedList;
+import java.util.Queue;
 
 import android.os.AsyncTask;
 
@@ -17,6 +18,7 @@ public class NetReciever extends AsyncTask<Void, Integer, Void> {
 	Game game;
 	String ip;
 	int port;
+	private Queue<String> todo = new LinkedList<String>();
 	
 
 	public NetReciever(String ip, int port, Game game) {
@@ -29,7 +31,7 @@ public class NetReciever extends AsyncTask<Void, Integer, Void> {
 	protected Void doInBackground(Void... params) {
 		try {
 			Socket socket = new Socket(ip, port);
-			Sender sender = new Sender(socket);
+			Sender sender = new NetSender(socket);
 			sender.run();
 			Game.sender = sender;
 
@@ -39,7 +41,7 @@ public class NetReciever extends AsyncTask<Void, Integer, Void> {
 			response = "";
 			while (!response.equals("end")) {
 				response = datain.readUTF();
-				game.getTodo().add(response);
+				todo.add(response);
 				publishProgress(1);
 			}
 		} catch (UnknownHostException e) {
@@ -52,7 +54,18 @@ public class NetReciever extends AsyncTask<Void, Integer, Void> {
 
 	protected void onProgressUpdate(Integer... values) {
 		if (values[0] == 1) {
-			game.doAll();
+			doAll();
+		}
+	}
+	
+	public void doAll() {
+		while (true) {
+			String s = todo.poll();
+			if (s != null) {
+				game.Do(s);
+			} else {
+				return;
+			}
 		}
 	}
 

@@ -41,9 +41,8 @@ public class SpawnRandomTotem implements HeroEffect {
 
 			card = new Card(player.context(), player.getCardStringById(-2),
 					index, -2, player);
-			monster = new Monster(player.context(), card, player.field, false);
-
-			player.field.add(monster);
+			monster = new Monster(player.context(), card, player.field);
+			player.field.add(monster, -1, false);
 			monster.setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
@@ -57,9 +56,8 @@ public class SpawnRandomTotem implements HeroEffect {
 
 			card = new Card(player.context(), player.getCardStringById(-3),
 					index, -3, player);
-			monster = new Monster(player.context(), card, player.field, false);
-
-			player.field.add(monster);
+			monster = new Monster(player.context(), card, player.field);
+			player.field.add(monster, -1, false);
 
 			monster.setEndTurnEffect(ExcuteEffectFactory.makeExcuteEffect(1,
 					monster)); // 힐능력 부여
@@ -76,8 +74,8 @@ public class SpawnRandomTotem implements HeroEffect {
 
 			card = new Card(player.context(), player.getCardStringById(-4),
 					index, -4, player);
-			monster = new Monster(player.context(), card, player.field, false);
-			player.field.add(monster);
+			monster = new Monster(player.context(), card, player.field);
+			player.field.add(monster, -1, false);
 			monster.setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {
@@ -91,8 +89,8 @@ public class SpawnRandomTotem implements HeroEffect {
 
 			card = new Card(player.context(), player.getCardStringById(-5),
 					index, -5, player);
-			monster = new Monster(player.context(), card, player.field, false);
-			player.field.add(monster);
+			monster = new Monster(player.context(), card, player.field);
+			player.field.add(monster, -1, false);
 			monster.setDeathEffect(new ExcuteEffect() {
 				@Override
 				public void run() {

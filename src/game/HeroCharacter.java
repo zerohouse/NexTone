@@ -296,7 +296,7 @@ public class HeroCharacter extends RelativeLayout implements Target {
 
 		Listeners.setAttacked();
 
-		hero.player.field.attackCheckUpedMonster();
+		hero.player.field.attackCheck();
 		hero.player.enemy.field.setListener();
 		hero.player.enemy.hero.setListener();
 
