@@ -1,9 +1,13 @@
 package game;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.Gravity;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -11,6 +15,8 @@ public class Method {
 
 	public static Context context;
 	static Toast toast = null;
+	private static int windowWidth;
+	private static int windowHeight;
 
 	public static RelativeLayout.LayoutParams getParams() {
 		RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(
@@ -47,8 +53,24 @@ public class Method {
 		return resId;
 	}
 
+	@SuppressLint("NewApi")
 	public static void setContext(Context con) {
 		context = con;
+		WindowManager wm = (WindowManager) context
+				.getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		windowWidth = size.x;
+		windowHeight = size.y;
+	}
+
+	public static int getWindowHeight() {
+		return windowHeight;
+	}
+	
+	public static int getWindowWidth() {
+		return windowWidth;
 	}
 
 }

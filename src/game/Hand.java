@@ -5,12 +5,9 @@ import java.util.Random;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Point;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import animation.HideAndShow;
 
@@ -20,7 +17,6 @@ public class Hand extends RelativeLayout {
 	Context context;
 	RelativeLayout.LayoutParams params;
 	boolean center = true;
-	final int windowWidth, windowHeight;
 
 	@SuppressLint("NewApi")
 	public Hand(Context context) {
@@ -32,13 +28,7 @@ public class Hand extends RelativeLayout {
 		setLayoutParams(params);
 		items = new ArrayList<Card>();
 
-		WindowManager wm = (WindowManager) context
-				.getSystemService(Context.WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		windowWidth = size.x;
-		windowHeight = size.y;
+
 		marginCheck();
 
 		// 애니메이션 세팅
@@ -63,26 +53,26 @@ public class Hand extends RelativeLayout {
 		float degree;
 		if (size == 1) {
 			items.get(0).params.width = Method.dpToPx(70);
-			items.get(0).params.leftMargin = windowWidth / 2
+			items.get(0).params.leftMargin = Method.getWindowWidth() / 2
 					- Method.dpToPx(35);
-			items.get(0).params.topMargin = windowHeight - Method.dpToPx(105);
+			items.get(0).params.topMargin = Method.getWindowHeight() - Method.dpToPx(105);
 			return;
 		} else
 			degree = 40 / (size - 1);
 		if (size == 0)
 			return;
 		int width = Method.dpToPx(70);
-		int startposition = (windowWidth - size * width) / 2;
+		int startposition = (Method.getWindowWidth() - size * width) / 2;
 
 		int itemwidth = Method.dpToPx(70) - (size - 5) * 2;
 
-		if (width * size > windowWidth) {
-			block = (windowWidth - itemwidth) / (size - 1);
+		if (width * size > Method.getWindowWidth()) {
+			block = (Method.getWindowWidth() - itemwidth) / (size - 1);
 
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).params.width = itemwidth;
 				items.get(i).params.leftMargin = i * block;
-				items.get(i).params.topMargin = windowHeight
+				items.get(i).params.topMargin = Method.getWindowHeight()
 						- Method.dpToPx(105) + Math.abs(size / 2 - i) * 15;
 				items.get(i).setRotation(degree * i - 20);
 				items.get(i).rotate = degree * i - 20;
@@ -95,10 +85,10 @@ public class Hand extends RelativeLayout {
 			items.get(i).params.leftMargin = startposition - (size - 1) * 5 + i
 					* (width + 5);
 			if (items.get(0).getWidth() == 0)
-				items.get(i).params.topMargin = windowHeight / 2
+				items.get(i).params.topMargin = Method.getWindowHeight() / 2
 						- Method.dpToPx(15);
 			else {
-				items.get(i).params.topMargin = windowHeight
+				items.get(i).params.topMargin = Method.getWindowHeight()
 						- Method.dpToPx(105) + Math.abs(size / 2 - i) * 15;
 				items.get(i).setRotation(degree * i - 20);
 				items.get(i).rotate = degree * i - 20;

@@ -12,7 +12,6 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import animation.Ani;
 import animation.Attack;
 import animation.Helper;
@@ -385,16 +384,6 @@ public class Game {
 	public static void resetStart() {
 		isgameStart = false;
 	}
-
-	public void waitForDekSelect() {
-		animate.removeAllViews();
-		animate.addView(container);
-		TextView text = new TextView(context);
-		text.setTextAppearance(context, R.style.myText);
-		text.setText("상대가 덱을 고르고 있습니다.");
-		container.addView(text);
-	}
-
 
 
 }

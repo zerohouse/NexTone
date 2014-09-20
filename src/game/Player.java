@@ -10,12 +10,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.mylikenews.nextoneandroid.DekList;
@@ -24,6 +28,7 @@ import components.ImageButton;
 import dek.CardList;
 import effects.monster.excute.ExcuteEffect;
 
+@SuppressLint("HandlerLeak")
 public class Player {
 
 	String dekstring, herostring;
@@ -34,12 +39,13 @@ public class Player {
 	Dummy dummy;
 	public Field field;
 	boolean first, done, gameend, myturn = false;
-	public int me;
+	public int me, turn = 0;
 	Button change;
 	ImageButton heroabillity;
 	public ImageButton endturn;
 	int idforMonster = 0;
-
+	CountDownTimer turnTimer;
+	TranslateAnimation translate;
 	public int usedcardsize = 0;
 
 	public final static int NEW_MONSTER = 0;
@@ -79,9 +85,11 @@ public class Player {
 	public Hero hero;
 	public Player enemy;
 	Game game;
-
+	int timer;
 	OnClickListener attacked;
+	ImageView timerimg;
 
+	@SuppressLint("NewApi")
 	public Player(Context context, String dekstring, String herostring, int me,
 			Game game, boolean first) {
 
@@ -101,6 +109,31 @@ public class Player {
 		events.add(new ArrayList<ExcuteEffect>());
 		events.add(new ArrayList<ExcuteEffect>());
 		events.add(new ArrayList<ExcuteEffect>());
+
+		if (me != 1)
+			return;
+		timerimg = new ImageView(context);
+		timerimg.setBackgroundColor(Color.WHITE);
+		RelativeLayout.LayoutParams timerparams = Method.getParams();
+		timerimg.setLayoutParams(timerparams);
+		timerparams.height = Method.dpToPx(4);
+		timerparams.width = Method.dpToPx(15);
+		translate = new TranslateAnimation(0, Method.getWindowWidth()
+				- Method.dpToPx(100), 0, 0);
+		translate.setDuration(20000);
+		turnTimer = new CountDownTimer(20000, 1000) {
+
+			public void onTick(long millisUntilFinished) {
+				if (timer == 10)
+					Method.alert(timer + "초 남았어요!");
+
+				timer -= 1;
+			}
+
+			public void onFinish() {
+				endTurn();
+			}
+		};
 
 	}
 
@@ -165,12 +198,18 @@ public class Player {
 
 	@SuppressLint("NewApi")
 	void endTurn() {
+
+		translate.cancel();
+		turnTimer.cancel();
+		timerimg.setAnimation(null);
+		timerimg.setVisibility(View.INVISIBLE);
 		usedcardsize = 0;
 
 		for (Card card : hand.items) {
 			card.normalBackground();
 		}
 		myturn = false;
+
 		hero.removeView(endturn);
 		int size = events.get(ENDTURN).size();
 		if (size != 0) {
@@ -284,8 +323,6 @@ public class Player {
 
 	public void firstSetting(int size) {
 
-		
-
 		change = new Button(context);
 		change.setText("선택한 카드 바꾸기");
 		RelativeLayout.LayoutParams changeparams = Method.getParams();
@@ -380,7 +417,15 @@ public class Player {
 
 	@SuppressLint("NewApi")
 	public void newTurn() {
-		Method.alert("나의 턴");
+
+		turn++;
+		if (turn == 1)
+			hero.addView(timerimg);
+		timerimg.startAnimation(translate);
+		timer = 20;
+		turnTimer.start();
+
+		Method.alert("나의 턴 : " + turn);
 		Game.sender.S("10&");
 		newCard();
 

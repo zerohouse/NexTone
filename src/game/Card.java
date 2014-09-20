@@ -921,7 +921,7 @@ public class Card extends RelativeLayout {
 				else {
 					target = player.enemy.field.get(t);
 				}
-				target.heal(-1, false, player.hero.hero(), "pig");
+				target.heal(-1, false, player.hero.hero(), res);
 			}
 			break;
 
@@ -938,7 +938,7 @@ public class Card extends RelativeLayout {
 					else {
 						target = player.enemy.field.get(t);
 					}
-					target.heal(Integer.parseInt(amount), false, monster, "pig");
+					target.heal(Integer.parseInt(amount), false, monster, res);
 				}
 			});
 

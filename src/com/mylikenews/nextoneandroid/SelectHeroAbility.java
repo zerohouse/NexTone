@@ -78,8 +78,8 @@ public class SelectHeroAbility extends Activity {
 			break;
 
 		case 3:
-			hero[0] = "도깨비방망이";
-			hero[1] = "1/2 도깨비방망이를 착용합니다.";
+			hero[0] = "싸다구";
+			hero[1] = "1/2 데미지1의 싸다구를 2회 날립니다.";
 			break;
 
 		case 4:

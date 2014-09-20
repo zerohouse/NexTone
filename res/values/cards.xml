@@ -82,7 +82,7 @@
     <string-array name="totem">
 
         <!-- 주수리 -->
-        <item>방맹이;과부하1\n공격력2/내구도3;heroability3;0;0%500#2=3#OVERMANA1;2;2;3</item>
+        <item>방맹이;과부하1\n공격력2/내구도3;bangmangi;0;0%500#2=3#OVERMANA1;2;2;3</item>
         <item>핑크;과부하3\n방어;pink;1;0#1%0#0#OVERMANA3;5;7;8</item>
         <item>쇼군;과부하2\n공격X2;sabu;1;0#5%0#0#OVERMANA2;1;3;1</item>
         <item>쇼군;방어 보호막 돌진 공격X2;sabu;1;0#1#2#5#3%0#0#LEGEND;8;3;5</item>
@@ -113,7 +113,7 @@
     <string-array name="thief">
 
         <!-- 도적 -->
-        <item>방맹이;공격력3/내구도4;heroability3;0;0%500#3=4;0;3;4</item>
+        <item>방맹이;공격력3/내구도4;bangmangi;0;0%500#3=4;0;3;4</item>
         <item>쇼군;숨었쪙!\n이 하수인에게 피해입은 하수인은 무조건 죽습니다.;sabu;1;0#7#6;2;1;1</item>
         <item>카드돼지;이번턴에 낸 카드만큼 +2/+2를 얻습니다.;sabu;1;0%804#0#LEGEND;3;2;2</item>
 	normalBackground();	<item>절개;피해를 2 줍니다.\n연계:피해를 4 줍니다.;sabu;0;0%800#-2=-4;2;0;0</item>
@@ -128,10 +128,10 @@
 
         <!-- 전사 -->
         <item>전강시;돌진;mchinese;1;0#3;4;4;3</item>
-        <item>방맹이;공격력5/내구도2;heroability3;0;0%500#5=2;5;5;2</item>
-        <item>방맹이;공격력3/내구도2;heroability3;0;0%500#3=2;2;3;2</item>
-        <item>귓방맹이;공격력4/내구도2\n터질때 모든 하수인에게 데미지1의 싸다구를 날립니다.;heroability3;0;0%510#4=2;4;4;2</item>
-        <item>왕방맹이;공격력7/내구도1\n하수인을 공격할때 내구도 대신 공격력이 감소합니다.;heroability3;0;0%520#7=1;7;7;1</item>
+        <item>방맹이;공격력5/내구도2;bangmangi;0;0%500#5=2;5;5;2</item>
+        <item>방맹이;공격력3/내구도2;bangmangi;0;0%500#3=2;2;3;2</item>
+        <item>귓방맹이;공격력4/내구도2\n터질때 모든 하수인에게 데미지1의 싸다구를 날립니다.;bangmangi;0;0%510#4=2;4;4;2</item>
+        <item>왕방맹이;공격력7/내구도1\n하수인을 공격할때 내구도 대신 공격력이 감소합니다.;bangmangi;0;0%520#7=1;7;7;1</item>
     </string-array>
     <string-array name="drawcard">
 
@@ -144,9 +144,9 @@
 
         <!-- 성기사 직업카드 -->
         <item>돼지떼;적 캐릭터들에게 피해1 돼지를 8마리 보냅니다.;pig;0;0%902#8;6;0;0</item>
-        <item>방맹이;공격력1/내구도4;heroability3;0;0%500#1=4;1;1;4</item>
-        <item>왕방맹이;공격력1/내구도5\n하수인을 소환하면 +1/+1을 부여하고 내구도를 1 잃습니다.;heroability3;0;0%540#1=5;3;1;5</item>
-        <item>왕방맹이;공격력4/내구도2\n공격할때 체력을 2 회복합니다.;heroability3;0;0%520#4=2;4;4;2</item>
+        <item>방맹이;공격력1/내구도4;bangmangi;0;0%500#1=4;1;1;4</item>
+        <item>왕방맹이;공격력1/내구도5\n하수인을 소환하면 +1/+1을 부여하고 내구도를 1 잃습니다.;bangmangi;0;0%540#1=5;3;1;5</item>
+        <item>왕방맹이;공격력4/내구도2\n공격할때 체력을 2 회복합니다.;bangmangi;0;0%520#4=2;4;4;2</item>
         <item>김현중;방어 보호막\n죽을때 내 영웅이 5/3싸다구를 장착합니다.;hyungjung;1;0#1#2%605#0=5=3#ssadagu#LEGEND;8;6;6<item></item></item>
     </string-array>
     <string-array name="hunter">

@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Point;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import animation.HideAndShow;
@@ -24,7 +21,6 @@ public class Field extends RelativeLayout {
 	LinearLayout.LayoutParams params;
 	AnimatorSet animate;
 	Monster selected;
-	final int windowWidth, windowHeight;
 	int block;
 
 	@SuppressLint("NewApi")
@@ -39,13 +35,6 @@ public class Field extends RelativeLayout {
 		this.player = player;
 		items = new ArrayList<Monster>();
 
-		WindowManager wm = (WindowManager) context
-				.getSystemService(Context.WINDOW_SERVICE);
-		Display display = wm.getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		windowWidth = size.x;
-		windowHeight = size.y;
 
 		HideAndShow hideshow = new HideAndShow(this);
 		hideshow.animate(false);
@@ -62,15 +51,15 @@ public class Field extends RelativeLayout {
 		if (size == 0)
 			return;
 		int width = Method.dpToPx(90);
-		int startposition = (windowWidth - size * width) / 2;
+		int startposition = (Method.getWindowWidth() - size * width) / 2;
 
-		int itemwidth = width * size > windowWidth ? Method.dpToPx(90)
+		int itemwidth = width * size > Method.getWindowWidth() ? Method.dpToPx(90)
 				- (Method.dpToPx(5) * (size - 4)) : Method.dpToPx(90);
-		int itemheight = width * size > windowWidth ? getHeight()
+		int itemheight = width * size > Method.getWindowWidth() ? getHeight()
 				- (Method.dpToPx(10) * (size - 4)) : getHeight();
 
-		if (width * size > windowWidth) {
-			block = (windowWidth - itemwidth) / (size - 1);
+		if (width * size > Method.getWindowWidth()) {
+			block = (Method.getWindowWidth() - itemwidth) / (size - 1);
 
 			for (int i = 0; i < items.size(); i++) {
 				items.get(i).params.width = itemwidth;

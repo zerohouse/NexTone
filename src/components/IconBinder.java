@@ -48,8 +48,7 @@ public class IconBinder extends RelativeLayout {
 		textparams.addRule(RelativeLayout.CENTER_IN_PARENT);
 		title.setBackgroundColor(Color.argb(100, 0, 0, 0));
 		addView(title);
-		setText(string);
-		setIconResource(Method.resId(string));
+
 		this.resource = string;
 	}
 

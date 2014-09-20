@@ -29,6 +29,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -38,6 +39,8 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import components.GifView;
 import dek.Data;
 
 public class GameBluetooth extends Activity implements
@@ -55,6 +58,9 @@ public class GameBluetooth extends Activity implements
 	ClientThread mCThread = null; // 클라이언트 소켓 접속 스레드
 	ServerThread mSThread = null; // 서버 소켓 접속 스레드
 	SocketThread mSocketThread = null; // 데이터 송수신 스레드
+	RelativeLayout animate;
+	LinearLayout container;
+	TextView status;
 
 	Intent selectdek;
 	String response = "";
@@ -178,16 +184,15 @@ public class GameBluetooth extends Activity implements
 
 		case SELECT_DEK:
 			if (resultCode == RESULT_OK) {
+				init();
 
-				RelativeLayout animate = (RelativeLayout) findViewById(R.id.blueanimate);
-				LinearLayout container = (LinearLayout) findViewById(R.id.container);
+				status.setText("상대가 덱을 고르고 있습니다.");
 				Data data = (Data) intent.getSerializableExtra("selected");
 				dekstring = data.getDekstring();
 				herostring = data.getHerostring();
 				game = new Game(GameBluetooth.this, container, animate,
 						dekstring, herostring);
 
-				game.waitForDekSelect();
 				start = true;
 
 				Game.sender.S("done");
@@ -337,11 +342,14 @@ public class GameBluetooth extends Activity implements
 		if (pos <= 0)
 			return;
 		String address = strItem.substring(pos + 3);
-		Method.alert("Sel Device: " + address);
+
+		init();
 
 		// 디바이스 검색 중지
 		stopFindDevice();
+
 		// 서버 소켓 스레드 중지
+
 		mSThread.cancel();
 		mSThread = null;
 
@@ -352,6 +360,41 @@ public class GameBluetooth extends Activity implements
 		// 클라이언트 소켓 스레드 생성 & 시작
 		mCThread = new ClientThread(device);
 		mCThread.start();
+	}
+
+	private void init() {
+		animate = (RelativeLayout) findViewById(R.id.blueanimate);
+		container = (LinearLayout) findViewById(R.id.container);
+		animate.removeAllViews();
+		animate.addView(container);
+		container.removeAllViews();
+		status = new TextView(GameBluetooth.this);
+		status.setTextAppearance(GameBluetooth.this, R.style.myText);
+		status.setGravity(Gravity.CENTER);
+		container.addView(status);
+		status.setText("상대방의 기기에 접속합니다.\n");
+		GifView gif = new GifView(GameBluetooth.this);
+		container.addView(gif);
+		Random r = new Random();
+		switch (r.nextInt(5)) {
+		case 0:
+			gif.setGif(R.drawable.loading0);
+			break;
+		case 1:
+			gif.setGif(R.drawable.loading1);
+			break;
+		case 2:
+			gif.setGif(R.drawable.loading2);
+			break;
+		case 3:
+			gif.setGif(R.drawable.loading3);
+			break;
+		case 4:
+			gif.setGif(R.drawable.loading4);
+			break;
+		}
+
+		gif.play();
 	}
 
 	// 클라이언트 소켓 생성을 위한 스레드
@@ -498,7 +541,6 @@ public class GameBluetooth extends Activity implements
 		}
 
 	}
-
 
 	// 앱이 종료될 때 디바이스 검색 중지
 	public void onDestroy() {

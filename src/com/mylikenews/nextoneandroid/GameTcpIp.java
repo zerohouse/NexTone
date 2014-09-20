@@ -1,5 +1,9 @@
 package com.mylikenews.nextoneandroid;
 
+import java.util.Random;
+
+import components.GifView;
+
 import game.Game;
 import game.Method;
 import net.NetReciever;
@@ -32,7 +36,7 @@ public class GameTcpIp extends Activity {
 		super.onCreate(savedInstanceState);
 
 		// 서버의 아이피와 포트를 지정한다.
-		ip = "192.168.0.4";
+		ip = "192.168.0.6";
 		port = 13333;
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -53,9 +57,13 @@ public class GameTcpIp extends Activity {
 		Intent intent = new Intent(GameTcpIp.this, SelectDek.class);
 		startActivityForResult(intent, 0);
 		
+
 		status = new TextView(this);
+		status.setTextAppearance(this, R.style.myText);
 		status.setGravity(Gravity.CENTER);
 		status.setText("참여자를 기다립니다.");
+		
+
 
 	}
 
@@ -96,6 +104,30 @@ public class GameTcpIp extends Activity {
 				NetReciever ngame = new NetReciever(ip, port, game);
 				ngame.execute();
 				container.addView(status);
+				
+				
+				GifView gif = new GifView(this);
+				container.addView(gif);
+				Random r = new Random();
+				switch (r.nextInt(5)) {
+				case 0:
+					gif.setGif(R.drawable.loading0);
+					break;
+				case 1:
+					gif.setGif(R.drawable.loading1);
+					break;
+				case 2:
+					gif.setGif(R.drawable.loading2);
+					break;
+				case 3:
+					gif.setGif(R.drawable.loading3);
+					break;
+				case 4:
+					gif.setGif(R.drawable.loading4);
+					break;
+				}
+				gif.play();
+				
 				return;
 			}
 			finish();
