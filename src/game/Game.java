@@ -88,7 +88,7 @@ public class Game {
 		ImageView fieldback = new ImageView(context);
 		fieldback.setLayoutParams(fieldparam);
 		fieldback.setScaleType(ScaleType.FIT_XY);
-		fieldback.setBackgroundResource(R.drawable.field);
+		fieldback.setBackgroundResource(R.drawable.field2);
 
 		LinearLayout innerfieldarea = new LinearLayout(context);
 		fieldarea.setLayoutParams(fieldparam);

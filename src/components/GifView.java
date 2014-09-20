@@ -114,7 +114,9 @@ public class GifView extends View {
 		bitmap = cacheImage;
 		width = bitmap.getWidth();
 		height = bitmap.getHeight();
-		setLayoutParams(new LayoutParams(width, height));
+		android.view.ViewGroup.LayoutParams params = new LayoutParams(width, height);
+		setLayoutParams(params);
+		
 	}
 
 	private void decode() {

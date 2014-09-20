@@ -32,7 +32,7 @@ public class Weapon extends RelativeLayout {
 		params = new RelativeLayout.LayoutParams(
 				ViewGroup.LayoutParams.WRAP_CONTENT,
 				ViewGroup.LayoutParams.WRAP_CONTENT);
-		params.width = Method.dpToPx(70);
+		params.width = Method.dpToPx(60);
 		params.height = Method.dpToPx(60);
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		params.bottomMargin = Method.dpToPx(12);
@@ -47,7 +47,7 @@ public class Weapon extends RelativeLayout {
 		damageparams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		damageparams.width = Method.dpToPx(25);
 		damageparams.height = Method.dpToPx(28);
-		damageparams.setMargins(Method.dpToPx(7), 0, 0, 0);
+		//damageparams.setMargins(Method.dpToPx(7), 0, 0, 0);
 		this.damage.setTextSize(18);
 		this.damage.setGravity(Gravity.CENTER);
 
@@ -61,7 +61,7 @@ public class Weapon extends RelativeLayout {
 		vitalparams.width = Method.dpToPx(25);
 		vitalparams.height = Method.dpToPx(28);
 
-		vitalparams.setMargins(0, 0, Method.dpToPx(7), 0);
+		//vitalparams.setMargins(0, 0, Method.dpToPx(7), 0);
 		this.vital.setGravity(Gravity.CENTER);
 
 	}

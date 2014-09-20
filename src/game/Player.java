@@ -120,14 +120,14 @@ public class Player {
 		timerparams.width = Method.dpToPx(15);
 		translate = new TranslateAnimation(0, Method.getWindowWidth()
 				- Method.dpToPx(100), 0, 0);
-		translate.setDuration(20000);
-		turnTimer = new CountDownTimer(20000, 1000) {
+		translate.setDuration(30000);
+		turnTimer = new CountDownTimer(30000, 1000) {
 
 			public void onTick(long millisUntilFinished) {
-				if (timer == 10)
+				if (timer == 10 || timer == 20)
 					Method.alert(timer + "초 남았어요!");
 
-				timer -= 1;
+				timer--;
 			}
 
 			public void onFinish() {
@@ -172,6 +172,7 @@ public class Player {
 		endturn = new ImageButton(context, Method.resId("done"),
 				Method.resId("donepressed"), "     턴넘기기");
 		endturn.getParams().addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+		endturn.setTextColor(Color.WHITE);
 
 		endturn.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -422,10 +423,10 @@ public class Player {
 		if (turn == 1)
 			hero.addView(timerimg);
 		timerimg.startAnimation(translate);
-		timer = 20;
+		timer = 30;
 		turnTimer.start();
 
-		Method.alert("나의 턴 : " + turn);
+		Method.alert("턴" + turn + " / 내 차례");
 		Game.sender.S("10&");
 		newCard();
 
