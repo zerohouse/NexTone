@@ -26,16 +26,17 @@ public class BluetoothSender extends Thread implements Sender {
 			@Override
 			public void run() {
 				while (true) {
-
-					String s = todo.poll();
-					if (s != null) {
-						try {
-							byte[] buffer = s.getBytes();
-							out.write(buffer);
-							Thread.sleep(500);
-						} catch (IOException e) {
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+					if (todo.size() != 0) {
+						String s = todo.poll();
+						if (s != null) {
+							try {
+								byte[] buffer = s.getBytes();
+								out.write(buffer);
+								Thread.sleep(500);
+							} catch (IOException e) {
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}

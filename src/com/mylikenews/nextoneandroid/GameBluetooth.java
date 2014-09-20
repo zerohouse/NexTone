@@ -449,6 +449,8 @@ public class GameBluetooth extends Activity implements
 
 		// 서버 소켓 생성
 		public ServerThread() {
+			
+			
 			try {
 				mmSSocket = bluetoothAdapter
 						.listenUsingInsecureRfcommWithServiceRecord(BLUE_NAME,

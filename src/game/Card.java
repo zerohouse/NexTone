@@ -282,7 +282,6 @@ public class Card extends RelativeLayout {
 		}
 
 		use(false, i);
-		player.cardStateUpdate();
 
 	}
 
@@ -328,6 +327,8 @@ public class Card extends RelativeLayout {
 	private void removeCardFromHand(final Player player) {
 		Game.sender.S("80&" + player.me + "@" + -1 + "@" + cardid); // send
 																	// effect
+		player.hand.remove(this);
+		
 		if (cardeffect.contains("OVERMANA")) {
 			final int overmana = Integer
 					.parseInt(cardeffect.split("OVERMANA")[1]);
@@ -338,19 +339,23 @@ public class Card extends RelativeLayout {
 				}
 			});
 		}
+		
 		if (cardeffect.contains("LOSTCARD")) {
 			int card = Integer.parseInt(cardeffect.split("LOSTCARD")[1]);
 			player.hand.lostCards(card);
 		}
 		player.listener.sendEmptyMessage(1);
 
-		player.hand.remove(this);
+		
 		
 		if (hasmonster) {
 			monster.sendInfo();
 			Monster.tmpmonster = null;
 		}
 		player.hero.mana.Add(-cost.Int(), false); // consume mana
+		
+
+		player.cardStateUpdate();
 	}
 
 	public final static int NOEFFECT = 0;

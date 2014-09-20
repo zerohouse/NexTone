@@ -9,12 +9,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.TranslateAnimation;
@@ -23,8 +26,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.mylikenews.nextoneandroid.DekList;
-
 import components.ImageButton;
+
 import dek.CardList;
 import effects.monster.excute.ExcuteEffect;
 
@@ -534,6 +537,7 @@ public class Player {
 		return context;
 	}
 
+	@SuppressLint("NewApi")
 	public void gameEnd(int type) {
 
 		AlertDialog.Builder areyousure = new AlertDialog.Builder(context);
@@ -576,7 +580,25 @@ public class Player {
 						context.startActivity(intent);
 					}
 				});
-
+		areyousure.setOnDismissListener(new OnDismissListener() {
+			
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				((Activity) context).finish();
+			}
+		});
+		
+		areyousure.setOnKeyListener(new OnKeyListener() {
+		    @Override
+		    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+		        // TODO Auto-generated method stub
+		        if (keyCode == KeyEvent.KEYCODE_BACK) {
+		        	((Activity) context).finish();
+		            return true;
+		        }
+				return false;
+		    }
+		});
 		areyousure.show();
 
 	}
