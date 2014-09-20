@@ -314,7 +314,7 @@ public class Player {
 		case -13:
 			return "수호토템;방어;totemshield;1;0#1;1;2;3";
 		case -14:
-			return "개;;dog;1;0;0;1;1";
+			return "국개의원;;dog;1;0;0;1;1";
 		}
 		if (id > 999) {
 			int resid = id % 1000;
