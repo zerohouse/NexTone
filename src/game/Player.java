@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.Intent;
 import android.graphics.Color;
@@ -571,6 +570,7 @@ public class Player {
 						((Activity) context).finish();
 					}
 				});
+		
 		areyousure.setNegativeButton("덱 구성하기",
 				new DialogInterface.OnClickListener() {
 					@Override
@@ -579,14 +579,10 @@ public class Player {
 						Intent intent = new Intent(context, DekList.class);
 						context.startActivity(intent);
 					}
+					
 				});
-		areyousure.setOnDismissListener(new OnDismissListener() {
-			
-			@Override
-			public void onDismiss(DialogInterface dialog) {
-				((Activity) context).finish();
-			}
-		});
+
+
 		
 		areyousure.setOnKeyListener(new OnKeyListener() {
 		    @Override
