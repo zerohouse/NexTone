@@ -538,6 +538,8 @@ public class Player {
 
 	@SuppressLint("NewApi")
 	public void gameEnd(int type) {
+		
+		endTurn();
 
 		AlertDialog.Builder areyousure = new AlertDialog.Builder(context);
 

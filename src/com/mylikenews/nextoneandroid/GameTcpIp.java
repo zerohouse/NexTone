@@ -3,7 +3,6 @@ package com.mylikenews.nextoneandroid;
 import java.util.Random;
 
 import components.GifView;
-
 import game.Game;
 import game.Method;
 import net.NetReciever;
@@ -70,20 +69,12 @@ public class GameTcpIp extends Activity {
 	// 2.0 and above
 	@Override
 	public void onBackPressed() {
-		if (!Game.isStart()) {
-			finish();
-			return;
-		}
 		showAreYouSureDialog();
 	}
 
 	// Before 2.0
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (!Game.isStart()) {
-			finish();
-			return super.onKeyDown(keyCode, event);
-		}
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			showAreYouSureDialog();
 		}
@@ -142,11 +133,10 @@ public class GameTcpIp extends Activity {
 		areyousure.setTitle("게임에서 나갑니다.");
 
 		// Set up the buttons
-		areyousure.setNegativeButton("포기하고 다음판 할래!",
+		areyousure.setNegativeButton("나갈래!",
 				new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-
 						Game.sender.S("101&"); // 항복
 						Game.sender.close();
 						finish();

@@ -19,7 +19,6 @@ public class NetReciever extends AsyncTask<Void, Integer, Void> {
 	String ip;
 	int port;
 	private Queue<String> todo = new LinkedList<String>();
-	
 
 	public NetReciever(String ip, int port, Game game) {
 		this.ip = ip;
@@ -39,6 +38,7 @@ public class NetReciever extends AsyncTask<Void, Integer, Void> {
 			DataInputStream datain = new DataInputStream(in);
 
 			response = "";
+
 			while (!response.equals("end")) {
 				response = datain.readUTF();
 				todo.add(response);
@@ -57,7 +57,7 @@ public class NetReciever extends AsyncTask<Void, Integer, Void> {
 			doAll();
 		}
 	}
-	
+
 	public void doAll() {
 		while (true) {
 			String s = todo.poll();

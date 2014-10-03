@@ -1,7 +1,6 @@
 package game;
 
 
-
 import net.Sender;
 import android.content.Context;
 import android.util.Log;
@@ -37,7 +36,7 @@ public class Game {
 		player1dek = dekstring;
 		player1hero = herostring;
 	}
-	
+
 	public void player1Setting(boolean first) {
 
 		isgameStart = true;
@@ -104,7 +103,7 @@ public class Game {
 
 		player2.addHero();
 		player1.addHero();
-		
+
 		Helper.params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
 	}
@@ -120,6 +119,10 @@ public class Game {
 
 			int type = Integer.parseInt(response[0]);
 			switch (type) {
+
+			case 9000: // 플레이어 선택
+				Method.alert(response[1]);
+				break;
 
 			case 0: // 0번이 넘어오면 시작한다. (카드 바꾸기 화면 실행)
 				Card.stateChange();
@@ -137,7 +140,7 @@ public class Game {
 				player2hero = dekhero[1];
 				player2Setting();
 				break;
- 
+
 			case 30: // 카드뽑아라.
 				player1.newCard();
 				break;
@@ -185,9 +188,11 @@ public class Game {
 				if (mon[0].equals("1")) {
 					cardstring = player2.getCardStringById(Integer
 							.parseInt(mon[2]));
-					card = new Card(context, cardstring, 
-							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]), player2);
-					player2.field.addByCard(card, true, Integer.parseInt(mon[3])); 
+					card = new Card(context, cardstring,
+							Integer.parseInt(mon[1]), Integer.parseInt(mon[2]),
+							player2);
+					player2.field.addByCard(card, true,
+							Integer.parseInt(mon[3]));
 					return;
 				}
 				cardstring = player1
@@ -222,14 +227,14 @@ public class Game {
 
 			case 10:
 				Method.alert("상대방의 턴입니다."); // 턴알림
-				break; 
+				break;
 
 			case 11:
 				Target attacker;
 				int resint = Integer.parseInt(response[1]);
 
 				player2.hero.deSelect();
-				player2.field.attackCheck(); 
+				player2.field.attackCheck();
 
 				if (resint == -1)
 					attacker = player2.hero.hero();
@@ -343,7 +348,6 @@ public class Game {
 			case 550: // 게임 엔드.
 				Game.sender.close();
 				break;
-				
 
 			}
 
@@ -384,6 +388,5 @@ public class Game {
 	public static void resetStart() {
 		isgameStart = false;
 	}
-
 
 }
